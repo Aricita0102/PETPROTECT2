@@ -26,7 +26,7 @@
             <div style="flex: 1; display: flex; flex-direction: column; background: var(--checkout-fondo); overflow: hidden;">
                 
                 <!-- PASO 1: ENTREGABLES (OCULTO) -->
-                <div id="view-step-1" class="view-step" style="display:none;">
+                <div id="view-step-1" class="view-step" style="display:none; overflow-y:auto; padding-bottom:100px;">
                     <div style="max-width: 650px; margin: 0 auto; width: 100%;">
                         <h2 class="font-titulos" style="font-size: 26px; margin-bottom: 8px;">Entregables Médicos</h2>
                         <p style="margin-bottom: 30px;">La consulta finalizó. ¿Cómo deseas entregar la receta al tutor?</p>
@@ -94,7 +94,7 @@
                 </div>
 
                 <!-- PASO 4: LIQUIDACIÓN -->
-                <div id="view-step-4" class="view-step">
+                <div id="view-step-4" class="view-step" style="overflow-y:auto; padding-bottom:100px;">
                     <div style="max-width: 650px; margin: 0 auto; width: 100%;">
                         <h2 class="font-titulos" style="font-size: 26px; margin-bottom: 8px;">Liquidación de Cuenta</h2>
                         <p style="margin-bottom: 24px;">Selecciona el método de pago del tutor.</p>
@@ -134,7 +134,7 @@
                 </div>
 
                 <!-- PASO 5: CONFIRMACIÓN -->
-                <div id="view-step-5" class="view-step">
+                <div id="view-step-5" class="view-step" style="overflow-y:auto; padding-bottom:100px;">
                     <div style="max-width: 650px; margin: 0 auto; width: 100%;">
                         <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 24px; border-radius: 16px; margin-bottom: 24px; display: flex; gap: 16px; align-items: center;">
                             <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--checkout-verde); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
@@ -193,7 +193,7 @@
     <!-- TICKET TÉRMICO -->
     <div id="zona-impresion-ticket" class="hidden print:block">
         <div style="text-align: center; margin-bottom: 10px;">
-            <strong>VETERINARIA QUETZALIA</strong><br>RFC: VETQ-123456<br>========================
+            <strong id="print-clinica-nombre">PET PROTECT</strong><br>RFC: <span id="print-clinica-rfc">GENERAL</span><br>========================
         </div>
         <div style="margin-bottom: 10px;">Fecha: <span id="print-fecha"></span><br>Paciente: <span id="print-paciente"></span><br>Tutor: <span id="print-tutor"></span><br>========================</div>
         <div id="print-items" style="margin-bottom: 10px;"></div>

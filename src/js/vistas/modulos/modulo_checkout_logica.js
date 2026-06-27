@@ -8,6 +8,7 @@ import { conexionSupabase } from '../../infraestructura/conexion.js';
 import { obtenerSesionActiva } from '../../infraestructura/sesion_store.js';
 import { alertaCustom, confirmacionCustom } from '../../utilidades/ui_alertas.js';
 import { obtenerPlantillaTicket } from './ticket_template.js';
+import '../../../css/modulo_checkout.css';
 
 const moduloCheckout = {
     estado: {
@@ -16,8 +17,10 @@ const moduloCheckout = {
         entregables: { whatsapp: false, impresion: true }, // La impresión física viene activa por defecto
         cargos: [], // Aquí se acumula la cuenta
         paciente: { nombre: 'Sin Identificar', tutor: 'Público General' },
+        productosTienda: [],
         organizacionId: null,
-        sucursalId: null
+        sucursalId: null,
+        isProcesandoPago: false
     },
 
     // ==========================================================================
@@ -63,6 +66,20 @@ const moduloCheckout = {
         document.getElementById('print-fecha').innerText = fechaTxt;
         document.getElementById('print-paciente').innerText = this.estado.paciente.nombre;
         document.getElementById('print-tutor').innerText = this.estado.paciente.tutor;
+
+        if (this.estado.organizacionId) {
+            const { data: org, error: orgError } = await conexionSupabase
+                .from('organizaciones')
+                .select('nombre_legal, rfc_fiscal')
+                .eq('id', this.estado.organizacionId)
+                .single();
+            if (!orgError && org) {
+                const nombreNode = document.getElementById('print-clinica-nombre');
+                const rfcNode = document.getElementById('print-clinica-rfc');
+                if (nombreNode) nombreNode.innerText = org.nombre_legal || 'PET PROTECT';
+                if (rfcNode) rfcNode.innerText = org.rfc_fiscal || 'GENERAL';
+            }
+        }
 
         this.actualizarSidebar();
         
@@ -113,6 +130,8 @@ const moduloCheckout = {
                 .order('categoria', { ascending: true });
 
             if (errProd) console.error("❌ [CHECKOUT] Error cargando productos:", errProd);
+
+            this.estado.productosTienda = productos || [];
 
             console.log(`✅ [CHECKOUT] Servicios: ${servicios?.length || 0} | Productos: ${productos?.length || 0}`);
 
@@ -206,11 +225,11 @@ const moduloCheckout = {
                 <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 20px; border-bottom:1px solid var(--checkout-border);">
                     <div>
                         <span style="font-size:14px; font-weight:bold; display:block; color:var(--checkout-cobalto);">${producto.nombre_comercial}</span>
-                        <span style="font-size:11px; color:${stockVal <= 0 ? '#ef4444' : 'var(--checkout-texto)'}; font-weight:${stockVal <= 0 ? 'bold' : 'normal'};">Stock disponible: ${stockVal} ${producto.unidad_medida}</span>
+                        <span id="stock-text-${producto.id}" style="font-size:11px; color:${stockVal <= 0 ? '#ef4444' : 'var(--checkout-texto)'}; font-weight:${stockVal <= 0 ? 'bold' : 'normal'};">Stock disponible: ${stockVal} ${producto.unidad_medida}</span>
                     </div>
                     <div style="display:flex; gap:12px; align-items:center;">
                         <span style="color:var(--checkout-texto); font-weight:bold;">$${parseFloat(producto.precio_venta || 0).toFixed(2)}</span>
-                        <button ${btnDisabled} onclick="window.moduloCheckout.agregarCargo('${producto.id}', '${producto.nombre_comercial.replace(/'/g, "\\'")}', ${producto.precio_venta || 0}, 'producto', ${stockVal})" style="background:var(--checkout-naranja); color:white; border:none; border-radius:8px; width:30px; height:30px; cursor:pointer; font-weight:bold; font-size:16px;">+</button>
+                        <button id="btn-add-${producto.id}" ${btnDisabled} onclick="window.moduloCheckout.agregarCargo('${producto.id}', '${producto.nombre_comercial.replace(/'/g, "\\'")}', ${producto.precio_venta || 0}, 'producto', ${producto.stock_total})" style="background:var(--checkout-naranja); color:white; border:none; border-radius:8px; width:30px; height:30px; cursor:pointer; font-weight:bold; font-size:16px;">+</button>
                     </div>
                 </div>
                 `;
@@ -282,6 +301,34 @@ const moduloCheckout = {
         
         document.getElementById('sidebar-items-count').innerText = `${this.estado.cargos.length}`;
         
+        // --- INYECCIÓN REACTIVIDAD VISUAL STOCK ---
+        if (this.estado.productosTienda) {
+            this.estado.productosTienda.forEach(producto => {
+                const spanStock = document.getElementById(`stock-text-${producto.id}`);
+                const btnAdd = document.getElementById(`btn-add-${producto.id}`);
+                if (spanStock && btnAdd) {
+                    const cantidadEnCarrito = this.estado.cargos.filter(c => c.id === producto.id).length;
+                    const stockVal = producto.stock_total - cantidadEnCarrito;
+                    spanStock.innerText = `Stock disponible: ${stockVal} ${producto.unidad_medida}`;
+                    
+                    if (stockVal <= 0) {
+                        spanStock.style.color = '#ef4444';
+                        spanStock.style.fontWeight = 'bold';
+                        btnAdd.disabled = true;
+                        btnAdd.style.opacity = '0.4';
+                        btnAdd.style.cursor = 'not-allowed';
+                    } else {
+                        spanStock.style.color = 'var(--checkout-texto)';
+                        spanStock.style.fontWeight = 'normal';
+                        btnAdd.disabled = false;
+                        btnAdd.style.opacity = '1';
+                        btnAdd.style.cursor = 'pointer';
+                    }
+                }
+            });
+        }
+        // ------------------------------------------
+
         let htmlList = ''; 
         let printHtml = '';
 
@@ -316,10 +363,9 @@ const moduloCheckout = {
     },
 
     obtenerTotales: function() {
-        // Cálculo contable (Modificado): El precio unitario ya incluye IVA, por ende el subtotal es igual al total y el IVA desglosado es 0
-        const total = this.estado.cargos.reduce((acc, cur) => acc + cur.precio, 0);
-        const subtotal = total;
-        const iva = 0;
+        const subtotal = this.estado.cargos.reduce((acc, cur) => acc + cur.precio, 0);
+        const iva = subtotal * 0.16;
+        const total = subtotal + iva;
         return { subtotal, iva, total };
     },
 
@@ -401,10 +447,14 @@ const moduloCheckout = {
     },
 
     procesarPago: async function(event) {
+        if (this.estado.isProcesandoPago) return;
+        
         if (this.estado.cargos.length === 0) { 
             alertaCustom("La cuenta está en ceros."); 
             return; 
         }
+
+        this.estado.isProcesandoPago = true;
 
         const sesion = await obtenerSesionActiva();
         const usuarioId = sesion?.user?.id || sesion?.perfil?.id;
@@ -414,6 +464,7 @@ const moduloCheckout = {
             const recibido = parseFloat(document.getElementById('input-monto-recibido').value) || 0;
             if (recibido < totals.total) {
                 alertaCustom("El monto recibido en efectivo es insuficiente para liquidar la cuenta.");
+                this.estado.isProcesandoPago = false;
                 return;
             }
         }
@@ -425,9 +476,17 @@ const moduloCheckout = {
                 event.currentTarget.innerHTML = "Procesando... <span class='material-symbols-rounded' style='animation: spin 2s linear infinite;'>sync</span>";
             }
 
-            const productos = this.estado.cargos.filter(c => c.tipo === 'producto' && c.id && c.id.length > 10);
+            const productosRaw = this.estado.cargos.filter(c => c.tipo === 'producto' && c.id && c.id.length > 10);
+            const productosAgrupados = {};
+            productosRaw.forEach(p => {
+                if (!productosAgrupados[p.id]) {
+                    productosAgrupados[p.id] = { ...p, cantidad: 0 };
+                }
+                productosAgrupados[p.id].cantidad += (p.cantidad || 1);
+            });
+            const productosDeduct = Object.values(productosAgrupados);
             
-            for (let prod of productos) {
+            for (let prod of productosDeduct) {
                 const { data: item } = await conexionSupabase
                     .from('inventario_productos')
                     .select('stock_total, stock_minimo, nombre_comercial')
@@ -435,7 +494,8 @@ const moduloCheckout = {
                     .single();
                     
                 if (item) {
-                    const nuevoStock = Math.max(0, parseFloat(item.stock_total) - 1);
+                    const cantidadDeducir = prod.cantidad;
+                    const nuevoStock = Math.max(0, parseFloat(item.stock_total) - cantidadDeducir);
                     
                     // 1. Actualizar stock
                     const { error: errUpdate } = await conexionSupabase
@@ -447,8 +507,6 @@ const moduloCheckout = {
                         console.error("❌ [CHECKOUT] Error al actualizar stock:", errUpdate);
                         throw new Error("No se pudo actualizar el stock del producto.");
                     }
-
-                    // 1.5 (Removido: La alerta de stock ahora se escucha directamente vía WebSockets en inventario_productos)
                         
                     // 2. Registrar movimiento
                     const { error: errInsert } = await conexionSupabase
@@ -458,7 +516,7 @@ const moduloCheckout = {
                             sucursal_id: this.estado.sucursalId,
                             producto_id: prod.id,
                             tipo_movimiento: 'salida_venta',
-                            cantidad: 1,
+                            cantidad: cantidadDeducir,
                             motivo_referencia: 'Venta en mostrador / Checkout',
                             created_by: usuarioId
                         });
@@ -501,15 +559,24 @@ const moduloCheckout = {
 
             // Insertar los items de la cuenta en caja_transacciones_items
             if (this.estado.cargos && this.estado.cargos.length > 0) {
+                const itemsAgrupados = {};
+                this.estado.cargos.forEach(item => {
+                    const key = item.id + '_' + item.tipo;
+                    if (!itemsAgrupados[key]) {
+                        itemsAgrupados[key] = { ...item, cantidad: 0 };
+                    }
+                    itemsAgrupados[key].cantidad += (item.cantidad || 1);
+                });
+
                 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-                const itemsAInsertar = this.estado.cargos.map(item => ({
+                const itemsAInsertar = Object.values(itemsAgrupados).map(item => ({
                     transaccion_id: transaccion.id,
                     referencia_tipo: item.tipo === 'producto' ? 'producto' : 'servicio',
                     referencia_id: item.id && uuidRegex.test(item.id) ? item.id : null,
                     nombre_item: item.nombre,
-                    cantidad: item.cantidad || 1,
+                    cantidad: item.cantidad,
                     precio_unitario: item.precio,
-                    subtotal: item.precio * (item.cantidad || 1)
+                    subtotal: item.precio * item.cantidad
                 }));
 
                 const { error: errItems } = await conexionSupabase
@@ -524,11 +591,13 @@ const moduloCheckout = {
 
             document.getElementById('print-metodo').innerText = this.estado.metodoPago.toUpperCase();
             console.info("✅ Pago validado, stock descontado y transacción registrada. Pasando a confirmación...");
+            this.estado.isProcesandoPago = false;
             this.avanzarPaso(5);
 
         } catch (error) {
             console.error("❌ Error al procesar pago e inventario:", error);
             alertaCustom("Hubo un error al descontar el inventario de Supabase. Revise la consola.");
+            this.estado.isProcesandoPago = false;
             if (event && event.currentTarget) {
                 event.currentTarget.disabled = false;
                 event.currentTarget.innerHTML = `Registrar Cobro <span class="material-symbols-rounded">check_circle</span>`;

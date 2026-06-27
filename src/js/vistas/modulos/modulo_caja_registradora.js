@@ -353,8 +353,8 @@ function renderizarCarrito() {
 
     // Cálculo de totales
     const subtotal = carrito.reduce((acc, i) => acc + i.precio * i.cantidad, 0);
-    const iva      = 0;
-    const total    = subtotal;
+    const iva      = subtotal * 0.16;
+    const total    = subtotal + iva;
     const totalItems = carrito.reduce((a, i) => a + i.cantidad, 0);
 
     if (resumenEl) {
@@ -453,8 +453,8 @@ function configurarCobro() {
         if (carrito.length === 0) return;
 
         const subtotal = carrito.reduce((acc, i) => acc + i.precio * i.cantidad, 0);
-        const iva      = 0;
-        const total    = subtotal;
+        const iva      = subtotal * 0.16;
+        const total    = subtotal + iva;
 
         abrirModalCheckout(total);
     });
@@ -564,8 +564,8 @@ export function setMetodoPagoCaja(metodo) {
 
 export function calcularCambioCaja() {
     const subtotal = carrito.reduce((acc, i) => acc + i.precio * i.cantidad, 0);
-    const iva      = 0;
-    const total    = subtotal;
+    const iva      = subtotal * 0.16;
+    const total    = subtotal + iva;
     
     const inputMonto = document.getElementById('caja-input-monto-recibido');
     const displayCambio = document.getElementById('caja-display-cambio');
@@ -635,8 +635,8 @@ export async function procesarPagoCheckout() {
     btnCobrar.innerHTML = '<span class="material-symbols-rounded spin">sync</span> Registrando...';
 
     const subtotal = carrito.reduce((acc, i) => acc + i.precio * i.cantidad, 0);
-    const iva      = 0;
-    const total    = subtotal;
+    const iva      = subtotal * 0.16;
+    const total    = subtotal + iva;
 
     try {
         // 1. Insertar Transacción Principal

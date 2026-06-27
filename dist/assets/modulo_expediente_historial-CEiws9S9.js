@@ -1,4 +1,4 @@
-import{i as e,r as t,t as n}from"./chunk-aKtaBQYM.js";import{n as r}from"./conexion-DiH-JvMT.js";import{n as i}from"./sesion_store-BSrAgZd7.js";import{a,i as o,t as s}from"./PRINCIPAL-ZqueXWxn.js";import{t as c}from"./storage-DxBef2iG.js";import{t as l}from"./driver-C0V4B3Pe.js";var u=`
+import{i as e,r as t,t as n}from"./chunk-aKtaBQYM.js";import{n as r}from"./conexion-DiH-JvMT.js";import{n as i}from"./sesion_store-BSrAgZd7.js";import{a,i as o,t as s}from"./PRINCIPAL-CEQ5kvRk.js";import{t as c}from"./storage-DxBef2iG.js";import{t as l}from"./driver-C0V4B3Pe.js";var u=`
 <style>
   :root{
     --cobalto:#032F40;
