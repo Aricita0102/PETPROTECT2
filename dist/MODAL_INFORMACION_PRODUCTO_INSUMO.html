@@ -1,0 +1,96 @@
+<!-- ====================================================================
+     OVERLAY Y PANEL: DETALLE DE INSUMO CLÍNICO (Estilo Notificaciones)
+     ==================================================================== -->
+<div class="notif-overlay" id="estudioOverlay" aria-hidden="true"></div>
+
+<aside class="panel-notificaciones" id="panelDetalleInsumo" role="dialog" aria-modal="true" aria-label="Detalle de Insumo Clínico" style="z-index: 1210;">
+    <!-- Cabecera cobalto -->
+    <div class="notif-header">
+        <div class="notif-header-top">
+            <div>
+                <p style="font-size:0.72rem; color:#89C2D9; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; margin:0 0 6px;">Inventario › Insumos Clínicos</p>
+                <h2 class="notif-titulo">Gasa Estéril 10x10cm</h2>
+            </div>
+            <div class="notif-header-acciones">
+                <button type="button" class="notif-btn-icono" id="btn-cerrar-panel-insumo" title="Cerrar panel" aria-label="Cerrar panel">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </div>
+        </div>
+        <p class="notif-resumen">Código: <strong>INS-GAS-10X10</strong></p>
+
+        <!-- Chips simulados de estados -->
+        <div class="notif-filtros" style="margin-top: 10px;">
+            <button class="notif-chip activo" style="background:#10B981; border-color:#10B981;">Stock: Óptimo</button>
+            <button class="notif-chip">Estéril</button>
+        </div>
+    </div>
+
+    <!-- Cuerpo con scroll -->
+    <div class="notif-cuerpo" style="padding:24px;">
+        <div style="display:flex; flex-direction:column; gap:20px;">
+
+            <!-- Indicadores Principales -->
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;">
+                <div style="background:#fff; border:1px solid #e8eef5; border-radius:12px; padding:12px; text-align:center;">
+                    <div style="font-size:0.65rem; font-weight:700; color:#8da5b5; text-transform:uppercase; margin-bottom:4px;">Stock Interno</div>
+                    <div style="font-size:1.1rem; font-weight:800; color:#032F40;">15 Pqts</div>
+                </div>
+                <div style="background:#fff; border:1px solid #e8eef5; border-radius:12px; padding:12px; text-align:center;">
+                    <div style="font-size:0.65rem; font-weight:700; color:#8da5b5; text-transform:uppercase; margin-bottom:4px;">R. Mínima</div>
+                    <div style="font-size:1.1rem; font-weight:800; color:#032F40;">5 Pqts</div>
+                </div>
+                <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:12px; text-align:center;">
+                    <div style="font-size:0.65rem; font-weight:700; color:#10B981; text-transform:uppercase; margin-bottom:4px;">Estado</div>
+                    <div style="font-size:1.1rem; font-weight:800; color:#10B981;">Óptimo</div>
+                </div>
+            </div>
+
+            <!-- Especificaciones del Material -->
+            <div style="background:#fff; border:1px solid #e8eef5; border-radius:14px; padding:16px;">
+                <h3 style="font-size:0.8rem; font-weight:800; color:#032F40; margin:0 0 14px; display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-rounded" style="font-size:18px; color:#F27405;">fact_check</span> Especificaciones del Material
+                </h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:0.75rem;">
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Marca</span> <span style="font-weight:700; color:#032F40;">Leukoplast</span></div>
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Categoría</span> <span style="font-weight:700; color:#032F40;">Curación</span></div>
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Condición</span> <span style="font-weight:800; color:#10B981;">Estéril</span></div>
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Und. Medida</span> <span style="font-weight:700; color:#032F40;">Paquete (100 pz)</span></div>
+                    <div style="grid-column:1 / span 2;"><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Área Principal</span> <span style="font-weight:700; color:#032F40;">Consultorio / Quirófano</span></div>
+                    <div style="grid-column:1 / span 2;"><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Ubicación Física</span> <span style="font-weight:700; color:#032F40;">Estante 4 - Nivel B</span></div>
+                </div>
+            </div>
+
+            <!-- Información Financiera -->
+            <div style="background:#fff; border:1px solid #e8eef5; border-radius:14px; padding:16px;">
+                <h3 style="font-size:0.8rem; font-weight:800; color:#032F40; margin:0 0 14px; display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-rounded" style="font-size:18px; color:#89C2D9;">request_quote</span> Control de Costos Internos
+                </h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:0.75rem;">
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Costo x Paquete</span> <span style="font-weight:700; color:#032F40;">$45.00</span></div>
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Costo Fracc. (Pz)</span> <span style="font-weight:700; color:#032F40;">$0.45</span></div>
+                    <div style="grid-column:1 / span 2; margin-top:4px;"><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Proveedor Habitual</span> <span style="font-weight:700; color:#032F40;">MedVet Supply</span></div>
+                </div>
+            </div>
+
+            <!-- Barcode SVG Placeholder -->
+            <div style="background:#fff; border:1px dashed #c2d4df; border-radius:14px; padding:16px; text-align:center;">
+                <span class="material-symbols-rounded" style="font-size:32px; color:#c2d4df;">barcode_scanner</span>
+                <div style="font-size:0.85rem; font-weight:800; color:#032F40; margin-top:6px; letter-spacing:2px;">7501234567890</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Pie -->
+    <div class="notif-footer">
+        <div>
+            <button type="button" class="notif-footer-btn secundario" style="padding:8px 12px; font-size:0.75rem;">Editar Ficha</button>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button type="button" class="notif-footer-btn primario" style="background:#F27405; display:flex; align-items:center; gap:6px; padding:8px 16px;">
+                <span class="material-symbols-rounded" style="font-size:16px;">inventory</span> Ajustar Stock
+            </button>
+        </div>
+    </div>
+</aside>

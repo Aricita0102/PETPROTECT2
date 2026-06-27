@@ -1,0 +1,194 @@
+<link rel="stylesheet" href="/src/css/panel_notificaciones.css">
+<aside id="contenedorRegistroEstudio" class="modal-backdrop-premium modal-lateral-backdrop" aria-hidden="true" style="z-index: 9999;">
+    
+    <div class="ventana-modal-bento grande modal-lateral-panel">
+        
+        <button type="button" class="boton-cerrar-modal-bento btn-cerrar-lateral" id="btnCerrarRegistroEstudio" aria-label="Cancelar registro de estudio">
+            <span class="material-symbols-rounded">close</span>
+        </button>
+
+        <div class="contenido-interno-modal contenido-scrollable">
+            
+            <div class="breadcrumbs">
+                Expediente Clínico <span>&gt;</span> Estudios e Imágenes <span>&gt;</span> Nuevo Estudio
+            </div>
+
+            <header class="product-header">
+                <div class="header-title-area">
+                    <h1 id="titulo-modal-estudio">REGISTRO DE ESTUDIO CLÍNICO</h1>
+                    <span class="code-chip">Gabinete e Imagenología</span>
+                </div>
+                <div class="header-actions">
+                    <button type="submit" form="formRegistroEstudio" class="boton-primario" id="btnGuardarEstudio">
+                        <span class="material-symbols-rounded">save</span> 
+                        <span>Guardar Estudio</span>
+                    </button>
+                </div>
+            </header>
+
+            <form id="formRegistroEstudio" novalidate class="dashboard-grid" style="grid-template-columns: 1fr;">
+                
+                <div class="grid-column">
+                    
+                    <!-- SECCIÓN 1: DATOS GENERALES -->
+                    <div class="card">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <span class="material-symbols-rounded" style="font-size: 18px; color: var(--text-secondary);">biotech</span>
+                                1. Datos Generales del Estudio
+                            </div>
+                        </div>
+                        <div class="info-grid-2col bento-form-grid">
+                            
+                            <div class="form-group span-2">
+                                <label for="estudio_nombre">Nombre del Estudio <span class="required">*</span></label>
+                                <input type="text" id="estudio_nombre" name="nombre_estudio" required placeholder="Ej. Radiografía Coxofemoral (VD y LL)">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="estudio_modalidad">Modalidad <span class="required">*</span></label>
+                                <select id="estudio_modalidad" name="modalidad" required>
+                                    <option value="" disabled selected>Seleccione modalidad...</option>
+                                    <option value="Radiografía">Radiografía</option>
+                                    <option value="Ultrasonido">Ultrasonido</option>
+                                    <option value="Resonancia Magnética">Resonancia Magnética</option>
+                                    <option value="Tomografía (TAC)">Tomografía (TAC)</option>
+                                    <option value="Endoscopia">Endoscopia</option>
+                                    <option value="Laboratorio">Laboratorio (Patología Clínica)</option>
+                                    <option value="Citología">Citología</option>
+                                    <option value="Histopatología">Histopatología</option>
+                                    <option value="Electrocardiograma">Electrocardiograma</option>
+                                    <option value="Ecocardiograma">Ecocardiograma</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="estudio_prioridad">Prioridad <span class="required">*</span></label>
+                                <select id="estudio_prioridad" name="prioridad" required>
+                                    <option value="Normal" selected>Normal</option>
+                                    <option value="Urgente">Urgente</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="estudio_fecha">Fecha del Estudio <span class="required">*</span></label>
+                                <input type="date" id="estudio_fecha" name="fecha_estudio" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="estudio_hora">Hora del Estudio <span class="required">*</span></label>
+                                <input type="time" id="estudio_hora" name="hora_estudio" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="estudio_solicitante">Médico Solicitante</label>
+                                <input type="text" id="estudio_solicitante" name="medico_solicitante" placeholder="Ej. Dr. Martínez">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="estudio_realiza">Médico / Centro que realiza</label>
+                                <input type="text" id="estudio_realiza" name="medico_realiza" placeholder="Ej. Laboratorios Vet Sur">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN 2: MOTIVO -->
+                    <div class="card">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <span class="material-symbols-rounded" style="font-size: 18px; color: var(--text-secondary);">stethoscope</span>
+                                2. Motivo de Solicitud
+                            </div>
+                        </div>
+                        <div class="bento-form-grid" style="padding: 0 20px 20px;">
+                            <div class="form-group">
+                                <textarea id="estudio_motivo" name="motivo_solicitud" rows="3" placeholder="Indique la justificación clínica para solicitar este estudio..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN 3: HALLAZGOS -->
+                    <div class="card">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <span class="material-symbols-rounded" style="font-size: 18px; color: var(--text-secondary);">search</span>
+                                3. Hallazgos Clínicos
+                            </div>
+                        </div>
+                        <div class="bento-form-grid" style="padding: 0 20px 20px;">
+                            <div class="form-group">
+                                <textarea id="estudio_hallazgos" name="hallazgos" rows="4" placeholder="Describa de manera detallada los hallazgos observados en el estudio..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN 4: INTERPRETACIÓN -->
+                    <div class="card">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <span class="material-symbols-rounded" style="font-size: 18px; color: var(--text-secondary);">assignment_turned_in</span>
+                                4. Interpretación / Diagnóstico
+                            </div>
+                        </div>
+                        <div class="bento-form-grid" style="padding: 0 20px 20px;">
+                            <div class="form-group">
+                                <textarea id="estudio_interpretacion" name="interpretacion" rows="3" placeholder="Conclusión o diagnóstico basado en los hallazgos..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN 5: ETIQUETAS -->
+                    <div class="card">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <span class="material-symbols-rounded" style="font-size: 18px; color: var(--text-secondary);">sell</span>
+                                5. Etiquetas Clínicas
+                            </div>
+                        </div>
+                        <div class="bento-form-grid" style="padding: 0 20px 20px;">
+                            <div class="tags-input-container" style="border: 1px solid var(--border-color); border-radius: var(--radio-input); padding: 10px; background: #fff; display: flex; flex-wrap: wrap; gap: 8px;">
+                                <div id="contenedor_etiquetas_seleccionadas" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
+                                <input type="text" id="input_nueva_etiqueta" placeholder="Escriba una etiqueta y presione Enter..." style="border: none; outline: none; flex-grow: 1; min-width: 200px; font-family: var(--font-family); font-size: 14px; background: transparent;">
+                            </div>
+                            <div class="etiquetas-sugeridas" style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+                                <span class="badge-sugerencia" style="cursor: pointer; background: var(--fondo-sitio); padding: 4px 10px; border-radius: 12px; font-size: 12px; color: var(--texto-gris);">Displasia</span>
+                                <span class="badge-sugerencia" style="cursor: pointer; background: var(--fondo-sitio); padding: 4px 10px; border-radius: 12px; font-size: 12px; color: var(--texto-gris);">Osteoartritis</span>
+                                <span class="badge-sugerencia" style="cursor: pointer; background: var(--fondo-sitio); padding: 4px 10px; border-radius: 12px; font-size: 12px; color: var(--texto-gris);">Fractura</span>
+                                <span class="badge-sugerencia" style="cursor: pointer; background: var(--fondo-sitio); padding: 4px 10px; border-radius: 12px; font-size: 12px; color: var(--texto-gris);">Gestación</span>
+                                <span class="badge-sugerencia" style="cursor: pointer; background: var(--fondo-sitio); padding: 4px 10px; border-radius: 12px; font-size: 12px; color: var(--texto-gris);">Neoplasia</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN 6: ARCHIVOS (DRAG & DROP) -->
+                    <div class="card">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <span class="material-symbols-rounded" style="font-size: 18px; color: var(--text-secondary);">upload_file</span>
+                                6. Adjuntar Archivos del Estudio
+                            </div>
+                        </div>
+                        <div class="bento-form-grid" style="padding: 0 20px 20px;">
+                            
+                            <div id="dropzone_estudio" style="border: 2px dashed #cbd5e1; border-radius: var(--radio-bento); padding: 40px 20px; text-align: center; background: #f8fafc; cursor: pointer; transition: all 0.3s ease;">
+                                <span class="material-symbols-rounded" style="font-size: 48px; color: #94a3b8; margin-bottom: 10px;">cloud_upload</span>
+                                <h3 style="font-family: var(--fuente-titulos); color: var(--cobalto); font-size: 16px; margin: 0 0 5px;">Arrastra y suelta tus archivos aquí</h3>
+                                <p style="color: var(--texto-gris); font-size: 13px; margin: 0 0 15px;">Imágenes, DICOM, PDFs y Videos soportados</p>
+                                <button type="button" class="btn-outline" style="pointer-events: none;">Explorar Archivos</button>
+                                <input type="file" id="input_archivos_estudio" multiple accept=".jpg,.jpeg,.png,.tiff,.dcm,.pdf,.doc,.docx,.mp4,.avi,.mov,.zip" style="display: none;">
+                            </div>
+
+                            <div id="lista_archivos_preview" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                                <!-- Los archivos seleccionados se mostrarán aquí -->
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+            <br><br>
+        </div>
+    </div>
+</aside>

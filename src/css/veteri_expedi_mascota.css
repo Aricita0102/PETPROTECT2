@@ -1,0 +1,260 @@
+/* ============================================================
+   🎨 SISTEMA DE DISEÑO - PROTECT PET
+   ============================================================ */
+@font-face {
+    font-family: 'Century Gothic';
+    src: local('Century Gothic'), local('CenturyGothic');
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Century Gothic', sans-serif;
+    background-color: #032F40;; /* Corregido a gris suave para contraste */
+    color: #F27405;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+.interfazVeterinario {
+    display: flex;
+    flex-direction: row-reverse; /* Sidebar a la derecha */
+    height: 100vh;
+    width: 100%;
+}
+
+/* --- SIDEBAR --- */
+.navegacionLateral {
+    width: 300px;
+    background-color: #032F40;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.bloqueSuperior {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2.5rem 1.5rem 1rem 1.5rem;
+    scrollbar-width: none;
+}
+.bloqueSuperior::-webkit-scrollbar { display: none; }
+
+.marca { font-weight: bold; font-size: 1.3rem; display: flex; align-items: center; margin-bottom: 3rem; }
+.puntoNaranja { width: 10px; height: 10px; background-color: #F27405; border-radius: 50%; margin-right: 12px; }
+
+.menuInterno a {
+    display: flex; align-items: center; gap: 10px;
+    color: #89C2D9; text-decoration: none; padding: 1.2rem;
+    margin-bottom: 0.5rem; border-radius: 15px; transition: 0.3s; font-size: 0.95rem;
+}
+.menuInterno a.itemActivo, .menuInterno a:hover { 
+    background-color: rgba(255, 255, 255, 0.08); color: white; font-weight: bold;
+}
+
+.perfilMedico {
+    display: flex; align-items: center; gap: 12px;
+    border-top: 1px solid rgba(137, 194, 217, 0.2); padding: 1.5rem; background-color: #032F40;
+}
+.fotoMini { 
+    width: 50px; height: 50px; background-color: #89C2D9; border-radius: 50%; 
+    background-position: center; background-size: cover; flex-shrink: 0; 
+}
+.datosMedico .nombre { font-weight: bold; font-size: 0.9rem; color: white; margin: 0; }
+.datosMedico .cedula { font-size: 0.8rem; color: #F29F05; font-weight: bold; margin-bottom: 5px; }
+
+.btn-logout-link {
+    background: transparent; border: none; padding: 0;
+    color: #89C2D9; font-family: inherit; font-size: 0.75rem; 
+    font-weight: bold; cursor: pointer; text-decoration: underline; transition: 0.3s;
+}
+.btn-logout-link:hover { color: #F27405; }
+
+/* --- ÁREA DE TRABAJO --- */
+.areaTrabajo {
+    flex: 1; padding: 2rem 4rem; overflow-y: auto; 
+    scroll-behavior: smooth; scrollbar-width: none;
+}
+.areaTrabajo::-webkit-scrollbar { display: none; }
+
+/* --- HEADER REESTRUCTURADO --- */
+.encabezadoDashboard {
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+
+/* Fila superior con botón volver, título centrado y estado */
+.bloque-titulos {
+    display: grid; 
+    grid-template-columns: 1fr auto 1fr; /* Izq, Centro, Der */
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.enlace-volver-panel {
+    display: inline-flex; align-items: center; gap: 5px;
+    color: #89C2D9; text-decoration: none; font-weight: bold; font-size: 0.9rem;
+    justify-self: start; transition: 0.3s;
+}
+.enlace-volver-panel:hover { color: #F27405; transform: translateX(-5px); }
+
+/* Título Centrado */
+.titulo-y-estado { 
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: 'Century Gothic'; text-align: center;
+}
+
+.badge-expediente { 
+    background:#F27405; color: #fdfdfd; 
+    padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; 
+    display: inline-block; margin-bottom: 5px;
+}
+
+h1 { 
+    font-size: 3.2rem; color: #ffffff; margin: 0; 
+    font-family:'Century Gothic'; font-weight: 400; text-align: center;
+}
+
+/* Botonera Dividida (Izq y Der) */
+.botonera-header { 
+    display: flex; 
+    justify-content: space-between; /* Separa los grupos al extremo */
+    align-items: center; 
+    padding-bottom: 15px;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.grupo-botones-izq { display: flex; gap: 10px; }
+.grupo-botones-der { display: flex; }
+
+/* Tarjetas */
+.tarjetaContenedora {
+    background: white; border-radius: 35px; padding: 3rem;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.03); margin-bottom: 2.5rem;
+    animation: fadeIn 0.5s ease-out; scroll-margin-top: 20px;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Formularios */
+.contenedor-perfil-horizontal { display: grid; grid-template-columns: 200px 1fr; gap: 3rem; align-items: start; }
+.marco-foto-ajustada {
+    width: 200px; height: 200px; background: #F9FAFB;
+    border: 3px dashed #89C2D9; border-radius: 25px;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+
+.campo label { display: block; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; color: #64748B; }
+.input-moderno-f {
+    width: 100%; padding: 12px; border: 2px solid #F1F5F9;
+    border-radius: 12px; outline: none; background: #FBFCFD; transition: 0.3s;
+    font-family: inherit; font-size: 1rem; color: #032F40;
+}
+.input-moderno-f:focus { border-color: #89C2D9; background: white; }
+
+/* Input Lectura (Estilo plano) */
+.input-lectura[readonly], .input-lectura[disabled] {
+    background: transparent; border-color: transparent; border-bottom: 1px dashed #CBD5E1;
+    border-radius: 0; padding-left: 0; color: #032F40;
+}
+
+.grid-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+.grid-terciario { display: grid; grid-template-columns: 1fr 1fr 120px; gap: 1.5rem; }
+
+/* --- BOTONES --- */
+.btn-naranja-chico { 
+    background: #F27405; color: white; padding: 10px 20px; border-radius: 10px; font-family: 'Century Gothic';
+    border: none; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;
+}
+.btn-naranja-chico:hover { font-family: 'Century Gothic'; background: #d66504; transform: translateY(-2px); }
+
+.btn-azul-fuerte { 
+    font-family: 'Century Gothic'; background-color: #032F40; color: white; padding: 12px 25px; border-radius: 12px;
+    border: none; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px;
+}
+.btn-azul-fuerte:hover { background-color: #F27405; transform: translateY(-2px); }
+
+.btn-secundario-naranja-outline {
+    background: transparent; color: #F27405; border: 2px solid #F27405;
+    padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s;
+    display: flex; align-items: center; justify-content: center; font-family: 'Century Gothic';
+}
+.btn-secundario-naranja-outline:hover { background: #F27405; color: white; }
+
+.btn-whatsapp {
+    background-color: #25D366; color: white; padding: 12px 20px; border-radius: 12px;
+    border: none; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-family: 'Century Gothic';
+}
+.btn-whatsapp:hover { background-color: #128C7E; transform: translateY(-2px); }
+
+/* NUEVO: Botón Rojo (Eliminar) */
+.btn-rojo-outline {
+    background: rgb(189, 27, 27); color: #ffffff; 
+    padding: 10px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s;
+    display: flex; align-items: center; gap: 8px; font-family: 'Century Gothic';
+}
+.btn-rojo-outline:hover { background: #EF4444; color: white; }
+
+.subtitulo { margin-bottom: 15px !important; color: #89C2D9; font-size: 0.9rem; }
+.instruccion-naranja { color: #F27405; font-size: 0.85rem; font-weight: bold; margin-bottom: 15px; display: block; }
+.cabecera-flexible { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+
+/* Grid Signos Vitales */
+.grid-vitals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 1rem; }
+.tarjeta-vital {
+    background: #F27405; border: 2px solid #F1F5F9; border-radius: 20px;
+    padding: 1.5rem; text-align: center; transition: 0.3s; color: white;
+}
+.icono-vital { font-size: 2rem; display: block; margin-bottom: 5px; }
+.input-vital {
+    width: 100%; text-align: center; border: none; background: transparent;
+    font-size: 1.5rem; font-weight: bold; color: #ffffff; outline: none;
+    border-bottom: 2px solid transparent;
+}
+.input-vital:not([readonly]) { border-bottom-color: #F27405; background: white; }
+
+/* Timeline */
+.timeline-container { border-left: 3px solid #F1F5F9; padding-left: 2rem; margin-left: 10px; }
+.item-consulta {
+    position: relative; margin-bottom: 2rem;
+    background: #FBFCFD; border: 1px solid #F1F5F9; padding: 1.5rem; border-radius: 20px;
+}
+.item-consulta::before {
+    content: ''; position: absolute; left: -39px; top: 20px;
+    width: 15px; height: 15px; background: #89C2D9; border-radius: 50%; border: 3px solid white;
+}
+
+/* Tabla Vacunas */
+.tabla-admin-header { width: 100%; border-collapse: collapse; }
+.tabla-admin-header td { padding: 12px; border-bottom: 1px solid #F1F5F9; color: #032F40; font-weight: 500; }
+
+.chip-archivo {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #F0F9FF; color: #032F40; padding: 10px 15px;
+    border-radius: 12px; border: 1px solid #BAE6FD; text-decoration: none; font-weight: bold; transition: 0.3s;
+}
+.chip-archivo:hover { background: white; border-color: #F27405; color: #F27405; }
+
+/* Modal */
+.modal-overlay-simple {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(3, 47, 64, 0.7); backdrop-filter: blur(5px);
+    z-index: 2000; display: flex; justify-content: center; align-items: center;
+}
+
+@media (max-width: 1300px) {
+    .interfazVeterinario { flex-direction: column; }
+    .navegacionLateral { width: 100%; height: auto; flex-direction: row; justify-content: space-between; padding: 10px 20px; }
+    .bloqueSuperior { display: none; } /* Simplificación movil */
+    .bloque-titulos { grid-template-columns: 1fr; gap: 15px; text-align: center; }
+    .enlace-volver-panel { justify-self: center; }
+    .botonera-header { flex-direction: column; gap: 15px; }
+    .grupo-botones-izq, .grupo-botones-der { width: 100%; justify-content: center; }
+    .contenedor-perfil-horizontal { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    .grid-vitals { grid-template-columns: 1fr 1fr; }
+    .areaTrabajo { padding: 2rem; }
+}

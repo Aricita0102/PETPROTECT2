@@ -1,0 +1,277 @@
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración Maestra | Protect Pet</title>
+    <link rel="stylesheet" href="/src/css/admin_config_clinica.css">
+</head>
+<body>
+
+    <div class="interfazVeterinario">
+        <aside class="navegacionLateral">
+            <div class="bloqueSuperior">
+                <div class="marca">
+                    <div class="puntoNaranja"></div>
+                    <span>PROTECT PET</span>
+                </div>
+                <nav class="menuInterno">
+                    <a href="#seccionIdentidad" class="itemActivo">Identidad de la Clínica</a>
+                    <a href="#seccionAdminInfo">Información Personal</a>
+                    <a href="#seccionHorarios">Horarios de Atención</a>
+                    <a href="#seccionPersonal">Gestión de Equipo</a>
+                    <a href="#seccionServicios">Catálogo Precios</a>
+                    <a href="#seccionCuenta">Seguridad</a>
+                </nav>
+            </div>
+
+            <div class="perfilMedico">
+                <div class="fotoMini" id="sidebarFotoAdmin"></div>
+                <div class="datosMedico">
+                    <p class="nombre" id="txtNombreAdminSide">Cargando Admin...</p>
+                    <p class="cedula" style="color: #F29F05; font-size: 0.75rem; font-weight: bold; margin-bottom: 5px;">Administrador</p>
+                    <a href="#" class="linkCerrarSesion" id="btnCerrarSesion">Cerrar Sesión</a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="areaTrabajo">
+            <header class="encabezadoDashboard">
+                <div class="titulos-seccion">
+                    <h1>Configura tu clínica y tu cuenta</h1>
+                </div>
+                <a href="PRINCIPAL.html" class="enlace-volver-panel">
+                    <span class="flecha-volver">←</span> Volver al Panel
+                </a>
+            </header>
+
+            <section id="seccionIdentidad" class="tarjetaContenedora">
+                <h3>Identidad Institucional</h3>
+                <p class="subtitulo">Información oficial y ubicación de la clínica.</p>
+                <p class="instruccion-naranja">El logotipo subido aquí aparecerá en todas las recetas y carnets médicos.</p>
+                
+                <div class="contenedor-perfil-horizontal">
+                    <div class="columna-foto">
+                        <div id="logoContenedor" class="marco-foto-ajustada">
+                            <img id="imgLogoPreview" src="" style="display: none; width: 100%; height: 100%; object-fit: contain;">
+                            <span id="textoLogo">Sin Logo</span>
+                        </div>
+                        <input type="file" id="inputLogo" style="display: none;" accept="image/*">
+                        <button type="button" class="btn-naranja-chico" onclick="document.getElementById('inputLogo').click()">Subir Logotipo</button>
+                    </div>
+                    <div class="columna-datos-form">
+                        <div class="campo">
+                            <label>Nombre Comercial de la Clínica</label>
+                            <input type="text" id="nombreClinica" class="input-moderno-f">
+                        </div>
+                        <div class="grid-dual">
+                            <div class="campo">
+                                <label>País de Procedencia</label>
+                                <select id="paisClinica" class="input-moderno-f">
+                                    <option value="">Seleccionando países...</option>
+                                </select>
+                            </div>
+                            <div class="campo">
+                                <label>Dirección Física Completa</label>
+                                <input type="text" id="direccionClinica" class="input-moderno-f">
+                            </div>
+                        </div>
+                        <div class="grid-dual">
+                            <div class="campo">
+                                <label>Correo Electrónico de Contacto</label>
+                                <input type="email" id="correoClinica" class="input-moderno-f" placeholder="ej: contacto@clinica.com">
+                            </div>
+                            <div class="campo">
+                                <label>Sitio Web</label>
+                                <input type="url" id="sitioWebClinica" class="input-moderno-f" placeholder="ej: www.clinica.com">
+                            </div>
+                        </div>
+                        <div class="grid-dual" style="align-items: flex-end;">
+                            <div class="campo">
+                                <label>Código de Vinculación Actual</label>
+                                <p class="instruccion-naranja" style="margin-bottom: 5px;">Comparte este código con tu equipo para que se unan a la clínica.</p>
+                                <div class="caja-codigo-mini"><span id="displayCodigo">Cargando...</span></div>
+                            </div>
+                            <button type="button" id="btnActualizarIdentidad" class="btn-azul-fuerte">Actualizar Identidad</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="seccionAdminInfo" class="tarjetaContenedora">
+                <h3>Información del Administrador</h3>
+                <p class="subtitulo">Tus datos personales dentro de la organización.</p>
+                <p class="instruccion-naranja">Mantén tu información actualizada para contacto administrativo.</p>
+                
+                <div class="contenedor-perfil-horizontal">
+                    <div class="columna-foto">
+                        <div id="perfilAdminContenedor" class="marco-foto-ajustada">
+                            <img id="imgPerfilAdminPreview" src="" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                            <span id="textoPerfilAdmin">Sin Foto</span>
+                        </div>
+                        <input type="file" id="inputFotoPerfil" style="display: none;" accept="image/*">
+                        <button type="button" class="btn-naranja-chico" onclick="document.getElementById('inputFotoPerfil').click()">Subir Foto Perfil</button>
+                    </div>
+                    <div class="columna-datos-form">
+                        <div class="grid-dual">
+                            <div class="campo"><label>Nombre Completo</label><input type="text" id="adjNombreAdmin" class="input-moderno-f"></div>
+                            <div class="campo"><label>Número de Teléfono</label><input type="tel" id="adjTelefono" class="input-moderno-f"></div>
+                        </div>
+                        <div class="campo"><label>Puesto / Cargo</label><input type="text" id="adjCargo" class="input-moderno-f" readonly></div>
+                        <button type="button" id="btnGuardarInfoPersonal" class="btn-azul-fuerte">Guardar Datos Personales</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="seccionHorarios" class="tarjetaContenedora">
+                <div class="cabecera-flexible">
+                    <div>
+                        <h3>Días y Horarios de Atención</h3>
+                        <p class="subtitulo">Gestiona turnos generales o personalizados por día.</p>
+                    </div>
+                    <div class="control-switch-personalizado">
+                        <span class="etiqueta-switch" id="lblModoHorario">Modo: Horario General</span>
+                        <label class="switch-ui">
+                            <input type="checkbox" id="swHorarioPersonalizado">
+                            <span class="slider-round"></span>
+                        </label>
+                    </div>
+                </div>
+                <p class="instruccion-naranja">Al activar "Horario diferenciado", puedes hacer clic en cada día (Lun, Mar...) para asignarle un horario independiente.</p>
+
+                <div class="configurador-horarios-smart">
+                    <div class="campo-dias-creativo">
+                        <label class="etiqueta-pro" id="instruccionHorario">1. Selecciona los días que abre la clínica:</label>
+                        <div class="contenedor-chips-dias" id="contenedorDiasLaborales">
+                            <label class="chip-dia"><input type="checkbox" value="Lunes"><span>Lun</span></label>
+                            <label class="chip-dia"><input type="checkbox" value="Martes"><span>Mar</span></label>
+                            <label class="chip-dia"><input type="checkbox" value="Miércoles"><span>Mié</span></label>
+                            <label class="chip-dia"><input type="checkbox" value="Jueves"><span>Jue</span></label>
+                            <label class="chip-dia"><input type="checkbox" value="Viernes"><span>Vie</span></label>
+                            <label class="chip-dia"><input type="checkbox" value="Sábado"><span>Sáb</span></label>
+                            <label class="chip-dia"><input type="checkbox" value="Domingo"><span>Dom</span></label>
+                        </div>
+                        
+                        <div class="simbologia-horarios" style="display: flex; gap: 20px; margin-top: 15px; padding: 10px; background: #FBFCFD; border-radius: 15px; border: 1px solid #F5F5F5;">
+                            <div class="simbolo-item" style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: bold;">
+                                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #F27405;"></div> Horario General
+                            </div>
+                            <div class="simbolo-item" style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: bold;">
+                                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #032F40;"></div> Horario por Día
+                            </div>
+                            <div class="simbolo-item" style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: bold;">
+                                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #89C2D9;"></div> Día Libre
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="bannerDiaActivo" class="panel-edicion-dia" style="display: block; border: 2px solid #89C2D9; border-radius: 15px; padding: 23px; margin-top: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 style="color: #032F40;">Edición Actual: <span id="txtNombreDiaActivo" style="color: #F27405;">Horario General</span></h4>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="button" class="btn-naranja-chico" id="btnGuardarHorarioDia" style="display:none; margin:0; background-color: #032F40;">Guardar Horario de Día</button>
+                                <button type="button" class="btn-naranja-chico" id="btnCerrarEdicionDia" style="display:none; margin:0;">Borrar y Volver</button>
+                            </div>
+                        </div>
+
+                        <div class="grid-turnos-relojes">
+                            <div class="tarjeta-turno" id="card-Matutino">
+                                <div class="header-turno"><input type="checkbox" class="switch-turno" value="Matutino"> <span>Mañana</span></div>
+                                <div class="cuerpo-relojes">
+                                    <div class="reloj-input"><small>De:</small><input type="time" id="ini-Matutino"></div>
+                                    <div class="reloj-input"><small>A:</small><input type="time" id="fin-Matutino"></div>
+                                </div>
+                            </div>
+                            <div class="tarjeta-turno" id="card-Vespertino">
+                                <div class="header-turno"><input type="checkbox" class="switch-turno" value="Vespertino"> <span>Tarde</span></div>
+                                <div class="cuerpo-relojes">
+                                    <div class="reloj-input"><small>De:</small><input type="time" id="ini-Vespertino"></div>
+                                    <div class="reloj-input"><small>A:</small><input type="time" id="fin-Vespertino"></div>
+                                </div>
+                            </div>
+                            <div class="tarjeta-turno" id="card-Nocturno">
+                                <div class="header-turno"><input type="checkbox" class="switch-turno" value="Nocturno"> <span>Noche</span></div>
+                                <div class="cuerpo-relojes">
+                                    <div class="reloj-input"><small>De:</small><input type="time" id="ini-Nocturno"></div>
+                                    <div class="reloj-input"><small>A:</small><input type="time" id="fin-Nocturno"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-dual" style="margin-top: 25px;">
+                        <div class="campo">
+                            <label>Días de Descanso</label>
+                            <div id="badgeDescansos" class="contenedor-badges-descanso"></div>
+                        </div>
+                        <div class="campo">
+                            <label>Gestión de Días Festivos</label>
+                            <p class="instruccion-naranja" style="font-size: 0.75rem; margin-bottom: 8px;">
+                                <b>Marca los días que la clínica SÍ laborará</b>; los desmarcados bloquearán la agenda automáticamente.
+                            </p>
+                            <div id="listaFestivos" class="lista-festivos-check">
+                                <p style="color: #89C2D9; font-size: 0.8rem; padding: 10px;">Selecciona un país para cargar festivos.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="btnGuardarHorarios" class="btn-azul-fuerte" style="width: 100%; margin-top: 20px;">Guardar Configuración General</button>
+                </div>
+            </section>
+
+            <section id="seccionPersonal" class="tarjetaContenedora">
+                <div class="cabeceraTarjeta">
+                    <h3>Gestión de Personal Médico</h3>
+                    <span class="conteoCitas" id="lblConteoVets">0 Médicos Activos</span>
+                </div>
+                <p class="instruccion-naranja" style="margin-bottom: 15px;">Los cambios realizados aquí se reflejan de inmediato en la agenda de cada médico.</p>
+                <div class="tabla-admin-header"><span>MÉDICO</span><span>CONS.</span><span>TURNO</span><span>ASISTENTES VINCULADOS</span></div>
+                <div id="contenedorGestionPersonal" class="lista-apilada-admin"></div>
+            </section>
+
+            <section id="seccionServicios" class="tarjetaContenedora">
+                <h3>Catálogo de Servicios y Precios</h3>
+                <p class="instruccion-naranja">Define los servicios que ofreces para generar presupuestos y cobros.</p>
+                <div class="formulario-ajuste">
+                    <div class="grid-terciario" style="grid-template-columns: 1fr 1.5fr 0.8fr auto;">
+                        <div class="campo">
+                            <label>Categoría</label>
+                            <select id="inCatServicio" class="input-moderno-f">
+                                <option value="Consulta">Consulta</option>
+                                <option value="Cirugia">Cirugía</option>
+                                <option value="Estética">Estética</option>
+                            </select>
+                        </div>
+                        <div class="campo">
+                            <label>Servicio</label>
+                            <input type="text" id="inNombreServicio" class="input-moderno-f">
+                        </div>
+                        <div class="campo">
+                            <label>Precio ($)</label>
+                            <input type="number" id="inPrecioServicio" class="input-moderno-f">
+                        </div>
+                    </div>
+                    <button id="btnAgregarServicio" class="btn-azul-fuerte" style="width:100%; margin-top:15px;">+ Agregar al Catálogo</button>
+                </div>
+                <div id="listaServiciosConfig" class="contenedor-tags-equipo" style="margin-top: 20px;"></div>
+            </section>
+
+            <section id="seccionCuenta" class="tarjetaContenedora">
+                <h3>Seguridad de la Cuenta</h3>
+                <p class="instruccion-naranja">Usa un correo de emergencia diferente al principal para mayor seguridad.</p>
+                <form id="formSeguridadCuenta" class="formulario-ajuste">
+                    <div class="grid-dual">
+                        <div class="campo"><label>Correo</label><input type="email" id="adjCorreo" class="input-moderno-f" readonly></div>
+                        <div class="campo"><label>Correo Emergencia</label><input type="email" id="adjCorreoEmergencia" class="input-moderno-f"></div>
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-top: 15px;">
+                        <button type="button" id="btnCambiarPass" class="btn-secundario-naranja-outline" style="flex: 1;">Cambiar Contraseña</button>
+                        <button type="button" id="btnEliminarCuenta" class="btn-naranja-chico" style="flex: 1; background: #E53E3E;">Eliminar Cuenta</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="/src/js/admin_config_logica.js"></script>
+</body>
+</html>

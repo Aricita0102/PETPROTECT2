@@ -1,0 +1,603 @@
+/* =========================================
+   VARIABLES GLOBALES (Aesthetic Theme)
+   ========================================= */
+:root {
+    --color-fondo: #011620; /* Primario profundo */
+    --color-accion: #F27405; /* Naranja vibrante */
+    --color-secundario: #89C2D9; /* Azul cielo */
+    --texto-principal: #ffffff;
+    --texto-secundario: rgba(255, 255, 255, 0.6);
+    --cristal-fondo: rgba(255, 255, 255, 0.03);
+    --cristal-borde: rgba(255, 255, 255, 0.08);
+    --cristal-hover: rgba(255, 255, 255, 0.06);
+}
+
+* { 
+    box-sizing: border-box; 
+}
+
+
+body {
+    margin: 0;
+    font-family: 'Century Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--texto-principal);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden; /* Evita scroll horizontal accidental */
+}
+
+/* =========================================
+   LAYOUT PRINCIPAL Y FONDOS ANIMADOS
+   ========================================= */
+.envoltura-onboarding {
+    /* min-height permite que el contenedor crezca si el formulario es muy alto */
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* El padding superior protege al formulario de sobreponerse con la cabecera absoluta */
+    padding: 120px 20px 40px 20px; 
+}
+
+/* Micro-animación de Iluminación Orgánica */
+.fondo-difuminado {
+    position: fixed; /* Fixed asegura que la luz siga ahí aunque hagas scroll */
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, var(--color-accion) 0%, transparent 60%);
+    filter: blur(140px);
+    opacity: 0.15;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: respiracionOrganica 8s ease-in-out infinite alternate;
+    z-index: -1;
+}
+
+@keyframes respiracionOrganica {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.12; }
+    100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.18; }
+}
+
+/* =========================================
+   CABECERA Y LOGOTIPO
+   ========================================= */
+.cabecera-onboarding {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.logotipo-enlace {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.logotipo-enlace:hover { 
+    transform: scale(1.05); 
+}
+
+.logotipo-imagen {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+    transition: filter 0.4s ease;
+}
+
+.logotipo-enlace:hover .logotipo-imagen {
+    filter: brightness(0) invert(1) drop-shadow(0 0 15px rgba(137, 194, 217, 0.6));
+}
+
+.paso-progreso {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.numero-paso {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-accion, #F27405);
+    opacity: 0.5;
+    line-height: 1;
+
+}
+
+.meta-paso p { margin: 0; }
+.meta-paso .etiqueta-paso { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: var(--texto-secundario); }
+.meta-paso .nombre-paso { font-weight: 600; font-size: 1rem; letter-spacing: 1px; }
+
+/* =========================================
+   CONTENEDOR WIZARD (GLASSMORPHISM)
+   ========================================= */
+.contenedor-wizard {
+    width: 100%;
+    max-width: 750px; /* Un poco más amplio para que respire en PC */
+    background: var(--cristal-fondo);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid var(--cristal-borde);
+    border-radius: 30px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    padding: 3.5rem;
+    z-index: 10;
+    margin: auto;
+}
+
+.wizard-viewport {
+    width: 100%;
+    overflow: hidden;
+}
+
+.wizard-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%;
+    align-items: flex-start; /* Evita que las tarjetas cortas se estiren artificialmente */
+}
+
+.wizard-card {
+    min-width: 100%;
+    flex: 0 0 100%;
+    padding: 5px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease;
+    visibility: hidden;
+}
+
+.wizard-card.activa {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+.cabecera-card h2 {
+    font-weight: 300;
+    font-size: 2.2rem;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.5px;
+}
+
+.cabecera-card p {
+    color: var(--texto-secundario);
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+}
+
+/* =========================================
+   FORMULARIOS (Aesthetic Inputs)
+   ========================================= */
+.grid-formularios {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.dos-columnas { grid-column: span 2; }
+
+.campo-grupo label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--texto-secundario);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.input-estetico {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--cristal-borde);
+    border-radius: 12px;
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.input-estetico::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.input-estetico:focus {
+    outline: none;
+    background: rgba(0, 0, 0, 0.4);
+    border-color: var(--color-secundario);
+    box-shadow: 0 0 15px rgba(137, 194, 217, 0.15);
+}
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+/* =========================================
+   ZONAS DE DROP (Imágenes)
+   ========================================= */
+.grid-archivos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.caja-subida label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--texto-secundario);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.zona-drop {
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.zona-drop:hover {
+    border-color: var(--color-secundario);
+    background: rgba(137, 194, 217, 0.05);
+}
+
+.zona-drop img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 10px;
+}
+
+.placeholder-txt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: var(--texto-secundario);
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+}
+
+.zona-drop:hover .placeholder-txt {
+    color: var(--color-secundario);
+}
+
+/* =========================================
+   PÍLDORAS DE HORARIOS (Días)
+   ========================================= */
+.selector-dias-smart {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 35px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid var(--cristal-borde);
+    flex-wrap: wrap; /* En caso de pantallas extra pequeñas */
+}
+
+.dia-pill input { display: none; }
+
+.dia-pill span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--texto-secundario);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dia-pill input:checked + span {
+    background: var(--color-accion);
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(242, 116, 5, 0.4);
+}
+
+/* Rango Maestro */
+.panel-horario-maestro {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.rango-horario {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid var(--cristal-borde);
+}
+
+.caja-hora { flex: 1; }
+.caja-hora label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--texto-secundario);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.hora-input {
+    font-size: 1.2rem;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.separador-rango {
+    color: var(--color-secundario);
+    opacity: 0.5;
+    margin: 0 20px;
+    margin-top: 20px;
+}
+
+.instruccion-sutil {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    text-align: center;
+    font-style: italic;
+}
+
+/* =========================================
+   TARJETAS DE PLAN Y CÓDIGO
+   ========================================= */
+.tarjeta-cristal {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--cristal-borde);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.icono-flotante {
+    background: rgba(137, 194, 217, 0.1);
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tarjeta-cristal h3 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin: 0 0 10px 0;
+}
+
+.tarjeta-cristal p {
+    color: var(--texto-secundario);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.texto-instruccion {
+    color: var(--texto-secundario);
+    margin-bottom: 25px !important;
+}
+
+.caja-codigo-maestra {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-secundario);
+    color: white;
+    font-size: 2.2rem;
+    font-weight: 300;
+    letter-spacing: 6px;
+    padding: 15px 15px 15px 30px;
+    border-radius: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+}
+
+/* =========================================
+   BOTONES Y CONTROLES
+   ========================================= */
+.wizard-navegacion {
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+    padding-top: 25px;
+    border-top: 1px solid var(--cristal-borde);
+}
+
+.espaciador-nav { flex: 1; }
+
+button {
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    border-radius: 100px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border: none;
+}
+
+.btn-fantasma {
+    background: transparent;
+    color: var(--texto-secundario);
+    padding: 14px 20px;
+}
+
+.btn-fantasma:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-luminoso {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.btn-luminoso:hover {
+    background: white;
+    color: var(--color-fondo);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+}
+
+.btn-luminoso-exito {
+    background: var(--color-accion);
+    color: white;
+}
+
+.btn-luminoso-exito:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(242, 116, 5, 0.4);
+    filter: brightness(1.1);
+}
+
+.btn-copiar {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    border-radius: 100px;
+}
+
+.btn-copiar:hover {
+    background: var(--color-secundario);
+    color: var(--color-fondo);
+}
+
+.oculto { display: none !important; }
+
+/* Animación de Procesamiento */
+@keyframes rotar-centro {
+    100% { transform: rotate(360deg); }
+}
+
+.rotar-svg {
+    animation: rotar-centro 2s linear infinite;
+    transform-origin: center;
+}
+
+/* =========================================
+   RESPONSIVIDAD PERFECTA (Móviles y Tablets)
+   ========================================= */
+@media (max-width: 900px) {
+    .contenedor-wizard {
+        padding: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .envoltura-onboarding {
+        padding: 100px 15px 30px 15px; /* Ajuste para header en móvil */
+    }
+
+    .contenedor-wizard {
+        padding: 2rem;
+        width: 100%;
+        border-radius: 20px;
+    }
+    
+    .cabecera-onboarding { 
+        padding: 1.5rem 5%; 
+    }
+
+    .logotipo-imagen {
+        height: 35px; /* Logo más pequeño en móvil */
+    }
+
+    .numero-paso { 
+        font-size: 1.8rem; 
+    }
+    
+    .grid-formularios, .grid-archivos { 
+        grid-template-columns: 1fr; 
+    }
+    .dos-columnas { 
+        grid-column: span 1; 
+    }
+    
+    .selector-dias-smart {
+        padding: 10px;
+        gap: 5px;
+    }
+    
+    .dia-pill span {
+        width: 38px; 
+        height: 38px;
+        font-size: 0.8rem;
+    }
+    
+    .caja-codigo-maestra {
+        flex-direction: column;
+        gap: 15px;
+        font-size: 1.5rem;
+        border-radius: 20px;
+        padding: 20px;
+        letter-spacing: 3px;
+    }
+    
+    .rango-horario {
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+    }
+
+    .separador-rango { 
+        transform: rotate(90deg); 
+        margin: 5px 0; 
+    }
+
+    .wizard-navegacion {
+        flex-direction: column-reverse; /* En móvil, "Continuar" va arriba */
+        gap: 15px;
+    }
+
+    button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-fantasma, .btn-principal, .btn-luminoso-exito {
+        margin: 0; /* Reinicia márgenes en móvil para alinear al centro */
+    }
+}

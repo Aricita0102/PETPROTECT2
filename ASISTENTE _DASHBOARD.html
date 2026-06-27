@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Asistente | Protect Pet</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="/src/css/asis_dashboard_css.css">
+    <style>
+        /* Estilo rápido para el loader inicial */
+        .loader-inicial {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #F5F5F5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #89C2D9;
+            border-top: 4px solid #032F40;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pantallaCarga" class="loader-inicial">
+        <div class="spinner"></div>
+        <p style="color: #032F40; font-weight: bold; font-family: sans-serif;">Cargando Protect Pet...</p>
+    </div>
+
+    <div id="seccionBloqueo" class="pantalla-espera" style="display: none;">
+        <div class="tarjeta-vinculo">
+            <div class="logotipoArea" style="justify-content: center; color: #032F40; margin-bottom: 1.5rem;">
+                <span class="puntoNaranja"></span> PROTECT PET
+            </div>
+            <h2>Cuenta en Revisión</h2>
+            <p style="margin: 1rem 0;">Para activar tus funciones, vincula tu cuenta con el código de tu clínica.</p>
+            
+            <input type="text" id="inputCodigoClinica" placeholder="Código de la clinica" class="inputEstiloAdmin">
+            
+            <button id="btnVincular" class="botonAccionNaranja" style="width: 100%;">Solicitar Activación</button>
+            
+            <button id="btnEditarSolicitud" class="botonAccionGris" style="width: 100%; margin-top: 10px; display: none;">Editar Código Enviado</button>
+            
+            <p id="msgEstatus" style="margin-top: 15px; font-size: 14px; color: #666; font-weight: 500; min-height: 20px;"></p>
+            
+            <a href="#" class="linkCerrar" id="btnCerrarSesionBloqueo" style="display: block; margin-top: 25px; text-align: center; color: #F27405; font-size: 0.9rem; text-decoration: none; font-weight: bold;">Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <div class="contenedorDashboard" id="contenidoPrincipal" style="display: none;">
+        
+        <aside class="menuLateral">
+            <div class="logotipoArea">
+                <span class="puntoNaranja"></span> PROTECT PET
+            </div>
+            
+            <nav class="enlacesMenu">
+                <a href="#" class="activo">
+                    <span></span> Panel Principal
+                </a>
+                <a href="VETERINARIO AGENDA.html">
+                    <span></span> Agenda
+                </a>
+                <a href="VETERINARIO_LISTA_PACIENTES.html">
+                    <span></span> Pacientes
+                </a>
+                <a href="ASISTENTE PAGOS.html">
+                    <span></span> Caja / Pagos
+                </a>
+                <a href="ASISTENTE CONFIGURACION.html">
+                    <span></span> Configuración
+                </a>
+            </nav>
+
+            <div class="perfilMini">
+                <div id="avatarLetras" class="avatar">--</div>
+                <div class="infoAdmin">
+                    <p class="nombreAdmin" id="nombreLateral">Cargando...</p>
+                    <p class="rolAdmin" id="txtRolLateral">ASISTENTE</p>
+                    <a href="#" class="linkCerrar" id="btnCerrarSesion">Cerrar Sesión</a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="areaPrincipal">
+            <header class="cabeceraDashboard">
+                <div class="saludo">
+                    <h1 id="saludoHorario">Hola, Asistente</h1>
+                    <p id="fechaActual">Cargando fecha...</p>
+                </div>
+                
+                <div class="contenedor-buscador">
+                    <span></span>
+                    <input type="text" id="inputBusqueda" placeholder="Buscar paciente, dueño o teléfono..." autocomplete="off">
+                    <div id="resultadosBusqueda" class="dropdown-resultados"></div>
+                </div>
+            </header>
+
+            <section class="barra-acciones">
+                <button onclick="location.href='VETERINARIO AGENDA.html'" class="btn-accion-rapida">
+                    <span class="material-symbols-rounded">calendar_add_on</span> Nueva Cita
+                </button>
+                <button onclick="location.href='ASISTENTE PAGOS.html'" class="btn-accion-rapida naranja">
+                    <span class="material-symbols-rounded">attach_money</span> Cobrar
+                </button>
+                <button class="btn-accion-rapida verde">
+                    <span></span> Nuevo Paciente
+                </button>
+                
+                <button id="btnAlertaEmergencia" class="btn-accion-rapida rojo-urgencia">
+                    <span class="material-symbols-rounded">e911_emergency</span> ALERTA MÉDICA
+                </button>
+            </section>
+
+            <section class="gridAsistente">
+                
+                <div class="tarjetaGestion">
+                    <div class="cabeceraTabla">
+                        <h2>Notificaciones & Pagos</h2>
+                        <span class="badgeAlerta" id="badgeNotificaciones">0 Nuevas</span>
+                    </div>
+                    <div class="lista-visual" id="listaNotificaciones">
+                        <div class="empty-state">
+                            <span class="material-symbols-rounded">notifications_off</span>
+                            <p>No hay notificaciones pendientes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tarjetaGestion">
+                    <div class="cabeceraTabla">
+                        <h2>Sala de Espera (Hoy)</h2>
+                        <span class="badgeAlerta" id="lblEnEspera">0 Pacientes</span>
+                    </div>
+                    <div class="lista-visual" id="listaEnEspera">
+                        <div class="empty-state">
+                            <span class="material-symbols-rounded">chair</span>
+                            <p>La sala de espera está vacía.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="separador-interno"></div>
+                    
+                    <div class="cabeceraTabla">
+                        <h2 style="font-size: 1rem; color: #64748B;">Próximas Citas</h2>
+                        <a href="VETERINARIO AGENDA.html" class="linkVerTodo">Ver Agenda</a>
+                    </div>
+                    <div class="lista-visual" id="listaProximas">
+                        <p class="cargando-txt">Cargando agenda...</p>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="/src/js/asistente_logica.js"></script>
+</body>
+</html>

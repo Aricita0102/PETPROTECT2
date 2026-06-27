@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Entorno | PET PROTECT</title>
+    <link rel="stylesheet" href="/src/css/registro_css.css">
+    <link rel="stylesheet" href="/src/css/onboarding.css">
+</head>
+<body>
+
+    <div class="envoltura-onboarding">
+        <div class="fondo-difuminado"></div>
+
+       <header class="cabecera-onboarding">
+    <a href="/" class="logotipo-enlace" aria-label="Volver al inicio de Protect Pet">
+        <img src="/img/Logo.png" alt="Logo Protect Pet" class="logotipo-imagen">
+    </a>
+     <div class="paso-progreso">
+                <span class="numero-paso">01</span>
+                <div class="meta-paso">
+                    <p class="etiqueta-paso">Inicio del trayecto</p>
+                    <p class="nombre-paso">Crear o unirte</p>
+                </div>
+            </div>
+
+</header>
+
+        <main class="contenedor-portales">
+            <section class="tarjeta-portal" id="portal-administrador">
+                <div class="contenido-portal">
+                    <div class="icono-portal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            <polyline points="9 22 9 12 15 12 15 22"/>
+                        </svg>
+                    </div>
+                    <h2>Fundar Clínica</h2>
+                    <p>Establece los cimientos de tu hospital, gestiona personal y centraliza tu operación médica.</p>
+                    <button class="boton-portal" data-tipo="administrador">Configurar Nueva Clínica</button>
+                </div>
+            </section>
+
+            <div class="divisor-central">
+                <span>O</span>
+            </div>
+
+            <section class="tarjeta-portal" id="portal-colaborador">
+                <div class="contenido-portal">
+                    <div class="icono-portal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
+                    <h2>Unirse a Equipo</h2>
+                    <p>Accede a una clínica existente mediante el código de autorización proporcionado por tu administrador.</p>
+                    <button class="boton-portal contorno" data-tipo="colaborador">Ingresar Código</button>
+                </div>
+            </section>
+        </main>
+
+        <div id="modal-codigo" class="superposicion-modal">
+    <div class="cristal-modal">
+        <button class="boton-cerrar" id="cerrar-modal" aria-label="Cerrar ventana de código">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icono-equis">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+</button>
+        
+        <div id="contenedor-estatus" class="contenedor-estatus oculto">
+            <span class="punto-pulso"></span>
+            <span id="texto-estatus">Solicitud en revisión...</span>
+        </div>
+
+        <h3>Autorización de Acceso</h3>
+        <p id="instruccion-modal">Introduce la clave de invitación (8 caracteres)</p>
+        
+        <div class="contenedor-entrada-codigo">
+            <input type="text" id="entrada-invitacion" maxlength="8" placeholder="________" spellcheck="false">
+            <div class="linea-foco"></div>
+            <div id="icono-bloqueo" class="icono-bloqueo oculto">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+        </div>
+
+        <div class="grupo-acciones-modal">
+            <button id="validar-invitacion" class="botonEnviar">Verificar Identidad</button>
+            <button id="boton-editar-codigo" class="boton-secundario oculto">Editar Código</button>
+        </div>
+        
+        <small id="feedback-codigo" class="ayudaTexto"></small>
+    </div>
+</div>
+
+    <script type="module" src="/src/js/onboarding.js"></script>
+</body>
+</html>

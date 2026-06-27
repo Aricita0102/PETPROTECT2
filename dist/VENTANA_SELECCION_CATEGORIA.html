@@ -1,0 +1,76 @@
+<main id="moduloSeleccionInventario" class="modulo-seleccion-inventario" aria-label="Selección de área de inventario" data-testid="modulo-seleccion-inventario">
+
+  <div class="contenedor-modal-seleccion">
+    
+    <header class="encabezado-seleccion">
+      <button class="boton-icono-circular enlace-nav" aria-label="Volver al dashboard" title="Volver al Dashboard" data-testid="btn-volver-dashboard" data-target="MODULO_VETERINARIO_DASHBOARD">
+        <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
+      </button>
+      
+      <div class="titulos-seleccion">
+        <h2 id="tituloInventario">Seleccione el área de inventario</h2>
+        <p class="texto-ayuda">Elija la clasificación para registrar o consultar stock</p>
+      </div>
+
+      <button class="boton-solido secundario" id="btn-abrir-guia-uso" data-testid="btn-ayuda-inventario" aria-label="Abrir guía de uso del inventario">
+          <span class="material-symbols-rounded" aria-hidden="true">help</span> Guía de uso
+        </button>
+    </header>
+
+    <div class="cuadricula-categorias-inventario" role="navigation" aria-label="Categorías de inventario">
+        <button class="tarjeta-categoria" id="catFarmaciaClinica" style="opacity: 0.6; cursor: not-allowed; position: relative;" disabled>
+          <!-- Badge Próximamente -->
+          <div style="position: absolute; top: -10px; right: -10px; background: var(--naranja); color: white; font-size: 10px; padding: 4px 10px; border-radius: 12px; font-weight: 700; box-shadow: 0 4px 6px rgba(242,116,5,0.3); z-index: 2; border: 2px solid #fff;">PRÓXIMAMENTE</div>
+          
+          <div class="contenedor-icono-categoria">
+            <span class="material-symbols-rounded" aria-hidden="true">vaccines</span>
+            <span class="insignia-alerta-stock oculto" id="alerta-farmacia" aria-live="polite"></span>
+          </div>
+          <span class="nombre-categoria">Farmacia Clínica</span>
+          <span class="descripcion-categoria">Vacunas, anestesias, fraccionados</span>
+        </button>
+     
+      
+      <button class="tarjeta-categoria enlace-nav" id="catTiendaMostrador" data-testid="cat-tienda" data-target="MODULO_INVENTARIO_TIENDA" aria-label="Ir a Tienda y Mostrador">
+        <div class="contenedor-icono-categoria">
+          <span class="material-symbols-rounded" aria-hidden="true">shopping_bag</span>
+        </div>
+        <span class="nombre-categoria">Tienda y Mostrador</span>
+        <span class="descripcion-categoria">Alimento, accesorios, juguetes</span>
+      </button>
+
+        <button class="tarjeta-categoria" id="catInsumosMedicos" style="opacity: 0.6; cursor: not-allowed; position: relative;" disabled>
+          <!-- Badge Próximamente -->
+          <div style="position: absolute; top: -10px; right: -10px; background: var(--naranja); color: white; font-size: 10px; padding: 4px 10px; border-radius: 12px; font-weight: 700; box-shadow: 0 4px 6px rgba(242,116,5,0.3); z-index: 2; border: 2px solid #fff;">PRÓXIMAMENTE</div>
+
+          <div class="contenedor-icono-categoria">
+            <span class="material-symbols-rounded" aria-hidden="true">medical_services</span>
+          </div>
+          <span class="nombre-categoria">Insumos Clínicos</span>
+          <span class="descripcion-categoria">Jeringas, gasas, material qx</span>
+        </button>
+
+      <button class="tarjeta-categoria enlace-nav" id="catDietasPrescripcion" data-testid="cat-dietas" data-target="MODULO_INVENTARIO_DIETAS" aria-label="Ir a Dietas de Prescripción">
+        <div class="contenedor-icono-categoria">
+          <span class="material-symbols-rounded" aria-hidden="true">set_meal</span>
+        </div>
+        <span class="nombre-categoria">Dietas de Prescripción</span>
+        <span class="descripcion-categoria">Alimento de uso veterinario</span>
+      </button>
+
+      <button class="tarjeta-categoria tarjeta-herramienta enlace-nav" id="catCentroImpresion" data-testid="cat-impresion" data-target="MODULO_CENTRO_IMPRESION" aria-label="Ir al Centro de Impresión">
+        <div class="contenedor-icono-categoria">
+          <span class="material-symbols-rounded" aria-hidden="true">print</span>
+        </div>
+        <span class="nombre-categoria">Centro de Impresión</span>
+        <span class="descripcion-categoria">Etiquetas y códigos de barras</span>
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- El modal de guía de uso fue reemplazado por un tour interactivo (driver.js) -->
+
+  <!-- El script ha sido movido a src/js/modulos/modulo_seleccion_categoria.js -->
+</main>

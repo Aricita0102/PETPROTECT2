@@ -1,0 +1,254 @@
+<div class="contenedor-modulo-agenda">
+  <!-- ===== HERO CLINICO ===== -->
+  <header class="hero-clinico no-imprimir">
+    <div class="hero-contenido">
+      <div class="bloque-titulos">
+        <h1 class="titulo-hero">Finanzas Inteligentes</h1>
+        <div style="display: flex; gap: 20px; margin-top: 8px; color: rgba(255, 255, 255, 0.85); font-size: 0.9rem; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <span>Gestión de ingresos, egresos y analíticas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-acciones" style="position:relative;">
+        <button onclick="document.getElementById('dropdown-historial-reportes').style.display = document.getElementById('dropdown-historial-reportes').style.display === 'block' ? 'none' : 'block'" class="boton-secundario" style="border:1px solid rgba(255,255,255,0.3); background:transparent; color:white; padding:10px 16px; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:6px;">
+          <span class="material-symbols-rounded" aria-hidden="true">history</span>
+          <span>Historial de Reportes</span>
+          <span class="material-symbols-rounded" style="font-size:16px;">expand_more</span>
+        </button>
+
+        <div id="dropdown-historial-reportes" style="display:none; position:absolute; top:45px; right:0; background:white; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.1); width:220px; z-index:9999; overflow:hidden; border:1px solid #E4EAF2;">
+          <div style="padding:10px 15px; font-size:11px; font-weight:700; color:#64748B; text-transform:uppercase; border-bottom:1px solid #E4EAF2; background:#F4F7FE;">Selecciona un periodo</div>
+          <div id="lista-meses-historial" style="max-height:200px; overflow-y:auto; display:flex; flex-direction:column;">
+            <!-- Renderizado dinámico de meses -->
+          </div>
+        </div>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== BENTO PRINCIPAL ===== -->
+  <div class="contenedor-bento">
+    <div class="layout">
+
+      <!-- ===== SIDEBAR ===== -->
+      <div class="sidebar">
+
+        <!-- Análisis Inteligente -->
+        <div class="panel">
+          <div class="cal-head">
+            <span class="title">Análisis Inteligente</span>
+            <span class="insignia-cielo" style="font-size:10px;">Actualizado hoy</span>
+          </div>
+          <div class="cuadricula-analisis" style="display:flex; flex-direction:column; gap:12px; margin-top:12px;">
+            <!-- Renderizado dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Top Rankings -->
+        <div class="panel" style="margin-top:20px;">
+          <div class="cal-head" style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="title">Top Servicios</span>
+            <span class="insignia-cielo" style="font-size:10px;">Por ingreso</span>
+          </div>
+          <div class="lista-ranking" id="lista-top-servicios" style="display:flex; flex-direction:column; gap:10px; margin-top:12px;"></div>
+        </div>
+
+        <div class="panel" style="margin-top:20px;">
+          <div class="cal-head" style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="title">Top Productos</span>
+            <span class="insignia-cielo" style="font-size:10px;">Inventario</span>
+          </div>
+          <div class="lista-ranking" id="lista-top-productos" style="display:flex; flex-direction:column; gap:10px; margin-top:12px;"></div>
+        </div>
+
+      </div>
+
+      <!-- ===== MAIN COL ===== -->
+      <div class="main-col">
+
+        <!-- Contenedor general -->
+        <div class="agenda-card" style="padding: 24px;">
+
+          <!-- KPIs -->
+          <div class="resumen-row" style="margin-bottom: 24px;">
+            <div class="resumen-card">
+              <div class="resumen-icon cobalto">
+                <span class="material-symbols-rounded" style="font-variation-settings: 'wght' 300, 'FILL' 0;">attach_money</span>
+              </div>
+              <div><div class="resumen-label">Ingresos del día</div><div class="resumen-value kpi-value">0</div></div>
+            </div>
+            <div class="resumen-card destacada-naranja">
+              <div class="resumen-icon naranja">
+                <span class="material-symbols-rounded" style="font-variation-settings: 'wght' 300, 'FILL' 0;">wallet</span>
+              </div>
+              <div><div class="resumen-label">Ingresos del mes</div><div class="resumen-value kpi-value">0</div><div class="kpi-change"></div></div>
+            </div>
+            <div class="resumen-card">
+              <div class="resumen-icon rojo">
+                <span class="material-symbols-rounded" style="font-variation-settings: 'wght' 300, 'FILL' 0;">south_east</span>
+              </div>
+              <div><div class="resumen-label">Gastos del mes</div><div class="resumen-value kpi-value">0</div><div class="kpi-change"></div></div>
+            </div>
+            <div class="resumen-card">
+              <div class="resumen-icon verde">
+                <span class="material-symbols-rounded" style="font-variation-settings: 'wght' 300, 'FILL' 0;">north_east</span>
+              </div>
+              <div><div class="resumen-label">Utilidad neta</div><div class="resumen-value kpi-value">0</div><div class="kpi-change"></div></div>
+            </div>
+            <div class="resumen-card">
+              <div class="resumen-icon cielo">
+                <span class="material-symbols-rounded" style="font-variation-settings: 'wght' 300, 'FILL' 0;">receipt</span>
+              </div>
+              <div><div class="resumen-label">Ticket promedio</div><div class="resumen-value kpi-value">0</div></div>
+            </div>
+          </div>
+
+          <!-- GRÁFICA PRINCIPAL -->
+          <div class="panel" style="margin-bottom:24px;">
+            <div class="cal-head" style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="title">Tendencia de ingresos</span>
+              <div class="leyenda-grafica" style="display:flex; gap:12px; font-size:12px; color:var(--texto-mut);">
+                <span style="display:flex; align-items:center; gap:4px;"><span class="punto-leyenda fondo-cobalto" style="width:8px; height:8px; border-radius:50%; display:inline-block;"></span>Mes actual</span>
+                <span style="display:flex; align-items:center; gap:4px;"><span class="punto-leyenda fondo-cielo" style="width:8px; height:8px; border-radius:50%; display:inline-block;"></span>Mes anterior</span>
+              </div>
+            </div>
+            <div class="contenedor-lienzo-grafica" style="height:250px; margin-top:16px;">
+              <canvas id="graficaPrincipal"></canvas>
+            </div>
+          </div>
+
+          <!-- DONA Y GASTOS -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px;">
+            <div class="panel">
+              <div class="cal-head">
+                <span class="title">Ingresos por categoría</span>
+              </div>
+              <div class="contenedor-grafica-dona" style="height:220px; display:flex; justify-content:center; margin-top:16px;">
+                <canvas id="graficaDonaCategoria"></canvas>
+              </div>
+            </div>
+
+            <div class="panel" style="display:flex; flex-direction:column; position:relative;">
+              <div class="cal-head" style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="title">Gastos del negocio</span>
+                  <span class="insignia-rojo" id="total-gastos-header" style="font-size:11px; background:#fee2e2; color:#dc2626; padding:2px 6px; border-radius:4px;">$0 total</span>
+                </div>
+                <button class="boton-primario" id="btn-registrar-gasto" onclick="document.getElementById('modal-gasto').style.display='block'" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; display:flex; align-items:center; gap:4px; border:none; cursor:pointer; background:var(--naranja); color:white;">
+                  <span class="material-symbols-rounded" style="font-size: 14px;">add</span> Nuevo
+                </button>
+              </div>
+
+              <!-- Modal Dropdown de Gasto -->
+              <div id="modal-gasto" style="display: none; position: absolute; top: 48px; right: 16px; width: 300px; z-index: 1000; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(3,47,64,0.15); border:1px solid var(--borde);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                  <h3 style="margin: 0; font-size: 14px; font-weight:800; color: var(--cobalto);">Registrar Gasto</h3>
+                  <button id="btn-cerrar-gasto" onclick="document.getElementById('modal-gasto').style.display='none'" style="background: none; border: none; cursor: pointer; color: var(--texto-mut);"><span class="material-symbols-rounded" style="font-size: 18px;">close</span></button>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                  <div>
+                    <label style="font-size: 12px; font-weight: 700; color: var(--texto-mut); display: block; margin-bottom: 4px;">Categoría</label>
+                    <select id="gasto-categoria" style="width: 100%; padding: 10px; border: 1px solid var(--borde); border-radius: 8px; font-size: 13px; color: var(--cobalto); outline:none;">
+                      <option value="Compras de inventario">Compras de inventario</option>
+                      <option value="Renta local">Renta local</option>
+                      <option value="Servicios (luz, agua)">Servicios (luz, agua)</option>
+                      <option value="Equipamiento">Equipamiento</option>
+                      <option value="Nómina">Nómina</option>
+                      <option value="Otros">Otros</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="font-size: 12px; font-weight: 700; color: var(--texto-mut); display: block; margin-bottom: 4px;">Monto ($)</label>
+                    <input type="number" id="gasto-monto" placeholder="Ej. 1500" style="width: 100%; padding: 10px; border: 1px solid var(--borde); border-radius: 8px; font-size: 13px; color: var(--cobalto); outline:none;">
+                  </div>
+                  <div>
+                    <label style="font-size: 12px; font-weight: 700; color: var(--texto-mut); display: block; margin-bottom: 4px;">Notas (Opcional)</label>
+                    <input type="text" id="gasto-notas" placeholder="Ej. Pago CFE" style="width: 100%; padding: 10px; border: 1px solid var(--borde); border-radius: 8px; font-size: 13px; color: var(--cobalto); outline:none;">
+                  </div>
+                  <button id="btn-guardar-gasto" style="background: var(--cobalto); color: white; border: none; border-radius: 8px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 12px;">Guardar Gasto</button>
+                </div>
+              </div>
+              <div class="lista-ranking" id="lista-gastos-negocio" style="display:flex; flex-direction:column; gap:10px; margin-top:16px; flex:1; max-height:160px; overflow-y:auto;">
+              </div>
+              
+              <div style="margin-top:16px; padding-top:16px; border-top:1px dashed var(--borde);">
+                <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--texto-mut); margin-bottom:8px;">
+                  <span>Ingresos totales</span>
+                  <span id="estado-res-ingresos" style="color:var(--verde); font-weight:700;">+ $0</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--texto-mut); margin-bottom:8px;">
+                  <span>Gastos totales</span>
+                  <span id="estado-res-gastos" style="color:var(--rojo); font-weight:700;">- $0</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:800; color:var(--cobalto); margin-top:12px;">
+                  <span>Utilidad neta</span>
+                  <span id="estado-res-utilidad">$0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MOVIMIENTOS Y DETALLE (CONTENEDOR RELATIVO PARA MODAL FLOTANTE) -->
+          <div style="position: relative;">
+
+            <!-- DETALLE PANEL (Oculto por defecto - Estilo Popup Flotante) -->
+            <div id="panel-detalle-movimiento" style="display: none; position: absolute; top: 48px; right: 16px; width: 280px; z-index: 1000; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 10px 25px rgba(3,47,64,0.15); border:1px solid var(--borde);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin: 0; font-size: 14px; font-weight:800; color: var(--cobalto);">Detalle de Transacción</h3>
+                <button onclick="document.getElementById('panel-detalle-movimiento').style.display='none'" style="background: none; border: none; cursor: pointer; color: var(--texto-mut);"><span class="material-symbols-rounded" style="font-size: 18px;">close</span></button>
+              </div>
+              
+              <div id="contenido-detalle-movimiento" style="font-size: 13px; color: var(--cobalto);">
+                <!-- Contenido dinámico inyectado por JS -->
+              </div>
+            </div>
+            
+            <div class="panel" style="width: 100%;">
+              <div class="cal-head" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                <span class="title">Últimos movimientos</span>
+                <div style="display:flex; gap:12px; align-items:center;">
+                  <div style="position:relative;">
+                    <span class="material-symbols-rounded" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:16px; color:var(--texto-mut);">search</span>
+                    <input type="text" id="buscador-gastos" placeholder="Buscar movimientos..." style="padding:6px 12px 6px 32px; border:1px solid var(--borde); border-radius:6px; font-size:12px; outline:none; width:200px; font-family:'Inter', sans-serif;">
+                  </div>
+                  <button id="btn-exportar-excel" style="background:#107c41; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px; font-family:'Inter', sans-serif;">
+                    <span class="material-symbols-rounded" style="font-size:16px;">table_view</span> Exportar Excel
+                  </button>
+                </div>
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="tabla-datos" style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;" id="tabla-ultimos-movimientos">
+                  <thead>
+                    <tr style="border-bottom:1px solid var(--borde); color:var(--texto-mut);">
+                      <th style="padding:10px;">Fecha</th>
+                      <th style="padding:10px;">Cliente</th>
+                      <th style="padding:10px;">Paciente</th>
+                      <th style="padding:10px;">Concepto</th>
+                      <th style="padding:10px;">Método</th>
+                      <th style="padding:10px;">Total</th>
+                      <th style="padding:10px;">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Generado por JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+        </div> <!-- /agenda-card -->
+
+      </div> <!-- /main-col -->
+
+    </div> <!-- /layout -->
+  </div> <!-- /contenedor-bento -->
+</div>
+
+

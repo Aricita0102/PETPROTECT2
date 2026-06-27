@@ -1,0 +1,245 @@
+<!-- ====================================================================
+     OVERLAY Y PANEL: NUEVA ORDEN DE ESTUDIO (Reusando clases de Notificaciones)
+     ==================================================================== -->
+<div class="notif-overlay" id="estudioOverlay" aria-hidden="true"></div>
+
+<aside class="panel-notificaciones" id="panelNuevaOrden" role="dialog" aria-modal="true" aria-label="Nueva Orden de Estudio" style="z-index: 1210;">
+    <!-- Cabecera cobalto -->
+    <div class="notif-header">
+        <div class="notif-header-top">
+            <div>
+                <p style="font-size:0.72rem; color:#89C2D9; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; margin:0 0 6px;">Expediente › Estudios e Imágenes</p>
+                <h2 class="notif-titulo">Nueva Orden de Estudio</h2>
+            </div>
+            <div class="notif-header-acciones">
+                <button type="button" class="notif-btn-icono" id="btnCerrarOrden" title="Cerrar panel" aria-label="Cerrar nueva orden">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </div>
+        </div>
+        <p class="notif-resumen">Define la solicitud</p>
+    </div>
+
+    <!-- Cuerpo con scroll -->
+    <div class="notif-cuerpo" style="padding:24px;">
+        <form id="formNuevaOrden" novalidate style="display:flex; flex-direction:column; gap:16px;">
+
+            <div>
+                <label for="orden_nombre" style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">Nombre del Estudio <span style="color:#F27405;">*</span></label>
+                <input type="text" id="orden_nombre" required placeholder="Ej. Radiografía Coxofemoral (VD y LL)"
+                    style="width:100%; padding:11px 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:14px; font-family:'Montserrat',sans-serif; box-sizing:border-box; outline:none; transition:border-color 0.2s;"
+                    onfocus="this.style.borderColor='#032F40'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+
+            <div>
+                <label for="orden_modalidad" style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">Modalidad <span style="color:#F27405;">*</span></label>
+                <select id="orden_modalidad" required
+                    style="width:100%; padding:11px 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:14px; font-family:'Montserrat',sans-serif; box-sizing:border-box; outline:none; background:#fff; transition:border-color 0.2s;"
+                    onfocus="this.style.borderColor='#032F40'" onblur="this.style.borderColor='#e2e8f0'">
+                    <option value="" disabled selected>Seleccione la modalidad...</option>
+                    <option value="Radiografía">Radiografía</option>
+                    <option value="Ultrasonido">Ultrasonido</option>
+                    <option value="Resonancia Magnética">Resonancia Magnética</option>
+                    <option value="Tomografía (TAC)">Tomografía (TAC)</option>
+                    <option value="Endoscopia">Endoscopia</option>
+                    <option value="Laboratorio">Laboratorio</option>
+                    <option value="Citología">Citología</option>
+                    <option value="Histopatología">Histopatología</option>
+                    <option value="Electrocardiograma">Electrocardiograma</option>
+                    <option value="Ecocardiograma">Ecocardiograma</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                <div>
+                    <label for="orden_fecha" style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">Fecha <span style="color:#F27405;">*</span></label>
+                    <input type="date" id="orden_fecha" required
+                        style="width:100%; padding:11px 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:14px; font-family:'Montserrat',sans-serif; box-sizing:border-box; outline:none; transition:border-color 0.2s;"
+                        onfocus="this.style.borderColor='#032F40'" onblur="this.style.borderColor='#e2e8f0'">
+                </div>
+                <div>
+                    <label for="orden_hora" style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">Hora</label>
+                    <input type="time" id="orden_hora"
+                        style="width:100%; padding:11px 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:14px; font-family:'Montserrat',sans-serif; box-sizing:border-box; outline:none; transition:border-color 0.2s;"
+                        onfocus="this.style.borderColor='#032F40'" onblur="this.style.borderColor='#e2e8f0'">
+                </div>
+            </div>
+
+            <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:9px;">Prioridad</label>
+                <div style="display:flex; gap:10px;">
+                    <label id="lblNormal" style="flex:1; display:flex; align-items:center; gap:8px; padding:10px 14px; border:1.5px solid #032F40; border-radius:10px; cursor:pointer; font-size:13px; font-weight:600; color:#032F40; background:#f0f7fa;">
+                        <input type="radio" name="orden_prioridad" id="orden_prioridad_normal" value="Normal" style="accent-color:#032F40;" checked> Normal
+                    </label>
+                    <label id="lblUrgente" style="flex:1; display:flex; align-items:center; gap:8px; padding:10px 14px; border:1.5px solid #e2e8f0; border-radius:10px; cursor:pointer; font-size:13px; font-weight:600; color:#64748b;">
+                        <input type="radio" name="orden_prioridad" id="orden_prioridad_urgente" value="Urgente" style="accent-color:#ef4444;"> Urgente
+                    </label>
+                </div>
+            </div>
+
+            <div style="border-top:1px solid #f1f5f9; margin:4px 0;"></div>
+
+            <div>
+                <label for="orden_solicitante" style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">Médico Solicitante</label>
+                <input type="text" id="orden_solicitante" placeholder="MVZ. García López"
+                    style="width:100%; padding:11px 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:14px; font-family:'Montserrat',sans-serif; box-sizing:border-box; outline:none; transition:border-color 0.2s;"
+                    onfocus="this.style.borderColor='#032F40'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+
+            <div>
+                <label for="orden_laboratorio" style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">Centro / Laboratorio</label>
+                <input type="text" id="orden_laboratorio" placeholder="Laboratorios Vet Sur"
+                    style="width:100%; padding:11px 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:14px; font-family:'Montserrat',sans-serif; box-sizing:border-box; outline:none; transition:border-color 0.2s;"
+                    onfocus="this.style.borderColor='#032F40'" onblur="this.style.borderColor='#e2e8f0'">
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Pie -->
+    <div class="notif-footer">
+        <div></div>
+        <div style="display:flex; gap:10px;">
+            <button type="button" class="notif-footer-btn secundario" id="btnCancelarOrden">Cancelar</button>
+            <button type="button" class="notif-footer-btn primario" id="btnCrearOrden" style="background:#F27405; display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-rounded" style="font-size:16px;">task_alt</span> Crear Orden
+            </button>
+        </div>
+    </div>
+</aside>
+
+<!-- ====================================================================
+     MODAL 3: SUBIDA DE ARCHIVOS (centrado, estilo Drive/Teams)
+     ==================================================================== -->
+<style>
+    /* Estilos para el Dropzone */
+    .dropzone-premium {
+        border: 2px dashed #cbd5e1; 
+        border-radius: 16px;
+        padding: 40px 24px; text-align: center;
+        background: #f8fafc; cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        flex: 1;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    }
+    .dropzone-premium:hover {
+        border-color: #89C2D9;
+        background: #f0f7fa;
+        transform: translateY(-2px);
+    }
+    .dropzone-premium .dz-icon {
+        font-size: 56px; 
+        color: #94a3b8;
+        transition: color 0.3s ease;
+    }
+    .dropzone-premium:hover .dz-icon {
+        color: #032F40;
+    }
+    /* Cards de Info */
+    .info-card-bento {
+        background: #fff;
+        border-radius: 10px;
+        padding: 10px 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        margin-bottom: 10px;
+        border: 1px solid #f1f5f9;
+    }
+    .info-card-bento .l { font-size: 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin: 0 0 4px; letter-spacing: 0.5px; }
+    .info-card-bento .v { font-size: 13px; font-weight: 700; color: #032F40; margin: 0; }
+</style>
+
+<div id="modalSubidaArchivos" role="dialog" aria-modal="true" aria-label="Adjuntar archivos al estudio" style="
+    display:none; position:fixed; inset:0; z-index:1400;
+    background:rgba(3,47,64,0.6); backdrop-filter: blur(4px);
+    align-items:center; justify-content:center;
+">
+    <div style="
+        background:#fff;
+        border-radius:24px;
+        box-shadow:0 24px 60px rgba(0,0,0,0.15);
+        width:min(880px,95vw); max-height:90vh;
+        display:flex; flex-direction:column;
+        overflow:hidden;
+        font-family:'Montserrat',sans-serif;
+    ">
+        <!-- Cabecera del modal drive -->
+        <div style="padding:20px 28px; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+            <div style="display:flex; align-items:center; gap:14px;">
+                <div style="width:42px; height:42px; background: linear-gradient(135deg, #f0f7fa, #e0f2fe); border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.5);">
+                    <span class="material-symbols-rounded" style="font-size:24px; color:#032F40;">cloud_upload</span>
+                </div>
+                <div>
+                    <h3 style="margin:0 0 4px 0; font-size:18px; font-weight:800; color:#032F40; letter-spacing:-0.3px;">Adjuntar Archivos</h3>
+                    <div style="display:inline-block; background:#032F40; color:#fff; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:600; letter-spacing:0.3px;" id="drive-nombre-estudio">ESTUDIO SELECCIONADO</div>
+                </div>
+            </div>
+            <button type="button" id="btnCerrarDrive" style="background:#f1f5f9; border:none; border-radius:10px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748b; transition:all 0.2s;">
+                <span class="material-symbols-rounded" style="font-size:20px;">close</span>
+            </button>
+        </div>
+
+        <!-- Cuerpo en dos columnas: zona drop | info estudio -->
+        <div style="display:flex; flex:1; overflow:hidden; min-height:380px;">
+
+            <!-- Columna izquierda: Drag & Drop -->
+            <div style="flex:1; padding:28px; display:flex; flex-direction:column; gap:20px; background:#fff;">
+                <div id="dropzoneArchivos" class="dropzone-premium">
+                    <span class="material-symbols-rounded dz-icon">drive_folder_upload</span>
+                    <p style="font-size:16px; font-weight:700; color:#032F40; margin:0;">Arrastra y suelta tus archivos aquí</p>
+                    <p style="font-size:13px; color:#64748b; margin:0;">Formatos soportados: Imágenes, DICOM, PDF, Videos</p>
+                    <button type="button" id="btnExplorarArchivos" style="margin-top:12px; padding:10px 24px; border:none; border-radius:10px; background:#f0f7fa; color:#032F40; font-size:13px; font-weight:700; cursor:pointer; font-family:'Montserrat',sans-serif; transition: background 0.2s;">
+                        Explorar archivos manualmente
+                    </button>
+                    <input type="file" id="inputArchivosDrive" multiple accept=".jpg,.jpeg,.png,.tiff,.dcm,.pdf,.doc,.docx,.mp4,.avi,.mov,.zip" style="display:none;">
+                </div>
+
+                <!-- Lista de archivos seleccionados -->
+                <div id="drive-lista-seleccionados" style="display:flex; flex-direction:column; gap:8px; max-height:180px; overflow-y:auto; padding-right:8px;">
+                </div>
+            </div>
+
+            <!-- Columna derecha: Info del estudio (Bento Layout) -->
+            <div style="width:260px; flex-shrink:0; padding:28px 24px; background:#f8fafc; display:flex; flex-direction:column; gap:0; border-left:1px solid #f1f5f9;">
+                <p style="font-size:11px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:0.8px; margin:0 0 16px; display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-rounded" style="font-size:16px; color:#89C2D9;">info</span>
+                    Resumen del Estudio
+                </p>
+
+                <div class="info-card-bento">
+                    <p class="l">Nombre</p>
+                    <p class="v" id="drive-info-nombre">—</p>
+                </div>
+                <div class="info-card-bento">
+                    <p class="l">Tipo de Estudio</p>
+                    <p class="v" id="drive-info-tipo" style="color:#64748b; font-weight:600;">—</p>
+                </div>
+                <div class="info-card-bento">
+                    <p class="l">Fecha Solicitada</p>
+                    <p class="v" id="drive-info-fecha" style="color:#64748b; font-weight:600;">—</p>
+                </div>
+                <div class="info-card-bento" style="display:flex; gap:10px;">
+                    <div style="flex:1;">
+                        <p class="l">Laboratorio</p>
+                        <p class="v" id="drive-info-lab" style="color:#64748b; font-weight:600; font-size:12px;">—</p>
+                    </div>
+                    <div style="width:1px; background:#f1f5f9; margin:4px 0;"></div>
+                    <div style="flex:1;">
+                        <p class="l">Médico</p>
+                        <p class="v" id="drive-info-medico" style="color:#64748b; font-weight:600; font-size:12px;">—</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie del modal drive -->
+        <div style="padding:18px 28px; background:#fff; border-top:1px solid #f1f5f9; display:flex; justify-content:flex-end; gap:12px; flex-shrink:0;">
+            <button type="button" id="btnCancelarDrive" style="padding:10px 24px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; color:#64748b; font-size:13px; font-weight:700; cursor:pointer; font-family:'Montserrat',sans-serif; transition:all 0.2s;">
+                Cancelar
+            </button>
+            <button type="button" id="btnSubirArchivos" style="padding:10px 28px; border:none; border-radius:12px; background:linear-gradient(135deg, #F27405, #e06a04); box-shadow: 0 4px 12px rgba(242,116,5,0.25); color:#fff; font-size:13px; font-weight:700; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; gap:8px; transition:transform 0.2s;">
+                <span class="material-symbols-rounded" style="font-size:18px;">cloud_upload</span> Subir y Guardar
+            </button>
+        </div>
+    </div>
+</div>

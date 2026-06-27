@@ -1,0 +1,281 @@
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expediente Médico | Protect Pet</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="/src/css/veteri_expedi_mascota.css">
+</head>
+<body>
+
+    <div class="interfazVeterinario">
+        
+        <aside class="navegacionLateral">
+            <div class="bloqueSuperior">
+                <div class="marca">
+                    <div class="puntoNaranja"></div>
+                    <span>PROTECT PET</span>
+                </div>
+                
+                <nav class="menuInterno">
+                    <p class="titulo-menu-lateral">ÍNDICE DEL PACIENTE</p>
+                    <a href="#seccionResumen" class="itemActivo"><span class="material-symbols-rounded"></span> Resumen</a>
+                    <a href="#seccionPropietario"><span class="material-symbols-rounded"></span> Propietario</a>
+                    <a href="#seccionClinica"><span class="material-symbols-rounded"></span> Historia Clínica</a>
+                    <a href="#seccionVacunas"><span class="material-symbols-rounded"></span> Vacunación</a>
+                    <a href="#seccionEstudios"><span class="material-symbols-rounded"></span> Archivos</a>
+                </nav>
+            </div>
+
+            <div class="perfilMedico">
+                <div class="fotoMini" id="sidebarFotoVet"></div> 
+                <div class="datosMedico">
+                    <p class="nombre" id="txtUsuarioActual">Cargando...</p>
+                    <p class="cedula" id="txtRolUsuario">...</p>
+                    <button id="btnCerrarSesion" class="btn-logout-link">Cerrar Sesión</button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="areaTrabajo">
+            
+            <header class="encabezadoDashboard">
+                
+                <div class="top-header-row">
+                    <a href="VETERINARIO_LISTA_PACIENTES.html" class="enlace-volver-panel">
+                        <span class="material-symbols-rounded">arrow_back</span> Volver
+                    </a>
+
+                    <div class="titulo-centrado">
+                        <span class="badge-expediente">EXPEDIENTE #<span id="txtIdExpediente">...</span></span>
+                        <h1 id="txtNombrePacienteHeader">Cargando...</h1>
+                    </div>
+
+                
+                </div>
+
+                <div class="botonera-header">
+                    <div class="grupo-botones-izq">
+                        <button class="btn-whatsapp" id="btnWhatsapp" title="Contactar por WhatsApp">
+                            <span class="material-symbols-rounded"></span> WhatsApp
+                        </button>
+                        <button class="btn-secundario-naranja-outline" id="btnImprimirExpediente" title="Imprimir Expediente">
+                            <span class="material-symbols-rounded">print</span>
+                        </button>
+                        <button class="btn-azul-fuerte" id="btnAccionPrincipal">
+                            <span class="material-symbols-rounded">edit_note</span> Habilitar Edición
+                        </button>
+                    </div>
+
+                    <div class="grupo-botones-der">
+                        <button class="btn-rojo-outline" id="btnEliminarExpediente" title="Eliminar este expediente permanentemente">
+                            <span class="material-symbols-rounded"></span> Eliminar
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <section id="seccionResumen" class="tarjetaContenedora">
+                <h3>Identidad del Paciente</h3>
+                <p class="subtitulo">Datos generales y características físicas.</p>
+
+                <div class="contenedor-perfil-horizontal">
+                    <div class="columna-foto">
+                        <div class="marco-foto-ajustada" id="imgFotoPaciente"></div>
+                        <input type="file" id="inputFotoEdit" style="display: none;" accept="image/*">
+                        <button type="button" class="btn-naranja-chico" id="btnCambiarFoto" style="display: none; width: 100%; margin-top: 10px;">
+                            <span class="material-symbols-rounded" style="margin-right:5px; font-size:18px;">photo_camera</span> Cambiar
+                        </button>
+                    </div>
+
+                    <div class="columna-datos-form">
+                        <div class="grid-dual">
+                            <div class="campo">
+                                <label>Nombre</label>
+                                <input type="text" id="inNombre" class="input-moderno-f input-lectura" readonly>
+                            </div>
+                            <div class="campo">
+                                <label>Especie</label>
+                                <select id="inEspecie" class="input-moderno-f input-lectura" disabled>
+                                    <option value="Canino">Canino</option>
+                                    <option value="Felino">Felino</option>
+                                    <option value="Ave">Ave</option>
+                                    <option value="Roedor">Roedor</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid-terciario">
+                            <div class="campo">
+                                <label>Raza</label>
+                                <input type="text" id="inRaza" class="input-moderno-f input-lectura" readonly>
+                            </div>
+                            <div class="campo">
+                                <label>Género</label>
+                                <select id="inSexo" class="input-moderno-f input-lectura" disabled>
+                                    <option value="Macho">Macho</option>
+                                    <option value="Hembra">Hembra</option>
+                                </select>
+                            </div>
+                            <div class="campo">
+                                <label>Edad</label>
+                                <input type="text" id="inEdad" class="input-moderno-f input-lectura" readonly>
+                            </div>
+                        </div>
+                        <div class="campo" style="margin-top: 15px;">
+                            <label>Color / Señas Particulares</label>
+                            <input type="text" id="inColor" class="input-moderno-f input-lectura" readonly>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="seccionPropietario" class="tarjetaContenedora">
+                <h3>Información del Propietario</h3>
+                <p class="instruccion-naranja">Contacto principal y de emergencia.</p>
+                
+                <div class="grid-dual">
+                    <div class="campo">
+                        <label>Nombre del Dueño</label>
+                        <input type="text" id="inPropNombre" class="input-moderno-f input-lectura" readonly>
+                    </div>
+                    <div class="campo">
+                        <label>Teléfono Celular</label>
+                        <input type="tel" id="inPropCelular" class="input-moderno-f input-lectura" readonly>
+                    </div>
+                </div>
+                <div class="grid-dual">
+                    <div class="campo">
+                        <label>Correo Electrónico</label>
+                        <input type="email" id="inPropEmail" class="input-moderno-f input-lectura" readonly>
+                    </div>
+                    <div class="campo">
+                        <label>Dirección</label>
+                        <input type="text" id="inPropDireccion" class="input-moderno-f input-lectura" readonly>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 20px; background: #FFF5F5; border-radius: 15px; border: 1px solid #FED7D7;">
+                    <h4 style="color: #E53E3E; margin-bottom: 10px; display:flex; align-items:center; gap:5px;">
+                        <span class="material-symbols-rounded">emergency_home</span> Contacto de Emergencia
+                    </h4>
+                    <div class="grid-dual" style="margin-bottom: 0;">
+                        <input type="text" id="inEmergenciaRef" placeholder="Nombre Referencia" class="input-moderno-f input-lectura" readonly style="border-color: #FED7D7;">
+                        <input type="tel" id="inEmergenciaTel" placeholder="Teléfono Emergencia" class="input-moderno-f input-lectura" readonly style="border-color: #FED7D7;">
+                    </div>
+                </div>
+            </section>
+
+            <section id="seccionClinica" class="tarjetaContenedora">
+                <h3>Historia y Signos Vitales</h3>
+                <p class="subtitulo">Registro base del estado físico.</p>
+
+                <div class="grid-vitals">
+                    <div class="tarjeta-vital">
+                        <span class="icono-vital"></span>
+                        <label>Peso (kg)</label>
+                        <input type="number" step="0.1" id="inPeso" class="input-vital input-lectura" readonly>
+                    </div>
+                    <div class="tarjeta-vital">
+                        <span class="icono-vital"></span>
+                        <label>Temp (°C)</label>
+                        <input type="number" step="0.1" id="inTemp" class="input-vital input-lectura" readonly>
+                    </div>
+                    <div class="tarjeta-vital">
+                        <span class="icono-vital"></span>
+                        <label>FC (lpm)</label>
+                        <input type="number" id="inFC" class="input-vital input-lectura" readonly>
+                    </div>
+                    <div class="tarjeta-vital">
+                        <span class="icono-vital"></span>
+                        <label>FR (rpm)</label>
+                        <input type="number" id="inFR" class="input-vital input-lectura" readonly>
+                    </div>
+                </div>
+
+                <div class="campo" style="margin-top: 20px;">
+                    <label>Alergias Conocidas</label>
+                    <input type="text" id="inAlergias" class="input-moderno-f input-lectura" readonly style="color: #E53E3E; font-weight: bold;">
+                </div>
+                <div class="campo" style="margin-top: 15px;">
+                    <label>Notas de Manejo (Comportamiento)</label>
+                    <textarea id="inNotasManejo" class="input-moderno-f input-lectura" readonly rows="3" style="resize: none;"></textarea>
+                </div>
+            </section>
+
+            <section id="seccionConsultas" class="tarjetaContenedora">
+                <div class="cabecera-flexible">
+                    <h3>Historial de Consultas</h3>
+                    <button class="btn-naranja-chico" onclick="window.location.href='VETERINARIO_CONSULTA.html?idMascota='+new URLSearchParams(window.location.search).get('id')">
+                        + Nueva Consulta
+                    </button>
+                </div>
+                <div id="timelineConsultas" class="timeline-container">
+                    <p style="color: #89C2D9; font-style: italic;">Cargando historial...</p>
+                </div>
+            </section>
+
+            <div class="grid-dual">
+                <section id="seccionVacunas" class="tarjetaContenedora">
+                    <div class="cabecera-flexible">
+                        <h3>Vacunas</h3>
+                        <button id="btnAgregarVacuna" class="btn-naranja-chico" style="margin:0;">+ Nueva</button>
+                    </div>
+                    <div class="tabla-simple-container">
+                        <table class="tabla-admin-header">
+                            <tbody id="tablaVacunasBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="seccionEstudios" class="tarjetaContenedora">
+                    <div class="cabecera-flexible">
+                        <h3>Estudios PDF</h3>
+                        <button id="btnSubirEstudio" class="btn-naranja-chico" style="margin:0;">+ Subir</button>
+                    </div>
+                    <div id="gridEstudios" class="contenedor-tags-equipo" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+                </section>
+            </div>
+
+            <div style="height: 50px;"></div>
+        </main>
+    </div>
+
+    <div id="modalSubidaExpress" class="modal-overlay-simple" style="display: none;">
+        <div class="modal-content-simple tarjetaContenedora" style="width: 400px; padding: 2rem; margin: auto;">
+            <h3>Subir Estudio</h3>
+            <div class="campo"><label>Nombre del Archivo</label><input type="text" id="inNombreEstudio" class="input-moderno-f"></div>
+            <div class="campo"><input type="file" id="inFileEstudio" class="input-moderno-f"></div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button id="btnCancelarSubida" class="btn-secundario-naranja-outline">Cancelar</button>
+                <button id="btnConfirmarSubida" class="btn-azul-fuerte">Subir</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalVacunaExpress" class="modal-overlay-simple" style="display: none;">
+        <div class="modal-content-simple tarjetaContenedora" style="width: 400px; padding: 2rem; margin: auto;">
+            <h3>Registrar Vacuna</h3>
+            <div class="campo"><label>Nombre</label><input type="text" id="inNombreVacuna" class="input-moderno-f"></div>
+            <div class="campo"><label>Fecha</label><input type="date" id="inFechaVacuna" class="input-moderno-f"></div>
+            <div class="campo"><label>Refuerzo</label><input type="date" id="inRefuerzoVacuna" class="input-moderno-f"></div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button id="btnCancelarVacuna" class="btn-secundario-naranja-outline">Cancelar</button>
+                <button id="btnConfirmarVacuna" class="btn-azul-fuerte">Guardar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modalEmergenciaOverlay" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(220,38,38,0.95); z-index:9999; justify-content:center; align-items:center;">
+        <div class="tarjetaContenedora" style="text-align: center; border: 5px solid #ff4d4d;">
+            <span style="font-size: 4rem;">🚨</span>
+            <h1 style="color: #E53E3E; font-size: 2.5rem; margin: 10px 0;">¡EMERGENCIA MÉDICA!</h1>
+            <button id="btnEntendidoEmergencia" class="btn-azul-fuerte" style="background: #E53E3E; border: none; width: 100%;">VOY EN CAMINO</button>
+        </div>
+    </div>
+    <audio id="audioAlarma" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+    <script type="module" src="/src/js/veterinario_expediente_logica.js"></script>
+</body>
+</html>

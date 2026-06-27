@@ -1,0 +1,337 @@
+/* ==========================================================================
+   CONFIGURACIÓN DE FUENTE Y VARIABLES
+   ========================================================================== */
+@font-face {
+    font-family: 'Century Gothic';
+    src: local('Century Gothic');
+}
+
+:root {
+    --azul-cobalto: #032F40;
+    --azul-cielo: #89C2D9;
+    --blanco-gris: #F5F5F5;
+    --naranja: #F29F05;
+    --naranja-hover: #d68b04;
+    --sombra-suave: 0 20px 50px rgba(3, 47, 64, 0.15);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Century Gothic', sans-serif;
+    background-color: var(--blanco-gris);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--azul-cobalto);
+    padding: 20px;
+    font-size: 16px; 
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================================== */
+.contenedorLogin {
+    display: flex;
+    width: 100%;
+    max-width: 1100px;
+    min-height: 600px;
+    background-color: white;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: var(--sombra-suave);
+    position: relative; /* Clave para la versión móvil */
+}
+
+/* ==========================================================================
+   SECCIÓN DE VIDEO (IZQUIERDA)
+   ========================================================================== */
+.seccionVideo {
+    flex: 1.2;
+    background-color: var(--azul-cobalto);
+    position: relative;
+    overflow: hidden;
+}
+
+.videoFondo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.mascaraVideo {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(3, 47, 64, 0.2), rgba(3, 47, 64, 0.85));
+    display: flex;
+    align-items: flex-end;
+    padding: 3rem;
+    z-index: 1;
+}
+
+.textoVideo {
+    color: white;
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    font-weight: bold;
+    line-height: 1.1;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* ==========================================================================
+   SECCIÓN DE FORMULARIO (DERECHA)
+   ========================================================================== */
+.seccionFormulario {
+    flex: 0.8;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: white;
+    z-index: 2;
+}
+
+/* Limitador interno para que no se estire de más */
+.envolturaFormulario {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.logoLogin {
+    height: 80px; 
+    width: auto;
+    display: block;
+    margin: 0 auto 2rem auto;
+}
+
+.encabezadoLogin {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.encabezadoLogin h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: var(--azul-cobalto);
+}
+
+.encabezadoLogin p {
+    color: #5a7d8c; 
+    font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   INPUTS Y CONTROLES
+   ========================================================================== */
+.grupoInput {
+    margin-bottom: 1.5rem;
+}
+
+.cabeceraPassword {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.grupoInput label {
+    font-weight: bold;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.linkOlvido {
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--naranja); 
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.linkOlvido:hover { color: var(--naranja-hover); }
+
+/* Contenedor relativo para el botón de ver contraseña */
+.contenedorPassword {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.grupoInput input {
+    width: 100%;
+    padding: 1rem; 
+    border: 2px solid #edf2f4;
+    border-radius: 12px;
+    font-family: 'Century Gothic', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+    background-color: #fafbfc;
+}
+
+/* Ajuste específico para que el texto no se meta debajo del ojito */
+#passLogin {
+    padding-right: 3rem; 
+}
+
+.grupoInput input:focus {
+    border-color: var(--azul-cielo);
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(137, 194, 217, 0.15);
+}
+
+/* Botón Revelar Contraseña */
+.btnVerPassword {
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+
+.btnVerPassword:hover { opacity: 1; }
+
+/* ==========================================================================
+   BOTONES
+   ========================================================================== */
+.botonLogin {
+    width: 100%;
+    padding: 1.1rem;
+    background-color: var(--azul-cobalto);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Century Gothic', sans-serif;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s, box-shadow 0.3s;
+    margin-top: 0.5rem;
+}
+
+.botonLogin:hover {
+    background-color: #054a63;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(3, 47, 64, 0.2);
+}
+
+.botonLogin:active { transform: translateY(0); }
+
+.divisor {
+    text-align: center;
+    margin: 1.8rem 0;
+    position: relative;
+}
+
+.divisor::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #edf2f4;
+    z-index: 1;
+}
+
+.divisor span {
+    background-color: white; /* Hereda el color del fondo */
+    padding: 0 1rem;
+    font-size: 0.85rem;
+    color: #8da2ad;
+    position: relative;
+    z-index: 2;
+}
+
+.botonGoogle {
+    width: 100%;
+    padding: 0.9rem;
+    background-color: white;
+    border: 2px solid #edf2f4;
+    border-radius: 12px;
+    font-family: 'Century Gothic', sans-serif;
+    font-weight: bold;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.botonGoogle:hover { background-color: #f8f9fa; }
+.botonGoogle img { width: 22px; }
+
+/* ==========================================================================
+   FOOTER LOGIN
+   ========================================================================== */
+.pieLogin {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.pieLogin p { font-size: 0.95rem; }
+
+.linkRegistro {
+    color: var(--naranja); 
+    text-decoration: none;
+    font-weight: bold;
+}
+.linkRegistro:hover { text-decoration: underline; }
+
+.selloSeguridad {
+    margin-top: 1.5rem;
+    color: #8da2ad;
+    font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   RESPONSIVIDAD: METAMORFOSIS GLASSMORPHISM (MÓVILES)
+   ========================================================================== */
+@media (max-width: 900px) {
+    .contenedorLogin {
+        flex-direction: column;
+        border-radius: 20px;
+        min-height: auto; /* Libera el límite de altura */
+    }
+
+    /* El video se vuelve el fondo maestro de toda la tarjeta */
+    .seccionVideo {
+        position: absolute;
+        inset: 0; /* Cubre todo: top, right, bottom, left en 0 */
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    /* Ocultamos el texto del video para que no compita con el formulario */
+    .textoVideo { display: none; }
+
+    /* El formulario pasa de ser sólido a cristal translúcido */
+    .seccionFormulario {
+        background-color: rgba(255, 255, 255, 0.85); /* Blanco translúcido */
+        backdrop-filter: blur(15px); /* Desenfoque tipo Apple */
+        -webkit-backdrop-filter: blur(15px); /* Soporte vital para Safari/iOS */
+        padding: 2.5rem 1.5rem;
+    }
+
+    /* Ajuste para que el texto "o continúa con" herede el cristal y no se vea un parche blanco */
+    .divisor span {
+        background-color: transparent; 
+    }
+}

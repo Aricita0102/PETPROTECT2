@@ -1,0 +1,876 @@
+﻿/**
+ * PETPROTECT â€” MÃ³dulo Agenda Veterinaria
+ * Optimizado para un solo veterinario. Vista diaria como lista cronolÃ³gica.
+ * Incluye: estados de cita, iniciar consulta, finalizar, Realtime, limpieza.
+ */
+
+import { conexionSupabase } from '../../infraestructura/conexion.js';
+import { obtenerSesionActiva } from '../../infraestructura/sesion_store.js';
+import { alertaCustom, confirmacionCustom } from '../../utilidades/ui_alertas.js';
+
+// â”€â”€â”€ Exports requeridos por principal_v2.js â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+export { inicializarAgenda as inicializarModuloAgenda, limpiarModuloAgenda };
+
+// â”€â”€â”€ Estado global del mÃ³dulo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+let sucursalId       = null;
+let organizacionId   = null;
+let citasEnRango     = [];         // Todas las citas cargadas segÃºn la vista activa
+let citaSeleccionada = null;       // Cita actualmente mostrada en el panel lateral
+let fechaBase        = new Date(); // Fecha de referencia para todas las vistas
+let vistaActual      = 'dia';      // 'dia' | 'semana' | 'mes'
+let canalRealtime    = null;       // Canal de Supabase Realtime
+
+// â”€â”€â”€ INICIALIZACIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function inicializarAgenda() {
+    console.log('[AGENDA] Inicializando mÃ³dulo...');
+    try {
+        const sesion = await obtenerSesionActiva();
+        if (!sesion?.perfil?.sucursal_id) throw new Error('Sin sucursal en sesiÃ³n');
+
+        sucursalId    = sesion.perfil.sucursal_id;
+        organizacionId = sesion.perfil.organizacion_id;
+
+        // Poblar nombre y avatar del veterinario
+        const elNombre = document.getElementById('agenda-nombre-dr');
+        const elAvatar = document.getElementById('agenda-avatar-dr');
+        if (elNombre) elNombre.textContent = sesion.perfil.nombre_completo || 'Doctor(a)';
+        if (elAvatar && sesion.perfil.avatar_url) {
+            elAvatar.src = sesion.perfil.avatar_url;
+            elAvatar.style.display = 'block';
+        }
+
+        actualizarLabelFecha();
+        await cargarCitasEnRango();
+        configurarModal();
+        configurarBuscadorHeader();
+        suscribirRealtime();
+
+        // Prellenar fecha del modal con hoy
+        const campoFecha = document.getElementById('cita-fecha');
+        if (campoFecha) campoFecha.value = fechaBase.toISOString().split('T')[0];
+
+    } catch (e) {
+        console.error('[AGENDA] Error al inicializar:', e);
+    }
+}
+
+// â”€â”€â”€ FUNCIÃ“N DE LIMPIEZA (para principal_v2.js) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function limpiarModuloAgenda() {
+    if (canalRealtime) {
+        conexionSupabase.removeChannel(canalRealtime);
+        canalRealtime = null;
+    }
+    // Limpiar globals del window para evitar leaks
+    delete window._agendaCitaActiva;
+}
+
+// â”€â”€â”€ REALTIME â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function suscribirRealtime() {
+    if (!sucursalId) return;
+    canalRealtime = conexionSupabase
+        .channel('agenda-citas-live')
+        .on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'citas',
+            filter: `sucursal_id=eq.${sucursalId}`
+        }, () => {
+            // Recargar silenciosamente al detectar cualquier cambio
+            cargarCitasEnRango();
+        })
+        .subscribe();
+}
+
+// â”€â”€â”€ CARGA DE DATOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function cargarCitasEnRango() {
+    let inicio, fin;
+
+    if (vistaActual === 'dia') {
+        inicio = new Date(fechaBase); inicio.setHours(0, 0, 0, 0);
+        fin    = new Date(fechaBase); fin.setHours(23, 59, 59, 999);
+    } else if (vistaActual === 'semana') {
+        const day = fechaBase.getDay();
+        inicio = new Date(fechaBase); inicio.setDate(fechaBase.getDate() - day); inicio.setHours(0, 0, 0, 0);
+        fin    = new Date(inicio);    fin.setDate(inicio.getDate() + 6);          fin.setHours(23, 59, 59, 999);
+    } else {
+        inicio = new Date(fechaBase.getFullYear(), fechaBase.getMonth(), 1);
+        fin    = new Date(fechaBase.getFullYear(), fechaBase.getMonth() + 1, 0, 23, 59, 59, 999);
+    }
+
+    try {
+        const { data: citas, error } = await conexionSupabase
+            .from('citas')
+            .select(`
+                id,
+                fecha_hora,
+                duracion_minutos,
+                tipo_cita,
+                estado,
+                motivo,
+                notas,
+                paciente_id,
+                pacientes!inner (
+                    id,
+                    nombre,
+                    especie,
+                    raza,
+                    peso_actual,
+                    fecha_nacimiento,
+                    cliente_id,
+                    clientes!inner ( id, nombre_completo, telefono )
+                )
+            `)
+            .eq('sucursal_id', sucursalId)
+            .gte('fecha_hora', inicio.toISOString())
+            .lte('fecha_hora', fin.toISOString())
+            .order('fecha_hora', { ascending: true });
+
+        if (error) throw error;
+        citasEnRango = citas || [];
+
+        actualizarMetricasResumen(citasEnRango);
+
+        if (vistaActual === 'dia') {
+            renderizarListaDia(citasEnRango);
+        } else if (vistaActual === 'semana') {
+            renderizarVistaSemana(citasEnRango, inicio);
+        } else {
+            renderizarVistaMes(citasEnRango, inicio);
+        }
+
+        // Si hay una cita seleccionada, refrescar su panel tambiÃ©n
+        if (citaSeleccionada) {
+            const citaActualizada = citasEnRango.find(c => c.id === citaSeleccionada.id);
+            if (citaActualizada) seleccionarCitaDetalle(citaActualizada);
+        }
+
+    } catch (e) {
+        console.error('[AGENDA] Error al cargar citas:', e);
+        const cont = document.getElementById('lista-citas-dia');
+        if (cont) cont.innerHTML = '<div class="agenda-vacio">Error al cargar citas. Revisa la consola.</div>';
+    }
+}
+
+// â”€â”€â”€ MÃ‰TRICAS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function actualizarMetricasResumen(citas) {
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set('res-citas-hoy',    citas.length);
+    set('res-confirmadas',  citas.filter(c => c.estado === 'confirmada').length);
+    set('res-en-espera',    citas.filter(c => c.estado === 'en_espera' || c.estado === 'llego').length);
+    set('res-urgencias',    citas.filter(c => c.tipo_cita === 'urgencia').length);
+}
+
+// â”€â”€â”€ LABEL DE FECHA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function actualizarLabelFecha() {
+    const label = document.getElementById('label-rango-fechas');
+    if (!label) return;
+
+    if (vistaActual === 'dia') {
+        const isHoy = new Date().toDateString() === fechaBase.toDateString();
+        const str   = fechaBase.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
+        label.textContent = isHoy
+            ? 'Hoy, ' + fechaBase.toLocaleDateString('es-MX', { day: 'numeric', month: 'long' })
+            : str.replace(/^\w/, c => c.toUpperCase());
+    } else if (vistaActual === 'semana') {
+        const day   = fechaBase.getDay();
+        const ini   = new Date(fechaBase); ini.setDate(fechaBase.getDate() - day);
+        const finS  = new Date(ini);       finS.setDate(ini.getDate() + 6);
+        label.textContent = `Semana del ${ini.getDate()} al ${finS.getDate()} de ${finS.toLocaleDateString('es-MX', { month: 'long' })}`;
+    } else {
+        const mesStr = fechaBase.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+        label.textContent = mesStr.replace(/^\w/, c => c.toUpperCase());
+    }
+
+    // Sincronizar mini-calendario
+    if (typeof window.renderizarMiniCalendario === 'function') window.renderizarMiniCalendario();
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// RENDERIZADORES DE VISTA
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+/**
+ * Vista DÃ­a: lista cronolÃ³gica con franjas de 8:00 a 20:00.
+ * Muestra: hora Â· paciente Â· especie Â· motivo Â· badge estado.
+ * Detecta hora actual y resalta la cita activa.
+ * Detecta huecos libres > 30 min.
+ */
+function renderizarListaDia(citas) {
+    const cont = document.getElementById('lista-citas-dia');
+    if (!cont) return;
+
+    if (citas.length === 0) {
+        cont.innerHTML = '<div class="agenda-vacio">Sin citas para este dÃ­a.</div>';
+        return;
+    }
+
+    const ahora       = new Date();
+    const esHoy       = ahora.toDateString() === fechaBase.toDateString();
+    const minutoAhora = esHoy ? ahora.getHours() * 60 + ahora.getMinutes() : -1;
+
+    let html = '';
+
+    citas.forEach((cita, idx) => {
+        const pac = cita.pacientes;
+        const fechaCita = new Date(cita.fecha_hora);
+        const hora      = fechaCita.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+        const minCita   = fechaCita.getHours() * 60 + fechaCita.getMinutes();
+        const duracion  = cita.duracion_minutos || 30;
+        const minFin    = minCita + duracion;
+
+        // Detectar si es la cita activa (hora actual dentro del bloque de la cita)
+        const esActiva  = esHoy && minutoAhora >= minCita && minutoAhora < minFin;
+        // Detectar hueco libre antes de esta cita (solo si no es la primera)
+        if (idx > 0) {
+            const citaAnterior  = citas[idx - 1];
+            const minFinAnterior = new Date(citaAnterior.fecha_hora).getHours() * 60
+                                 + new Date(citaAnterior.fecha_hora).getMinutes()
+                                 + (citaAnterior.duracion_minutos || 30);
+            const hueco = minCita - minFinAnterior;
+            if (hueco >= 30) {
+                html += `<div class="cita-fila cita-fila--libre">
+                    <span class="cita-fila-hora">${Math.floor(minFinAnterior/60).toString().padStart(2,'0')}:${(minFinAnterior%60).toString().padStart(2,'0')}</span>
+                    <span class="cita-libre-label">Libre Â· ${hueco} min</span>
+                </div>`;
+            }
+        }
+
+        const estadoKey = (cita.estado || 'agendada').toLowerCase();
+        const esIniciable = !['finalizada', 'cancelada', 'no_asistio'].includes(estadoKey);
+
+        html += `
+        <div class="cita-fila${esActiva ? ' cita-fila--activa' : ''}" data-cita-id="${cita.id}"
+             onclick="window.seleccionarCitaPorId('${cita.id}')">
+            <span class="cita-fila-hora">${hora}</span>
+            <div class="cita-fila-info">
+                <span class="cita-fila-paciente">${pac.nombre}</span>
+                <span class="cita-fila-detalle">${pac.especie || 'Mascota'} Â· ${cita.motivo || 'Sin motivo'}</span>
+            </div>
+            <span class="badge-estado badge-estado--${estadoKey.replace('_', '-')}">${etiquetaEstado(estadoKey)}</span>
+            ${esIniciable
+                ? `<button class="btn-accion-cita" onclick="event.stopPropagation(); window.iniciarConsultaDesdeCitaId('${cita.id}', '${pac.id}')">Iniciar</button>`
+                : `<span class="cita-fila-cerrada">${estadoKey === 'finalizada' ? 'Finalizada' : 'Cerrada'}</span>`
+            }
+        </div>`;
+    });
+
+    cont.innerHTML = html;
+}
+
+// â”€â”€â”€ Vista Semana â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function renderizarVistaSemana(citas, inicioSemana) {
+    const cont = document.getElementById('contenedor-semana');
+    if (!cont) return;
+
+    const diasSemana = ['DOM', 'LUN', 'MAR', 'MIÃ‰', 'JUE', 'VIE', 'SÃB'];
+    const hoyStr     = new Date().toDateString();
+
+    let html = '<div class="week-grid"><div class="corner"></div>';
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(inicioSemana); d.setDate(d.getDate() + i);
+        const isActive = d.toDateString() === hoyStr ? 'active' : '';
+        html += `<div class="day-head ${isActive}"><div class="dow">${diasSemana[i]}</div><div class="num">${d.getDate()}</div></div>`;
+    }
+    html += '</div><div class="grid-body"><div class="time-col">';
+    for (let h = 8; h <= 20; h++) html += `<div class="time-slot">${String(h).padStart(2,'0')}:00</div>`;
+    html += '</div>';
+
+    for (let i = 0; i < 7; i++) {
+        const d    = new Date(inicioSemana); d.setDate(d.getDate() + i);
+        const dStr = d.toDateString();
+        const citasDia = citas.filter(c => new Date(c.fecha_hora).toDateString() === dStr);
+
+        html += '<div class="day-col">';
+        for (let h = 8; h <= 20; h++) html += '<div class="hour-line"></div>';
+
+        citasDia.forEach(cita => {
+            const hCita  = new Date(cita.fecha_hora);
+            const hour   = hCita.getHours(), min = hCita.getMinutes();
+            if (hour < 8 || hour > 20) return;
+            const top    = ((hour - 8) * 64) + ((min / 60) * 64);
+            const height = ((cita.duracion_minutos || 30) / 60) * 64;
+            const cl     = cita.tipo_cita === 'urgencia' ? 'rojo' : (cita.tipo_cita === 'cirugia' ? 'naranja' : 'cobalto');
+            html += `
+            <div class="event ${cl}" style="top:${top}px;height:${Math.max(28, height - 2)}px;" data-id="${cita.id}">
+                <div class="ev-title">${cita.pacientes?.nombre} Â· ${cita.tipo_cita}</div>
+                <div class="ev-time">${hCita.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' })}</div>
+            </div>`;
+        });
+
+        if (dStr === hoyStr) {
+            const now = new Date(), nH = now.getHours();
+            if (nH >= 8 && nH <= 20) {
+                const nowTop = ((nH - 8) * 64) + ((now.getMinutes() / 60) * 64);
+                html += `<div class="now-line" style="top:${nowTop}px;"></div>`;
+            }
+        }
+        html += '</div>';
+    }
+    html += '</div>';
+    cont.innerHTML = html;
+
+    cont.querySelectorAll('.event').forEach(el => {
+        el.addEventListener('click', () => {
+            const c = citas.find(x => x.id === el.getAttribute('data-id'));
+            if (c) seleccionarCitaDetalle(c);
+        });
+    });
+}
+
+// â”€â”€â”€ Vista Mes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function renderizarVistaMes(citas, inicioMes) {
+    const cont = document.getElementById('contenedor-mes');
+    if (!cont) return;
+
+    const year = inicioMes.getFullYear(), month = inicioMes.getMonth();
+    const primerDia        = new Date(year, month, 1).getDay();
+    const diasMes          = new Date(year, month + 1, 0).getDate();
+    const diasMesAnterior  = new Date(year, month, 0).getDate();
+    const hoyStr           = new Date().toDateString();
+
+    let html = '<div class="month-grid">';
+    ['D','L','M','M','J','V','S'].forEach(d => html += `<div class="month-dow">${d}</div>`);
+
+    for (let i = primerDia - 1; i >= 0; i--)
+        html += `<div class="month-cell"><div class="month-num muted">${diasMesAnterior - i}</div></div>`;
+
+    for (let i = 1; i <= diasMes; i++) {
+        const d     = new Date(year, month, i);
+        const isHoy = d.toDateString() === hoyStr;
+        const numStyle = isHoy ? ' style="background:var(--cobalto);color:white;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;"' : '';
+        const citasDia = citas.filter(c => new Date(c.fecha_hora).toDateString() === d.toDateString());
+
+        html += `<div class="month-cell"><div class="month-num"><span${numStyle}>${i}</span></div>`;
+        citasDia.slice(0, 3).forEach(cita => {
+            const cl = cita.tipo_cita === 'urgencia' ? 'rojo' : (cita.tipo_cita === 'cirugia' ? 'naranja' : 'cobalto');
+            html += `<div class="month-evento ${cl}" data-id="${cita.id}">${cita.pacientes?.nombre}</div>`;
+        });
+        if (citasDia.length > 3)
+            html += `<div class="month-evento" style="background:transparent;color:var(--texto-sec);">+${citasDia.length - 3} mÃ¡s</div>`;
+        html += '</div>';
+    }
+
+    const celdasUsadas = primerDia + diasMes;
+    const resto        = celdasUsadas > 35 ? 42 - celdasUsadas : 35 - celdasUsadas;
+    for (let i = 1; i <= resto; i++)
+        html += `<div class="month-cell"><div class="month-num muted">${i}</div></div>`;
+
+    html += '</div>';
+    cont.innerHTML = html;
+
+    cont.querySelectorAll('.month-evento').forEach(el => {
+        if (!el.getAttribute('data-id')) return;
+        el.addEventListener('click', e => {
+            e.stopPropagation();
+            const c = citas.find(x => x.id === el.getAttribute('data-id'));
+            if (c) seleccionarCitaDetalle(c);
+        });
+    });
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// PANEL DE DETALLE DE CITA
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+function seleccionarCitaDetalle(cita) {
+    citaSeleccionada = cita;
+
+    const panel = document.getElementById('detalle-cita');
+    if (panel) panel.style.display = 'block';
+
+    const pac = cita.pacientes;
+    const cli = pac.clientes;
+
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+    set('det-avatar',      pac.nombre.substring(0, 2).toUpperCase());
+    set('det-nombre',      pac.nombre);
+    set('det-propietario', cli.nombre_completo || 'Sin registrar');
+    set('det-telefono',    cli.telefono || '-');
+    set('det-peso',        pac.peso_actual ? `${pac.peso_actual} kg` : '-');
+    set('det-motivo',      cita.motivo || '-');
+    set('det-notas',       cita.notas || '-');
+    set('det-tipo',        cita.tipo_cita || '-');
+
+    // Hora formateada
+    const hora = cita.fecha_hora
+        ? new Date(cita.fecha_hora).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })
+        : '-';
+    set('det-hora', hora);
+
+    // Edad
+    let edadStr = 'Desconocida';
+    if (pac.fecha_nacimiento) {
+        const anos = new Date().getFullYear() - new Date(pac.fecha_nacimiento).getFullYear();
+        edadStr = anos > 0 ? `${anos} aÃ±os` : 'Meses';
+    }
+    set('det-edad', edadStr);
+    set('det-sub', `${pac.especie || ''} Â· ${pac.raza || ''} Â· ${edadStr}`);
+
+    // Sincronizar selector de estado
+    const selector = document.getElementById('det-selector-estado');
+    if (selector) selector.value = (cita.estado || 'agendada').toLowerCase();
+
+    // Mostrar u ocultar botones segÃºn estado
+    const estadoKey    = (cita.estado || 'agendada').toLowerCase();
+    const esCerrada    = ['finalizada', 'cancelada', 'no_asistio'].includes(estadoKey);
+    const esEnConsulta = estadoKey === 'en_consulta';
+
+    const btnIniciar   = document.getElementById('btn-det-iniciar');
+    const btnFinalizar = document.getElementById('btn-det-finalizar');
+    const btnCancelar  = document.getElementById('btn-det-cancelar');
+
+    if (btnIniciar)   btnIniciar.style.display   = esCerrada ? 'none' : 'block';
+    if (btnFinalizar) btnFinalizar.style.display  = esEnConsulta ? 'block' : 'none';
+    if (btnCancelar)  btnCancelar.style.display   = esCerrada ? 'none' : 'block';
+
+    // Guardar referencia en window para los onclick del HTML
+    window._agendaCitaActiva = cita;
+}
+
+function limpiarPanelDetalle() {
+    const panel = document.getElementById('detalle-cita');
+    if (panel) panel.style.display = 'none';
+    citaSeleccionada = null;
+    window._agendaCitaActiva = null;
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ACCIONES DE CITA
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+async function actualizarEstadoCita(citaId, nuevoEstado) {
+    try {
+        const { error } = await conexionSupabase
+            .from('citas')
+            .update({ estado: nuevoEstado })
+            .eq('id', citaId);
+        if (error) throw error;
+        await cargarCitasEnRango();
+    } catch (e) {
+        console.error('[AGENDA] Error al actualizar estado:', e);
+        alertaCustom('Error', 'No se pudo actualizar la cita', 'error');
+    }
+}
+
+/**
+ * Inicia la consulta desde el botÃ³n en la fila de la lista diaria.
+ * Cambia estado â†’ en_consulta y navega al mÃ³dulo de consulta.
+ */
+async function iniciarConsulta(citaId, pacienteId) {
+    await actualizarEstadoCita(citaId, 'en_consulta');
+    // Puente de datos entre mÃ³dulos
+    window._agendaDatos = { citaId, pacienteId };
+    if (typeof window.cargarModulo === 'function') {
+        window.cargarModulo('MODULO_VETERINARIO_CONSULTA');
+    } else {
+        // Fallback: hash navigation
+        window.location.hash = `#/consulta?pacienteId=${pacienteId}&citaId=${citaId}`;
+    }
+}
+
+// â”€â”€â”€ Globals expuestos al HTML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+/** Selecciona una cita por ID desde el onclick de la lista */
+window.seleccionarCitaPorId = function(citaId) {
+    const cita = citasEnRango.find(c => c.id === citaId);
+    if (cita) seleccionarCitaDetalle(cita);
+};
+
+/** Cerrar panel de detalle */
+window.cerrarDetalleCita = function() {
+    limpiarPanelDetalle();
+};
+
+/** Iniciar consulta desde botÃ³n en la fila de la lista */
+window.iniciarConsultaDesdeCitaId = async function(citaId, pacienteId) {
+    await iniciarConsulta(citaId, pacienteId);
+};
+
+/** Iniciar consulta desde el panel de detalle */
+window.iniciarConsultaDesdeCita = async function() {
+    const cita = window._agendaCitaActiva;
+    if (!cita) return;
+    await iniciarConsulta(cita.id, cita.pacientes.id);
+};
+
+/** Abrir expediente del paciente seleccionado */
+window.abrirExpedientePaciente = function() {
+    const cita = window._agendaCitaActiva;
+    if (!cita) return;
+    if (typeof window.cargarModulo === 'function') {
+        window._pacienteIdExpediente = cita.pacientes.id;
+        window.cargarModulo('MODULO_BIBLIOTECA_EXPEDIENTES');
+    } else {
+        window.location.hash = `#/pacientes/expediente?id=${cita.pacientes.id}`;
+    }
+};
+
+/** Cambiar estado desde el selector del panel de detalle */
+window.cambiarEstadoDesdeDetalle = async function(nuevoEstado) {
+    const cita = window._agendaCitaActiva;
+    if (!cita) return;
+    await actualizarEstadoCita(cita.id, nuevoEstado);
+};
+
+/** Cancelar la cita seleccionada */
+window.cancelarCitaSeleccionada = async function() {
+    const cita = window._agendaCitaActiva;
+    if (!cita) return;
+    const ok = await confirmacionCustom('Cancelar cita', `Â¿Cancelar la cita de ${cita.pacientes?.nombre}?`);
+    if (ok) {
+        await actualizarEstadoCita(cita.id, 'cancelada');
+        limpiarPanelDetalle();
+    }
+};
+
+/** Abrir modal de finalizar consulta */
+window.abrirModalFinalizarCita = function() {
+    const modal = document.getElementById('modal-finalizar-cita');
+    if (modal) {
+        modal.style.display = 'flex';
+        const notas = document.getElementById('finalizar-notas');
+        const seg   = document.getElementById('finalizar-seguimiento');
+        if (notas) notas.value = '';
+        if (seg)   seg.checked = false;
+    }
+};
+
+window.cerrarModalFinalizar = function() {
+    const modal = document.getElementById('modal-finalizar-cita');
+    if (modal) modal.style.display = 'none';
+};
+
+/** Confirmar finalizaciÃ³n con notas opcionales */
+window.confirmarFinalizarCita = async function() {
+    const cita  = window._agendaCitaActiva;
+    if (!cita)  return;
+
+    const notas         = document.getElementById('finalizar-notas')?.value?.trim() || '';
+    const seguimiento   = document.getElementById('finalizar-seguimiento')?.checked || false;
+
+    try {
+        await actualizarEstadoCita(cita.id, 'finalizada');
+
+        // Registrar notas de cierre en la tabla consultas si existe registro
+        if (notas) {
+            await conexionSupabase
+                .from('consultas')
+                .update({ notas_cierre: notas })
+                .eq('cita_id', cita.id);
+        }
+
+        window.cerrarModalFinalizar();
+        limpiarPanelDetalle();
+        alertaCustom('Consulta finalizada', notas ? 'Notas guardadas correctamente.' : '', 'success');
+
+        if (seguimiento) {
+            // Pre-seleccionar tipo seguimiento en el modal de nueva cita
+            window.abrirModalNuevaCita('seguimiento');
+        }
+
+    } catch (e) {
+        console.error('[AGENDA] Error al finalizar cita:', e);
+        alertaCustom('Error', 'No se pudo finalizar la cita', 'error');
+    }
+};
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// MODAL NUEVA CITA
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+function configurarModal() {
+    const btnCerrar   = document.getElementById('btn-cerrar-modal-cita');
+    const btnCancelar = document.getElementById('btn-cancelar-modal-cita-alt');
+    if (btnCerrar)   btnCerrar.addEventListener('click', window.cerrarModalCita);
+    if (btnCancelar) btnCancelar.addEventListener('click', window.cerrarModalCita);
+
+    // BÃºsqueda de paciente con debounce
+    const inputBuscar = document.getElementById('input-buscar-paciente-cita');
+    let timeout = null;
+    if (inputBuscar) {
+        inputBuscar.addEventListener('input', e => {
+            clearTimeout(timeout);
+            const val = e.target.value.trim();
+            const box = document.getElementById('resultados-paciente-cita');
+            if (val.length < 2) { if (box) box.style.display = 'none'; return; }
+            timeout = setTimeout(() => buscarPacientesModal(val), 400);
+        });
+    }
+
+    // Submit del formulario
+    const form = document.getElementById('form-nueva-cita');
+    if (form) {
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            const pacienteId = document.getElementById('cita-paciente-id').value;
+            if (!pacienteId) {
+                alertaCustom('Falta paciente', 'Selecciona un paciente de la lista.', 'warning');
+                return;
+            }
+            const fecha    = document.getElementById('cita-fecha').value;
+            const horaIni  = document.getElementById('cita-hora').value;
+            const duracion = parseInt(document.getElementById('cita-duracion').value) || 30;
+            const tipo     = document.getElementById('cita-tipo').value;
+            const motivo   = document.getElementById('cita-motivo').value;
+            const notas    = document.getElementById('cita-notas').value;
+
+            const [year, month, day]     = fecha.split('-');
+            const [hour, minute]         = horaIni.split(':');
+            const fechaHoraLocal         = new Date(year, month - 1, day, hour, minute, 0);
+
+            try {
+                const { error } = await conexionSupabase.from('citas').insert([{
+                    organizacion_id:  organizacionId,
+                    sucursal_id:      sucursalId,
+                    paciente_id:      pacienteId,
+                    fecha_hora:       fechaHoraLocal.toISOString(),
+                    duracion_minutos: duracion,
+                    tipo_cita:        tipo,
+                    estado:           'agendada',
+                    motivo:           motivo,
+                    notas:            notas || null
+                }]);
+                if (error) throw error;
+                alertaCustom('Cita agendada', 'La cita se registrÃ³ correctamente.', 'success');
+                window.cerrarModalCita();
+                // Realtime lo recargarÃ¡, pero forzamos inmediatamente
+                cargarCitasEnRango();
+            } catch (e) {
+                console.error(e);
+                alertaCustom('Error', 'No se pudo guardar la cita.', 'error');
+            }
+        });
+    }
+}
+
+window.abrirModalNuevaCita = function(tipo) {
+    const modal = document.getElementById('modal-nueva-cita');
+    if (!modal) return;
+    modal.style.display = 'flex';
+
+    const form = document.getElementById('form-nueva-cita');
+    if (form) form.reset();
+
+    // Limpiar campos ocultos
+    const pid = document.getElementById('cita-paciente-id');
+    if (pid) pid.value = '';
+    const box = document.getElementById('resultados-paciente-cita');
+    if (box) box.style.display = 'none';
+
+    // Prellenar fecha con la fecha actualmente vista en la agenda
+    const campoFecha = document.getElementById('cita-fecha');
+    if (campoFecha) campoFecha.value = fechaBase.toISOString().split('T')[0];
+
+    // Prellenar tipo si viene de un contexto especÃ­fico
+    if (tipo) {
+        const campoTipo = document.getElementById('cita-tipo');
+        if (campoTipo) campoTipo.value = tipo;
+    }
+};
+
+// Alias para compatibilidad con cualquier otra referencia al nombre viejo
+window.abrirModalCita = window.abrirModalNuevaCita;
+
+window.cerrarModalCita = function() {
+    const modal = document.getElementById('modal-nueva-cita');
+    if (modal) modal.style.display = 'none';
+};
+
+async function buscarPacientesModal(termino) {
+    const box = document.getElementById('resultados-paciente-cita');
+    if (!box) return;
+    box.innerHTML = '<div style="padding:10px;text-align:center;">Buscando...</div>';
+    box.style.display = 'block';
+
+    try {
+        const { data, error } = await conexionSupabase
+            .from('pacientes')
+            .select('id, nombre, especie, clientes(nombre_completo)')
+            .eq('sucursal_id', sucursalId)
+            .ilike('nombre', `%${termino}%`)
+            .limit(8);
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            box.innerHTML = '<div style="padding:10px;text-align:center;color:var(--texto-sec);">No se encontrÃ³ paciente.</div>';
+            return;
+        }
+        box.innerHTML = '';
+        data.forEach(p => {
+            const div = document.createElement('div');
+            div.style.cssText = 'padding:10px;cursor:pointer;border-bottom:1px solid var(--borde);font-size:13px;';
+            const nombreCliente = p.clientes?.nombre_completo || 'Sin tutor';
+            div.innerHTML = `<strong>${p.nombre}</strong> <span style="color:var(--texto-sec);">(${p.especie || 'Mascota'}) â€” ${nombreCliente}</span>`;
+            div.addEventListener('click', () => {
+                document.getElementById('input-buscar-paciente-cita').value = `${p.nombre} â€” ${nombreCliente}`;
+                document.getElementById('cita-paciente-id').value = p.id;
+                box.style.display = 'none';
+            });
+            box.appendChild(div);
+        });
+    } catch (e) {
+        console.error(e);
+        box.innerHTML = '<div style="padding:10px;color:red;">Error de bÃºsqueda</div>';
+    }
+}
+
+// â”€â”€â”€ Buscador del header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function configurarBuscadorHeader() {
+    const input = document.getElementById('agenda-buscador-pacientes');
+    const box   = document.getElementById('agenda-resultados-busqueda');
+    if (!input || !box) return;
+
+    let timeout = null;
+    input.addEventListener('input', e => {
+        clearTimeout(timeout);
+        const val = e.target.value.trim();
+        if (val.length < 2) { box.style.display = 'none'; return; }
+        timeout = setTimeout(async () => {
+            try {
+                const { data } = await conexionSupabase
+                    .from('pacientes')
+                    .select('id, nombre, especie, clientes(nombre_completo)')
+                    .eq('sucursal_id', sucursalId)
+                    .ilike('nombre', `%${val}%`)
+                    .limit(5);
+                if (!data || data.length === 0) { box.style.display = 'none'; return; }
+                box.innerHTML = '';
+                data.forEach(p => {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'padding:10px;cursor:pointer;border-bottom:1px solid var(--borde);font-size:13px;';
+                    div.innerHTML = `<strong>${p.nombre}</strong> <span style="color:var(--texto-sec);">${p.especie || ''} â€” ${p.clientes?.nombre_completo || ''}</span>`;
+                    div.addEventListener('click', () => {
+                        // Navegar a expediente del paciente
+                        window._pacienteIdExpediente = p.id;
+                        if (typeof window.cargarModulo === 'function')
+                            window.cargarModulo('MODULO_BIBLIOTECA_EXPEDIENTES');
+                        box.style.display = 'none';
+                        input.value = '';
+                    });
+                    box.appendChild(div);
+                });
+                box.style.display = 'block';
+            } catch (err) { console.error(err); }
+        }, 400);
+    });
+
+    document.addEventListener('click', e => {
+        if (!input.contains(e.target)) box.style.display = 'none';
+    });
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// NAVEGACIÃ“N â€” GLOBALS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+const etiquetasVista = { dia: 'DÃ­a', semana: 'Semana', mes: 'Mes' };
+
+window.cambiarVista = function(nombre) {
+    vistaActual = nombre;
+    document.querySelectorAll('.vista').forEach(v => v.classList.remove('activa'));
+    const v = document.getElementById('vista-' + nombre);
+    if (v) v.classList.add('activa');
+    document.querySelectorAll('.select-dropdown div').forEach(d => d.classList.remove('activo'));
+    const drop = document.querySelector(`.select-dropdown div[data-vista="${nombre}"]`);
+    if (drop) drop.classList.add('activo');
+    const lbl = document.getElementById('vistaLabel');
+    if (lbl) lbl.textContent = etiquetasVista[nombre];
+    if (window.cerrarDropdown) window.cerrarDropdown();
+    actualizarLabelFecha();
+    cargarCitasEnRango();
+};
+
+window.moverFecha = function(dir) {
+    if (vistaActual === 'dia')    fechaBase.setDate(fechaBase.getDate() + dir);
+    else if (vistaActual === 'semana') fechaBase.setDate(fechaBase.getDate() + dir * 7);
+    else                          fechaBase.setMonth(fechaBase.getMonth() + dir);
+    actualizarLabelFecha();
+    cargarCitasEnRango();
+};
+
+window.toggleDropdown = function() {
+    document.getElementById('dropdownVistas')?.classList.toggle('visible');
+    document.getElementById('selectVista')?.classList.toggle('abierto');
+};
+
+window.cerrarDropdown = function() {
+    document.getElementById('dropdownVistas')?.classList.remove('visible');
+    document.getElementById('selectVista')?.classList.remove('abierto');
+};
+
+document.addEventListener('click', function(e) {
+    const caja = document.getElementById('selectVista');
+    if (caja && !caja.contains(e.target)) window.cerrarDropdown();
+});
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// MINI CALENDARIO
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+let fechaMiniCalendario = new Date();
+
+window.renderizarMiniCalendario = function(forzarMesIndependiente = false) {
+    const grid  = document.getElementById('mini-calendar-grid');
+    const title = document.getElementById('mini-calendar-title');
+    if (!grid || !title) return;
+
+    if (!forzarMesIndependiente)
+        fechaMiniCalendario.setFullYear(fechaBase.getFullYear(), fechaBase.getMonth(), 1);
+
+    const year     = fechaMiniCalendario.getFullYear();
+    const month    = fechaMiniCalendario.getMonth();
+    const mesStr   = fechaMiniCalendario.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+    title.textContent = mesStr.replace(/^\w/, c => c.toUpperCase());
+
+    const primerDia       = new Date(year, month, 1).getDay();
+    const diasMes         = new Date(year, month + 1, 0).getDate();
+    const diasMesAnterior = new Date(year, month, 0).getDate();
+    const fechaBaseStr    = fechaBase.toDateString();
+
+    let html = '<span class="dow">D</span><span class="dow">L</span><span class="dow">M</span><span class="dow">M</span><span class="dow">J</span><span class="dow">V</span><span class="dow">S</span>';
+
+    for (let i = primerDia - 1; i >= 0; i--)
+        html += `<span class="day muted" style="cursor:pointer;" onclick="window.seleccionarDiaMiniCalendario(${year},${month-1},${diasMesAnterior - i})">${diasMesAnterior - i}</span>`;
+
+    for (let i = 1; i <= diasMes; i++) {
+        const d   = new Date(year, month, i);
+        const sel = d.toDateString() === fechaBaseStr ? 'today' : '';
+        html += `<span class="day ${sel}" style="cursor:pointer;" onclick="window.seleccionarDiaMiniCalendario(${year},${month},${i})">${i}</span>`;
+    }
+
+    const celdasUsadas = primerDia + diasMes;
+    const resto        = celdasUsadas > 35 ? 42 - celdasUsadas : 35 - celdasUsadas;
+    for (let i = 1; i <= resto; i++)
+        html += `<span class="day muted" style="cursor:pointer;" onclick="window.seleccionarDiaMiniCalendario(${year},${month+1},${i})">${i}</span>`;
+
+    grid.innerHTML = html;
+};
+
+window.moverMiniCalendario = function(dir) {
+    fechaMiniCalendario.setMonth(fechaMiniCalendario.getMonth() + dir);
+    window.renderizarMiniCalendario(true);
+};
+
+window.seleccionarDiaMiniCalendario = function(year, month, day) {
+    fechaBase = new Date(year, month, day);
+    if (vistaActual !== 'dia') window.cambiarVista('dia');
+    else { actualizarLabelFecha(); cargarCitasEnRango(); }
+};
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// HELPER â€” Etiqueta legible de estado
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function etiquetaEstado(estadoKey) {
+    const mapa = {
+        agendada:    'Agendada',
+        confirmada:  'Confirmada',
+        en_espera:   'En espera',
+        llego:       'En espera',
+        en_consulta: 'En consulta',
+        finalizada:  'Finalizada',
+        cancelada:   'Cancelada',
+        no_asistio:  'No asistiÃ³'
+    };
+    return mapa[estadoKey] || estadoKey;
+}
+

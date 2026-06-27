@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selección de Plan | PET PROTECT</title>
+    
+    <link rel="stylesheet" href="/src/css/registro_css.css">
+    <link rel="stylesheet" href="/src/css/seleccion_plan.css">
+</head>
+<body>
+
+    <div class="envoltura-suscripcion">
+        <div class="fondo-difuminado"></div>
+
+        <header class="cabecera-onboarding">
+            <a href="/" class="logotipo-enlace" aria-label="Volver al inicio de Protect Pet">
+                <img src="/img/Logo.png" alt="Logo Protect Pet" class="logotipo-imagen">
+            </a>
+            <div class="paso-progreso">
+                <span class="numero-paso">02</span>
+                <div class="meta-paso">
+                    <p class="etiqueta-paso">Equipamiento</p>
+                    <p class="nombre-paso">Selección de Licencia</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="contenedor-planes">
+            <div class="cabecera-planes">
+                <h1>Elige el motor de tu clínica</h1>
+                <p>Digitaliza tu operación veterinaria por el costo de una consulta al mes.</p>
+            </div>
+
+            <div class="cuadricula-precios">
+                
+                <article class="tarjeta-plan" id="plan-inicial">
+                    <div class="contenido-plan">
+                        <h2 class="titulo-plan">Inicial</h2>
+                        <div class="precio-plan">
+                            <span class="simbolo">$</span><span class="monto">0</span><span class="periodo">/mes</span>
+                        </div>
+                        <p class="descripcion-plan">Para veterinarios independientes dando sus primeros pasos.</p>
+                        
+                        <ul class="lista-caracteristicas">
+                            <li><svg viewBox="0 0 24 24" class="icono-check"><polyline points="20 6 9 17 4 12"></polyline></svg> 1 Usuario (Dueño)</li>
+                            <li><svg viewBox="0 0 24 24" class="icono-check"><polyline points="20 6 9 17 4 12"></polyline></svg> Hasta 30 Expedientes</li>
+                            <li><svg viewBox="0 0 24 24" class="icono-check"><polyline points="20 6 9 17 4 12"></polyline></svg> Agenda Básica</li>
+                        </ul>
+                    </div>
+                    <button class="boton-plan contorno" data-plan="INICIAL">Comenzar Gratis</button>
+                </article>
+
+                <article class="tarjeta-plan destacado" id="plan-pro">
+                    <div class="etiqueta-recomendado">MÁS ELEGIDO</div>
+                    <div class="contenido-plan">
+                        <h2 class="titulo-plan color-accion">Clínica Pro</h2>
+                        <div class="precio-plan">
+                            <span class="simbolo">$</span><span class="monto">399</span><span class="periodo">/mes</span>
+                        </div>
+                        <p class="descripcion-plan">El estándar para clínicas establecidas. Todo lo de Inicial, más:</p>
+                        
+                        <ul class="lista-caracteristicas">
+                            <li><svg viewBox="0 0 24 24" class="icono-check color-accion"><polyline points="20 6 9 17 4 12"></polyline></svg> Hasta 3 Usuarios</li>
+                            <li><svg viewBox="0 0 24 24" class="icono-check color-accion"><polyline points="20 6 9 17 4 12"></polyline></svg> Expedientes Ilimitados</li>
+                            <li><svg viewBox="0 0 24 24" class="icono-check color-accion"><polyline points="20 6 9 17 4 12"></polyline></svg> Módulo de Caja y Finanzas</li>
+                            <li><svg viewBox="0 0 24 24" class="icono-check color-accion"><polyline points="20 6 9 17 4 12"></polyline></svg> Copiloto Médico (IA)</li>
+                        </ul>
+                    </div>
+                    <button class="boton-plan principal" data-plan="PRO">Equipar mi Clínica</button>
+                </article>
+
+                <article class="tarjeta-plan" id="plan-hospital">
+                    <div class="contenido-plan">
+                        <h2 class="titulo-plan">Hospital</h2>
+                        <div class="precio-plan">
+                            <span class="simbolo">$</span><span class="monto">899</span><span class="periodo">/mes</span>
+                        </div>
+                        <p class="descripcion-plan">Para redes veterinarias y operaciones 24/7. Todo lo de Pro, más:</p>
+                        
+                        <ul class="lista-caracteristicas">
+                            <li><svg viewBox="0 0 24 24" class="icono-check"><polyline points="20 6 9 17 4 12"></polyline></svg> Usuarios Ilimitados</li>
+                            <li><svg viewBox="0 0 24 24" class="icono-check"><polyline points="20 6 9 17 4 12"></polyline></svg> Múltiples Sucursales</li>
+                            <li><svg viewBox="0 0 24 24" class="icono-check"><polyline points="20 6 9 17 4 12"></polyline></svg> Reportes Corporativos</li>
+                            <li><svg viewBox="0 0 24 24" class="icono-check"><polyline points="20 6 9 17 4 12"></polyline></svg> Bot de WhatsApp (IA)</li>
+                        </ul>
+                    </div>
+                    <button class="boton-plan contorno" data-plan="HOSPITAL">Seleccionar Hospital</button>
+                </article>
+
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="/src/js/seleccion_plan.js"></script>
+</body>
+</html>

@@ -1,0 +1,545 @@
+<div class="interfazVeterinario">
+    
+    <button class="btn-hamburguesa" id="btnHamburguesa" aria-label="Menu de Navegación">
+        <span class="material-symbols-rounded" id="iconoHamburguesa" aria-hidden="true">menu</span>
+    </button>
+
+    <aside class="navegacionLateral" role="navigation" aria-label="Menú de Ajustes">
+        <div class="bloqueSuperior">
+            <nav class="menuInterno" id="menuNavegacionOnPage">
+                
+                <div class="grupo-menu">
+                    <p class="titulo-grupo">Mi Perfil</p>
+                    <a href="#" data-target="seccionBasica" class="itemActivo" id="navDatos">
+                        <span class="material-symbols-rounded" aria-hidden="true">badge</span> Datos Profesionales
+                    </a>
+                </div>
+
+                <div class="grupo-menu">
+                    <p class="titulo-grupo">Cuenta y Acceso</p>
+                    <a href="#" data-target="seccionCuenta">
+                        <span class="material-symbols-rounded" aria-hidden="true">lock</span> Seguridad de Cuenta
+                    </a>
+                </div>
+                
+                <div class="grupo-menu" id="grupoMenuAdmin" style="display: none;">
+                    <p class="titulo-grupo">Negocio</p>
+                    
+                    <a href="#" data-target="seccionSuscripcion" class="itemAdmin">
+                        <span class="material-symbols-rounded" aria-hidden="true">card_membership</span> Suscripción y Plan
+                    </a>
+                    <a href="#" data-target="seccionFacturacion" class="itemAdmin">
+                        <span class="material-symbols-rounded" aria-hidden="true">credit_card</span> Pasarela y Fiscal
+                    </a>
+
+                    <button class="btn-acordeon-menu" id="btnAcordeonAdmin" aria-expanded="false" aria-controls="submenuAdmin">
+                        <div class="btn-acordeon-izq">
+                            <span class="material-symbols-rounded" aria-hidden="true">domain</span>
+                            <span>Configuración Clínica</span>
+                        </div>
+                        <span class="material-symbols-rounded icono-flecha" id="flechaAdmin" aria-hidden="true">expand_more</span>
+                    </button>
+
+                    <div class="submenu-acordeon" id="submenuAdmin" role="region" aria-labelledby="btnAcordeonAdmin">
+                        <a href="#" data-target="seccionIdentidad" class="itemAdmin">Identidad Institucional</a>
+                        <a href="#" data-target="seccionHorarios" class="itemAdmin">Horarios de Atención</a>
+                        <a href="#" data-target="seccionServicios" class="itemAdmin">Catálogo y Precios</a>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+    </aside>
+
+    <main class="areaTrabajo">
+        
+        <header class="encabezadoDashboard">
+            <div class="contenedor-titulo-logo">
+                <div class="titulos-seccion">
+                    <h1 id="tituloPrincipal">Configuración</h1>
+                </div>
+            </div>
+
+            <div class="acciones-header">
+                <a href="#" id="linkVolverDashboard" class="btn-secundario-naranja-outline" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <span class="flecha-volver" aria-hidden="true">←</span> Volver al Panel
+                </a>
+            </div>
+        </header>
+
+        <section id="seccionBasica" class="seccion-spa activa" aria-live="polite">
+            <div class="grid-layout-principal">
+                <div class="columna-izquierda">
+                    <div class="tarjetaContenedora">
+                        <h3 id="tituloIdentidad">Identidad Profesional</h3>
+                        <p class="subtitulo" id="subtituloIdentidad">Información esencial para tus registros y folios.</p>
+                        
+                        <form id="formPerfilGlobal" class="formulario-ajuste">
+                            <div class="campo">
+                                <label for="adjNombre">Nombre Completo</label>
+                                <input type="text" id="adjNombre" class="input-moderno-f" placeholder="Tu nombre">
+                            </div>
+                            
+                            <div id="bloqueVeterinario" style="display: none;">
+                                <div class="grid-dual">
+                                    <div class="campo"><label for="adjCedula">Cédula Profesional</label><input type="text" id="adjCedula" class="input-moderno-f"></div>
+                                    <div class="campo"><label for="adjConsultorio">No. Consultorio</label><input type="text" id="adjConsultorio" class="input-moderno-f field-readonly" readonly placeholder="Ej. B-204"></div>
+                                </div>
+                                <div class="grid-dual">
+                                    <div class="campo"><label for="adjAsistente">Asistente Asignado</label><input type="text" id="adjAsistente" class="input-moderno-f field-readonly" readonly placeholder="Nombre del asistente"></div>
+                                    <div class="campo"><label for="adjTurno">Turno Laboral</label><input type="text" id="adjTurno" class="input-moderno-f field-readonly" readonly placeholder="Turno no asignado"></div>
+                                </div>
+                                
+                                <div class="campo" style="margin-bottom: 1.5rem;">
+                                    <label>Especialidades Clínicas (Multiselección)</label>
+                                    <div class="dropdown-especialidades">
+                                        <div class="select-trigger" id="comboEspecialidades" role="combobox" aria-expanded="false" aria-haspopup="listbox">
+                                            <span id="txtEspecialidadesSeleccionadas">Seleccionar especialidades...</span><span class="flecha-v" aria-hidden="true">▼</span>
+                                        </div>
+                                        <div class="opciones-especialidad" id="contenedorCheckboxes" role="listbox">
+                                            <p class="categoria-esp">Pequeñas Especies</p>
+                                            <label><input type="checkbox" value="Cirugía General"> Cirugía General</label>
+                                            <label><input type="checkbox" value="Dermatología"> Dermatología</label>
+                                            
+                                            <p class="categoria-esp">Grandes Especies / Granja</p>
+                                            <label><input type="checkbox" value="Bovinos"> Medicina en Bovinos</label>
+                                            <label><input type="checkbox" value="Equinos"> Medicina en Equinos</label>
+
+                                            <p class="categoria-esp">Áreas Técnicas</p>
+                                            <label><input type="checkbox" value="Anestesiología"> Anestesiología</label>
+                                            <label><input type="checkbox" value="Imagenología"> Radiología e Imagen</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="campo">
+                                    <label>Firma Digital Homologada (Para Recetas Médicas)</label>
+                                    <div class="contenedor-firma-upload">
+                                        <div id="firmaPreviewCont" class="marco-firma-ajustada">
+                                            <img id="imgFirmaPreview" src="" style="display: none; width: 100%; height: 100%; object-fit: contain;" alt="Vista previa firma">
+                                            <div id="placeholderFirma" style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                                                <span class="material-symbols-rounded" style="font-size: 1.8rem; color: var(--cielo);" aria-hidden="true">draw</span>
+                                                <span style="font-size: 0.75rem; color: var(--texto-secundario);">Subir PNG sin fondo</span>
+                                            </div>
+                                        </div>
+                                        <div class="acciones-firma">
+                                            <input type="file" id="inputFirmaMedico" style="display: none;" accept="image/png">
+                                            <button type="button" id="btnDispararFirma" class="btn-secundario-naranja-outline">Cargar PNG</button>
+                                            <button type="button" class="pie-foto" id="btnBorrarFirma" style="width: auto;">Borrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="bloqueAsistente" style="display: none;">
+                                <div class="grid-dual">
+                                    <div class="campo">
+                                        <label for="adjArea">Área de Apoyo Principal</label>
+                                        <select id="adjArea" class="input-moderno-f">
+                                            <option value="Recepcion">Recepción y Triaje</option>
+                                            <option value="Enfermeria">Enfermería / Piso</option>
+                                            <option value="Laboratorio">Apoyo en Laboratorio</option>
+                                        </select>
+                                    </div>
+                                    <div class="campo"><label for="adjMedicoAsignado">Médico Responsable</label><input type="text" id="adjMedicoAsignado" class="input-moderno-f field-readonly" readonly></div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-azul-fuerte btn-separado-top">Actualizar Información</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="columna-derecha">
+                    <div class="tarjetaContenedora" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                        <div id="fotoPerfilCont" class="marco-foto-ajustada" style="width: 120px; height: 120px; margin-bottom: 1.5rem;">
+                            <span id="placeholderFoto">Foto</span>
+                        </div>
+                        <h3 style="font-size: 1rem;">Foto de Perfil</h3>
+                        <p class="subtitulo" style="font-size: 0.75rem; margin-bottom: 1rem;">Resolución recomendada: 280x280 px</p>
+                        <input type="file" id="inputFotoPerfil" style="display: none;" accept="image/*">
+                        <button type="button" class="btn-azul-fuerte" id="btnCambiarFoto" style="width: 100%; margin-bottom: 10px;">Subir Nueva Imagen</button>
+                        <button type="button" class="pie-foto" style="width: 100%;">Eliminar Foto</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="seccionCuenta" class="seccion-spa">
+            <div class="grid-layout-principal">
+                <div class="columna-izquierda">
+                    <div class="tarjetaContenedora">
+                        <h3>Información de Contacto</h3>
+                        <p class="subtitulo">Gestiona tus datos de comunicación personal.</p>
+                        <form id="formSeguridadCuenta">
+                            <div class="grid-dual">
+                                <div class="campo"><label for="adjCorreo">Email de Usuario</label><input type="email" id="adjCorreo" class="input-moderno-f field-readonly" readonly></div>
+                                <div class="campo"><label for="adjCorreoEmergencia">Email de Emergencia</label><input type="email" id="adjCorreoEmergencia" class="input-moderno-f"></div>
+                            </div>
+                            <div class="campo" style="width: 50%;"><label for="adjTelefono">Teléfono de Contacto</label><input type="tel" id="adjTelefono" class="input-moderno-f"></div>
+                            <button type="submit" class="btn-azul-fuerte btn-separado-top">Guardar Cambios</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="columna-derecha">
+                    <div class="tarjetaContenedora">
+                        <div style="width: 40px; height: 40px; background: rgba(242, 116, 5, 0.1); color: var(--naranja); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                            <span class="material-symbols-rounded">lock</span>
+                        </div>
+                        <h3>Seguridad de Acceso</h3>
+                        <p class="subtitulo">Actualiza tu contraseña regularmente para mantener tu cuenta segura.</p>
+                        
+                        <div class="caja-reglas-gris" style="margin-bottom: 15px;">
+                            <h4 style="margin-bottom: 8px; font-size: 0.85rem; color: var(--texto-oscuro);">Requisitos:</h4>
+                            <ul style="padding-left: 15px; font-size: 0.75rem;">
+                                <li>Mínimo 8 caracteres</li>
+                                <li>Al menos un carácter especial</li>
+                            </ul>
+                        </div>
+
+                        <button type="button" id="btnAbrirModalPass" class="btn-secundario-naranja-outline" style="width: 100%;">Cambiar Contraseña</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section id="seccionSuscripcion" class="seccion-spa">
+            <div class="grid-layout-principal">
+                <div class="columna-izquierda">
+                    <div class="tarjetaContenedora">
+                        <h3>Plan de Infraestructura</h3>
+                        <p class="subtitulo">Controla los límites y cuotas operativas asignadas.</p>
+                        
+                        <div class="bento-grid-suscripcion" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="tarjeta-bento-sub">
+                                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                    <span class="material-symbols-rounded" style="font-size: 2rem; color: #F29F05;" aria-hidden="true">workspace_premium</span>
+                                    <span id="lblEstadoSuscripcion" style="background: #10B981; color: white; margin-left: auto; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold;">Activa</span>
+                                </div>
+                                <p style="margin: 0; font-size: 0.85rem; color: var(--texto-secundario);">Plan Actual</p>
+                                <h4 id="txtPlanActual" style="margin: 5px 0 0 0; font-size: 1.5rem; color: var(--cobalto); text-transform: uppercase;">Básico</h4>
+                            </div>
+
+                            <div class="tarjeta-bento-sub">
+                                <strong style="color: var(--cobalto); display: block; margin-bottom: 15px; font-size: 0.9rem;">Uso de Cuotas Mensuales</strong>
+                                <div style="margin-bottom: 12px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px; color: var(--texto-secundario);">
+                                        <span>Expedientes</span><strong id="txtUsoExpedientes" style="color: var(--texto-oscuro);">0 / 30</strong>
+                                    </div>
+                                    <div style="width: 100%; height: 6px; background: var(--fondo-main); border-radius: 3px; overflow: hidden;">
+                                        <div id="barProgresoExpedientes" style="width: 0%; height: 100%; background: var(--cobalto);"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px; color: var(--texto-secundario);">
+                                        <span>Usuarios</span><strong id="txtUsoUsuarios" style="color: var(--texto-oscuro);">1 / 1</strong>
+                                    </div>
+                                    <div style="width: 100%; height: 6px; background: var(--fondo-main); border-radius: 3px; overflow: hidden;">
+                                        <div id="barProgresoUsuarios" style="width: 100%; height: 100%; background: var(--naranja);"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="columna-derecha">
+                    <div class="tarjeta-upgrade-saas">
+                        <h4 style="font-size: 1.1rem; margin-bottom: 10px;">Eleva tu clínica</h4>
+                        <p style="font-size: 0.85rem; margin-bottom: 20px; line-height: 1.4; opacity: 0.9;">Habilita carga ilimitada de pacientes, recetas controladas y módulos de hospitalización.</p>
+                        <button type="button" id="btnPlanPro" class="btn-azul-fuerte" style="background: var(--naranja); color: white; width: 100%; margin-bottom: 10px;">Mejorar a PRO</button>
+                        <button type="button" id="btnPlanHospital" class="btn-secundario-naranja-outline" style="color: white; border-color: rgba(255,255,255,0.4); width: 100%;">Ver Plan Hospital</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="seccionFacturacion" class="seccion-spa">
+            <div class="grid-layout-principal">
+                <div class="columna-izquierda">
+                    <div class="tarjetaContenedora">
+                        <h3>Datos de Facturación Legal</h3>
+                        <p class="subtitulo">Registra tus datos fiscales.</p>
+                        <form id="formDatosFiscales" class="formulario-ajuste" style="margin-bottom: 2rem;">
+                            <div class="grid-dual">
+                                <div class="campo"><label for="adjNombreLegal">Razón Social</label><input type="text" id="adjNombreLegal" class="input-moderno-f" placeholder="Ej. Servicios S.A."></div>
+                                <div class="campo"><label for="adjRfcFiscal">RFC Fiscal</label><input type="text" id="adjRfcFiscal" class="input-moderno-f" placeholder="Ej. PPRO850101XXX"></div>
+                            </div>
+                            <button type="submit" class="btn-azul-fuerte">Actualizar Cédula</button>
+                        </form>
+
+                        <div class="historial-pagos-saas">
+                            <h4 style="color: var(--cobalto); margin: 0 0 15px 0; font-size: 1rem;">Comprobantes de Suscripción</h4>
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+                                    <thead>
+                                        <tr style="border-bottom: 2px solid var(--borde-suave); color: var(--texto-secundario);">
+                                            <th style="padding: 8px;">Período Fiscal</th>
+                                            <th style="padding: 8px;">Concepto</th>
+                                            <th style="padding: 8px;">Monto</th>
+                                            <th style="padding: 8px;">Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyFacturasSaaS">
+                                        <tr style="border-bottom: 1px solid var(--borde-suave);">
+                                            <td style="padding: 10px 8px;">-</td>
+                                            <td style="padding: 10px 8px;">Sin facturas emitidas</td>
+                                            <td style="padding: 10px 8px;">--</td>
+                                            <td style="padding: 10px 8px;"><span style="background: var(--fondo-main); padding: 2px 8px; border-radius: 10px; font-size: 0.75rem;">N/A</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="columna-derecha">
+                    <div class="tarjetaContenedora">
+                        <div class="cabeceraTarjeta" style="margin-bottom: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="material-symbols-rounded" aria-hidden="true" style="color: var(--cobalto);">payments</span>
+                                <h3 style="margin:0; color: var(--cobalto);">Formas de Pago</h3>
+                            </div>
+                        </div>
+                        
+                        <p class="subtitulo" style="font-size: 0.8rem; margin-bottom: 20px;">Gestiona tus métodos de pago para la suscripción. El método marcado como "Actual" se usará para el próximo cobro.</p>
+                        
+                        <div id="listaTarjetasGuardadas" class="contenedor-tarjetas-registradas">
+                            
+                            <div class="tarjeta-bancaria-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--cobalto); border-radius: var(--radio-elementos); background: rgba(3, 47, 64, 0.05); margin-bottom: 15px;">
+                                <div class="info-tarjeta" style="display: flex; align-items: center; gap: 12px;">
+                                    <span class="material-symbols-rounded" style="color: var(--cobalto); font-size: 24px;">credit_card</span>
+                                    <div class="detalles-tarjeta">
+                                        <p style="margin: 0; font-weight: bold; color: var(--texto-oscuro); font-size: 0.9rem;">•••• •••• •••• 4242</p>
+                                        <p style="margin: 0; font-size: 0.75rem; color: var(--texto-secundario);">Exp: 12/28 • Crédito</p>
+                                    </div>
+                                </div>
+                                <div class="acciones-tarjeta" style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: var(--cobalto); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold;">Actual</span>
+                                    <button class="btn-icono-accion eliminar" aria-label="Eliminar método de pago" style="border: none; background: transparent; cursor: pointer; color: #DC2626;">
+                                        <span class="material-symbols-rounded" style="font-size: 1.2rem;">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <button type="button" id="btnAgregarMetodoPago" class="btn-secundario-naranja-outline btn-separado-top" style="width: 100%; display: flex; justify-content: center; align-items: center;">
+                            <span class="material-symbols-rounded" aria-hidden="true" style="margin-right: 8px;">add_circle</span> Añadir Método de Pago
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="seccionIdentidad" class="seccion-spa">
+            <div class="grid-layout-principal">
+                <div class="columna-izquierda">
+                    <div class="tarjetaContenedora">
+                        <h3>Identidad Institucional</h3>
+                        <p class="subtitulo">Información que aparecerá en recetas y carnets.</p>
+                        <form class="columna-datos-form">
+                            <div class="campo"><label for="nombreClinica">Nombre Comercial</label><input type="text" id="nombreClinica" class="input-moderno-f"></div>
+                            <div class="grid-dual">
+                                <div class="campo"><label for="paisClinica">País</label><select id="paisClinica" class="input-moderno-f"><option>México</option></select></div>
+                                <div class="campo"><label for="direccionClinica">Dirección Física</label><input type="text" id="direccionClinica" class="input-moderno-f"></div>
+                            </div>
+                            <div class="grid-dual">
+                                <div class="campo"><label for="correoClinica">Correo de Contacto</label><input type="email" id="correoClinica" class="input-moderno-f" placeholder="contacto@clinica.com"></div>
+                                <div class="campo"><label for="sitioWebClinica">Sitio Web</label><input type="url" id="sitioWebClinica" class="input-moderno-f" placeholder="www.clinica.com"></div>
+                            </div>
+                            <button type="button" id="btnActualizarIdentidad" class="btn-azul-fuerte btn-separado-top">Actualizar Clínica</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="columna-derecha">
+                    <div class="tarjetaContenedora" style="text-align: center; margin-bottom: 20px;">
+                        <div id="logoContenedor" class="marco-foto-ajustada" style="width: 100px; height: 100px; border-radius: 12px; margin: 0 auto 15px auto;">
+                            <img id="imgLogoPreview" src="" style="display: none; width: 100%; height: 100%; object-fit: contain;" alt="Vista previa logo">
+                            <span id="textoLogo">Logo</span>
+                        </div>
+                        <input type="file" id="inputLogo" style="display: none;" accept="image/*">
+                        <button type="button" id="btnDispararLogo" class="btn-secundario-naranja-outline" style="width: 100%;">Subir Logotipo</button>
+                    </div>
+
+                    <div class="tarjetaContenedora">
+                        <h3 style="font-size: 0.95rem;">Código de Vinculación</h3>
+                        <p class="subtitulo" style="font-size: 0.75rem;">Comparte para agregar empleados.</p>
+                        <div class="caja-codigo-mini" style="margin-bottom: 10px;"><span id="displayCodigo">Cargando...</span></div>
+                        <button class="btn-secundario-naranja-outline" style="width: 100%;">Copiar Código</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="seccionHorarios" class="seccion-spa">
+            <div class="grid-layout-principal">
+                <div class="columna-izquierda">
+                    <div class="tarjetaContenedora" style="padding: 0; overflow: hidden;">
+                        <div class="configurador-horarios-simple" style="border: none;">
+                            <div class="encabezado-dias-grid" style="background: var(--fondo-tarjeta);">
+                                <span>Día</span><span>Estado</span><span>Horario</span>
+                            </div>
+                            <div class="fila-dia-horario">
+                                <div class="dia-nombre"><strong>Lunes</strong></div>
+                                <div class="dia-estado">
+                                    <label class="switch-ui"><input type="checkbox" id="chkLunes" checked><span class="slider-round"></span></label>
+                                    <span class="txt-estado" id="estadoLunes" style="margin-left: 10px; font-weight: bold; color: var(--cobalto);">Abierto</span>
+                                </div>
+                                <div class="dia-relojes">
+                                    <input type="time" id="ini-Lunes" class="input-moderno-f" style="width: auto;" value="09:00"> <span>a</span> <input type="time" id="fin-Lunes" class="input-moderno-f" style="width: auto;" value="18:00">
+                                </div>
+                            </div>
+                            <div class="fila-dia-horario">
+                                <div class="dia-nombre"><strong>Martes</strong></div>
+                                <div class="dia-estado">
+                                    <label class="switch-ui"><input type="checkbox" id="chkMartes" checked><span class="slider-round"></span></label>
+                                    <span class="txt-estado" id="estadoMartes" style="margin-left: 10px; font-weight: bold; color: var(--cobalto);">Abierto</span>
+                                </div>
+                                <div class="dia-relojes">
+                                    <input type="time" id="ini-Martes" class="input-moderno-f" style="width: auto;" value="09:00"> <span>a</span> <input type="time" id="fin-Martes" class="input-moderno-f" style="width: auto;" value="18:00">
+                                </div>
+                            </div>
+                            <div class="fila-dia-horario">
+                                <div class="dia-nombre"><strong>Miércoles</strong></div>
+                                <div class="dia-estado">
+                                    <label class="switch-ui"><input type="checkbox" id="chkMiercoles" checked><span class="slider-round"></span></label>
+                                    <span class="txt-estado" id="estadoMiercoles" style="margin-left: 10px; font-weight: bold; color: var(--cobalto);">Abierto</span>
+                                </div>
+                                <div class="dia-relojes">
+                                    <input type="time" id="ini-Miercoles" class="input-moderno-f" style="width: auto;" value="09:00"> <span>a</span> <input type="time" id="fin-Miercoles" class="input-moderno-f" style="width: auto;" value="18:00">
+                                </div>
+                            </div>
+                            <div class="fila-dia-horario">
+                                <div class="dia-nombre"><strong>Jueves</strong></div>
+                                <div class="dia-estado">
+                                    <label class="switch-ui"><input type="checkbox" id="chkJueves" checked><span class="slider-round"></span></label>
+                                    <span class="txt-estado" id="estadoJueves" style="margin-left: 10px; font-weight: bold; color: var(--cobalto);">Abierto</span>
+                                </div>
+                                <div class="dia-relojes">
+                                    <input type="time" id="ini-Jueves" class="input-moderno-f" style="width: auto;" value="09:00"> <span>a</span> <input type="time" id="fin-Jueves" class="input-moderno-f" style="width: auto;" value="18:00">
+                                </div>
+                            </div>
+                            <div class="fila-dia-horario">
+                                <div class="dia-nombre"><strong>Viernes</strong></div>
+                                <div class="dia-estado">
+                                    <label class="switch-ui"><input type="checkbox" id="chkViernes" checked><span class="slider-round"></span></label>
+                                    <span class="txt-estado" id="estadoViernes" style="margin-left: 10px; font-weight: bold; color: var(--cobalto);">Abierto</span>
+                                </div>
+                                <div class="dia-relojes">
+                                    <input type="time" id="ini-Viernes" class="input-moderno-f" style="width: auto;" value="09:00"> <span>a</span> <input type="time" id="fin-Viernes" class="input-moderno-f" style="width: auto;" value="18:00">
+                                </div>
+                            </div>
+                            <div class="fila-dia-horario">
+                                <div class="dia-nombre"><strong>Sábado</strong></div>
+                                <div class="dia-estado">
+                                    <label class="switch-ui"><input type="checkbox" id="chkSabado" checked><span class="slider-round"></span></label>
+                                    <span class="txt-estado" id="estadoSabado" style="margin-left: 10px; font-weight: bold; color: var(--cobalto);">Abierto</span>
+                                </div>
+                                <div class="dia-relojes">
+                                    <input type="time" id="ini-Sabado" class="input-moderno-f" style="width: auto;" value="10:00"> <span>a</span> <input type="time" id="fin-Sabado" class="input-moderno-f" style="width: auto;" value="14:00">
+                                </div>
+                            </div>
+                            <div class="fila-dia-horario dia-cerrado">
+                                <div class="dia-nombre"><strong>Domingo</strong></div>
+                                <div class="dia-estado">
+                                    <label class="switch-ui"><input type="checkbox" id="chkDomingo"><span class="slider-round"></span></label>
+                                    <span class="txt-estado" id="estadoDomingo" style="margin-left: 10px; font-weight: bold; color: #E74C3C;">Cerrado</span>
+                                </div>
+                                <div class="dia-relojes">
+                                    <input type="time" id="ini-Domingo" class="input-moderno-f" disabled value="--:--" style="width: auto;"> <span style="opacity: 0.5;">a</span> <input type="time" id="fin-Domingo" class="input-moderno-f" disabled value="--:--" style="width: auto;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="columna-derecha">
+                    <div class="tarjetaContenedora">
+                        <div style="width: 40px; height: 40px; background: rgba(3, 47, 64, 0.1); color: var(--cobalto); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                            <span class="material-symbols-rounded">schedule</span>
+                        </div>
+                        <h3>Horario de Atención</h3>
+                        <p class="subtitulo">Define qué días abres y en qué horario para que los clientes puedan agendar.</p>
+                        <button id="btnGuardarHorarios" class="btn-azul-fuerte" style="width: 100%;">Guardar Horario</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section id="seccionServicios" class="seccion-spa">
+            <div class="grid-layout-principal">
+                <div class="columna-izquierda">
+                    <div class="tarjetaContenedora">
+                        <h3 id="tituloFormServicio">Agregar al Catálogo</h3>
+                        <p class="subtitulo">Registra nuevos servicios y tratamientos médicos.</p>
+                        
+                        <form id="formCatalogoServicios" class="formulario-ajuste">
+                            <div class="grid-terciario">
+                                <div class="campo">
+                                    <label for="inCatServicio">Categoría</label>
+                                    <select id="inCatServicio" class="input-moderno-f">
+                                        <option value="Consulta">Consulta</option>
+                                        <option value="Vacunación">Vacunación</option>
+                                        <option value="Cirugía">Cirugía</option>
+                                        <option value="Estética">Estética / Grooming</option>
+                                    </select>
+                                </div>
+                                <div class="campo">
+                                    <label for="inNombreServicio">Servicio</label>
+                                    <input type="text" id="inNombreServicio" class="input-moderno-f" required placeholder="Ej. Consulta Especialidad">
+                                </div>
+                                <div class="campo">
+                                    <label for="inPrecioServicio">Precio ($)</label>
+                                    <input type="number" id="inPrecioServicio" class="input-moderno-f" min="0" step="0.01" required>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="submit" id="btnGuardarServicio" class="btn-azul-fuerte btn-separado-top">+ Agregar Servicio</button>
+                                <button type="button" id="btnCancelarEdicionServicio" class="btn-secundario-naranja-outline btn-separado-top" style="display: none;">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="columna-derecha">
+                    <div class="tarjetaContenedora">
+                        <h3>Catálogo Actual</h3>
+                        <p class="subtitulo">Servicios disponibles para facturación.</p>
+                        <div id="listaServiciosConfig" class="contenedor-tags-equipo" style="display: flex; flex-direction: column; gap: 10px;">
+                            <p style="font-size: 0.8rem; color: var(--texto-secundario); text-align: center;">El catálogo está vacío.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<div id="modalCambioPassword" class="overlay-modal-seguro">
+    <div class="modal-glass">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; color: var(--cobalto);">Actualizar Contraseña</h3>
+            <button id="btnCerrarModalPass" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--texto-secundario);">&times;</button>
+        </div>
+        <form id="formNuevaPassword" style="display: flex; flex-direction: column; gap: 15px;">
+            <div class="campo">
+                <label>Nueva Contraseña</label>
+                <input type="password" id="inNuevaPass" class="input-moderno-f" placeholder="Mínimo 8 caracteres" required minlength="8">
+            </div>
+            <div class="campo">
+                <label>Confirmar Contraseña</label>
+                <input type="password" id="inConfirmarPass" class="input-moderno-f" placeholder="Repite tu contraseña" required minlength="8">
+            </div>
+            <p id="msgErrorPass" style="color: #DC2626; font-size: 0.8rem; margin: 0; display: none;">Las contraseñas no coinciden.</p>
+            <button type="submit" class="btn-azul-fuerte" style="width: 100%;">Procesar Cambio Seguro</button>
+        </form>
+    </div>
+</div>

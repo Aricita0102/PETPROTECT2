@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin | Protect Pet</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <script type="module" crossorigin src="/assets/ADMINISTRADOR_DASHBOARD-D-pp39UI.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-Dezn_h7o.js">
+  <link rel="modulepreload" crossorigin href="/assets/chunk-aKtaBQYM.js">
+  <link rel="modulepreload" crossorigin href="/assets/conexion-DiH-JvMT.js">
+  <link rel="modulepreload" crossorigin href="/assets/sesion_store-BSrAgZd7.js">
+  <link rel="stylesheet" crossorigin href="/assets/ADMINISTRADOR_DASHBOARD-BEpoLoyT.css">
+</head>
+<body>
+
+    <div class="contenedorDashboard">
+        
+        <aside class="menuLateral">
+            <div class="logotipoArea">
+                <span class="puntoNaranja"></span> PROTECT PET
+            </div>
+            <nav class="enlacesMenu">
+                <a href="#" class="activo">Dashboard</a>
+                <a href="ADMINISTRADOR CONFIG CLINICA.html">Configuración Clínica</a>
+                <a href="ADMINISTRADOR GESTION USUARIOS.html">Gestión de Usuarios</a>
+                <a href="#">Reportes de Actividad</a>
+            </nav>
+
+            <div class="perfilMini">
+                <div id="sidebarFotoAdmin" class="avatar" style="width: 45px; height: 45px; border-radius: 50%; background-color: #ddd;"></div>
+                <div class="infoAdmin">
+                    <p class="nombreAdmin" id="txtNombreAdminSide">Cargando...</p>
+                    <p id="txtRolAdminSide" style="color: #F29F05; font-size: 0.75rem; font-weight: bold; margin-bottom: 5px;">CARGANDO ROL...</p>
+                    <a href="#" class="linkCerrar" id="btnCerrarSesion">Cerrar Sesión</a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="areaPrincipal">
+            <header class="cabeceraDashboard">
+                <div class="saludo">
+                    <h1>Hola, <span id="saludoNombre">Administrador</span></h1>
+                    <p id="fechaActual">Cargando fecha...</p>
+                </div>
+                <div class="codigoClinica">
+                    <span class="etiquetaCodigo">Código de Clínica:</span>
+                    <span class="valorCodigo" id="codigoActual">PP-0000-00</span>
+                </div>
+            </header>
+
+            <section class="gridEstadisticas">
+                
+                <div class="tarjetaEstadistica">
+                    <h3>Usuarios Activos</h3>
+                    <p class="cifra" id="contActivos">--</p>
+                    <span class="subCifra">Veterinarios y Asistentes</span>
+                </div>
+                
+                <div class="tarjetaEstadistica">
+                    <h3>Solicitudes Pendientes</h3>
+                    <p class="cifra naranja" id="contPendientes">--</p>
+                    <button class="botonMini" id="btnVerSolicitudes">Ver Solicitudes</button>
+                </div>
+                
+                <div class="tarjetaEstadistica azul">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <h3 style="margin:0;">Punto de Equilibrio</h3>
+                        <small style="font-size: 0.65rem; opacity: 0.8; text-transform:uppercase;">Mensual</small>
+                    </div>
+                    
+                    <div class="input-egresos-container">
+                        <label for="inputEgresos">Gastos Fijos ($):</label>
+                        <div class="fila-input">
+                            <input type="number" id="inputEgresos" placeholder="0.00" class="input-dark">
+                            <button id="btnGuardarEgresos" class="botonMini" title="Calcular y Guardar">Guardar</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 5px;">
+                        <p class="cifra" id="txtClientesMeta">--</p>
+                        <span class="subCifra" id="txtDetalleEquilibrio">Clientes necesarios para cubrir gastos</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="seccionGestion">
+                <div class="tablaUsuarios">
+                    <div class="cabeceraTabla">
+                        <h2>Personal Reciente</h2>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaResumenPersonal">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>

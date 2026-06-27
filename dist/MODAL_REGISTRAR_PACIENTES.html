@@ -1,0 +1,250 @@
+<aside id="contenedorRegistro" class="modal-backdrop-premium modal-lateral-backdrop" aria-hidden="true">
+    <style>
+        /* Ajuste específico para que coincida exactamente con el tamaño del panel de notificaciones (derecho) */
+        body div#contenedor-modal-dinamico #contenedorRegistro.modal-backdrop-premium .ventana-modal-bento.grande.modal-lateral-panel {
+            width: 420px !important;
+            max-width: 100vw !important;
+        }
+        /* Convertir el formulario a una sola columna por el ancho reducido */
+        body div#contenedor-modal-dinamico #contenedorRegistro .info-grid-2col {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+        }
+        /* Ajuste responsive de las estadísticas */
+        body div#contenedor-modal-dinamico #contenedorRegistro .stats-row {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 8px !important;
+        }
+        /* Asegurar que el z-index sea lo suficientemente alto */
+        body div#contenedor-modal-dinamico #contenedorRegistro.modal-lateral-backdrop {
+            z-index: 999999 !important;
+        }
+    </style>
+    
+    <div class="ventana-modal-bento grande modal-lateral-panel">
+        
+        <button type="button" class="boton-cerrar-modal-bento btn-cerrar-lateral" id="btnCerrarRegistro" aria-label="Cancelar registro express">
+            <span class="material-symbols-rounded">close</span>
+        </button>
+
+        <div class="contenido-interno-modal contenido-scrollable">
+            
+            <div class="breadcrumbs">
+                Recepción <span>&gt;</span> Control de Admisión <span>&gt;</span> Triage Express
+            </div>
+
+            <header class="product-header">
+                <div class="header-title-area">
+                    <h1 id="titulo-detalle-tienda">INGRESO RÁPIDO DE PACIENTE</h1>
+                    <span class="code-chip">Prioridad Triage &lt; 60s</span>
+                </div>
+                <div class="header-actions">
+                    <button type="button" class="text-action-btn">Ver Protocolo</button>
+                </div>
+            </header>
+
+            <form id="formRegistroExpress" novalidate class="dashboard-grid" style="grid-template-columns: 1fr;">
+                
+                <div class="grid-column">
+                    
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <div class="stat-label">Estado Actual</div>
+                            <div class="stat-value">Recepción</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Tipo Ingreso</div>
+                            <div class="stat-value">Urgencia</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Tiempo Espera</div>
+                            <div class="stat-value">0 min</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <span class="material-symbols-rounded" style="font-size: 18px; color: var(--text-secondary);">info</span>
+                                Biometría del Paciente
+                            </div>
+                        </div>
+                        <div class="info-grid-2col bento-form-grid">
+                            <div class="form-group span-2">
+                                <label for="exp_nombre_paciente">Nombre del Paciente <span class="required">*</span></label>
+                                <input type="text" id="exp_nombre_paciente" name="nombre" required placeholder="Ej. Firulais">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exp_especie">Especie <span class="required">*</span></label>
+                                <select id="exp_especie" name="especie" required>
+                                    <option value="" disabled selected>Seleccionar Especie...</option>
+                                    
+                                    <optgroup label="Más Comunes (Conectados a API)">
+                                        <option value="canino">Canino (Perro)</option>
+                                        <option value="felino">Felino (Gato)</option>
+                                    </optgroup>
+
+                                    <optgroup label="Pequeños Mamíferos y Exóticos">
+                                        <option value="Lagomorfo">Lagomorfo (Conejo)</option>
+                                        <option value="Roedor">Roedor (Hámster, Cobaya, Chinchilla, Rata)</option>
+                                        <option value="Mustelido">Mustélido (Hurón)</option>
+                                        <option value="Porcino">Porcino (Mini Pig / Cerdo Doméstico)</option>
+                                        <option value="Erinaceomorfo">Erinaceomorfo (Erizo)</option>
+                                        <option value="Marsupial">Marsupial (Petauro del Azúcar)</option>
+                                    </optgroup>
+
+                                    <optgroup label="Aves">
+                                        <option value="Ave_Psitaciforme">Psitaciforme (Loro, Periquito, Cacatúa)</option>
+                                        <option value="Ave_Paseriforme">Paseriforme (Canario, Jilguero)</option>
+                                        <option value="Ave_Corral">Ave de Corral (Gallina, Pato, Pavo)</option>
+                                        <option value="Ave_Rapaz">Ave Rapaz (Halcón, Búho)</option>
+                                    </optgroup>
+
+                                    <optgroup label="Reptiles y Anfibios">
+                                        <option value="Reptil_Chelonio">Chelonio (Tortuga)</option>
+                                        <option value="Reptil_Squamata">Squamata (Iguana, Camaleón, Lagarto)</option>
+                                        <option value="Reptil_Serpiente">Serpiente (Pitón, Boa, Culebra)</option>
+                                        <option value="Anfibio">Anfibio (Rana, Sapo, Ajolote)</option>
+                                    </optgroup>
+
+                                    <optgroup label="Animales Mayores (Granja/Producción)">
+                                        <option value="Equino">Equino (Caballo, Burro, Mula)</option>
+                                        <option value="Bovino">Bovino (Vaca, Toro)</option>
+                                        <option value="Caprino">Caprino (Cabra)</option>
+                                        <option value="Ovino">Ovino (Oveja, Borrego)</option>
+                                    </optgroup>
+
+                                    <optgroup label="Otros">
+                                        <option value="Otro">Otra Especie / Indefinido</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exp_raza">Raza <span class="required">*</span></label>
+                                <input type="text" id="exp_raza" name="raza" required placeholder="Selecciona una especie primero" list="lista-razas">
+                                <datalist id="lista-razas">
+                                    <option value="Mestizo"></option>
+                                </datalist>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exp_sexo_repro">Sexo y Reproducción <span class="required">*</span></label>
+                                <select id="exp_sexo_repro" name="sexo_repro" required>
+                                    <option value="" disabled selected>Seleccionar...</option>
+                                    <option value="macho_entero">Macho Entero</option>
+                                    <option value="macho_castrado">Macho Castrado</option>
+                                    <option value="hembra_entera">Hembra Entera</option>
+                                    <option value="hembra_esterilizada">Hembra Esterilizada</option>
+                                    <option value="indefinido">Indefinido / Desconocido</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="display: flex; gap: 8px;">
+                                <div style="flex: 1;">
+                                    <label for="exp_edad_anios">Edad (Años)</label>
+                                    <input type="number" id="exp_edad_anios" name="edad_anios" min="0" max="30" placeholder="0">
+                                </div>
+                                <div style="flex: 1;">
+                                    <label for="exp_edad_meses">Meses</label>
+                                    <input type="number" id="exp_edad_meses" name="edad_meses" min="0" max="11" placeholder="0">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exp_peso">Peso Exacto (kg) <span class="required">*</span></label>
+                                <input type="number" id="exp_peso" name="peso" step="0.01" min="0.01" required placeholder="0.00">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exp_tipo_sangre">Tipo de Sangre</label>
+                                <select id="exp_tipo_sangre" name="tipo_sangre">
+                                    <option value="desconocido" selected>Desconocido</option>
+                                    <option value="canino_dea1_pos">DEA 1+ (Canino)</option>
+                                    <option value="canino_dea1_neg">DEA 1- (Canino)</option>
+                                    <option value="felino_a">Tipo A (Felino)</option>
+                                    <option value="felino_b">Tipo B (Felino)</option>
+                                    <option value="felino_ab">Tipo AB (Felino)</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding-bottom: 24px;">
+                        <div class="section-header" style="margin-bottom: 24px;">
+                            <div class="section-title">
+                                <span class="material-symbols-rounded" style="font-size: 18px; color: var(--text-secondary);">warning</span>
+                                Alertas de Triage y Manejo
+                            </div>
+                        </div>
+                        
+                        <div class="form-group-list gap-md">
+                            <div class="form-group">
+                                <label for="exp_alergias">Alergias Conocidas</label>
+                                <input type="text" id="exp_alergias" name="alergias" placeholder="Dejar en blanco si no hay">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exp_temperamento">Precauciones de Manejo</label>
+                                <select id="exp_temperamento" name="temperamento">
+                                    <option value="docil">Dócil / Amigable</option>
+                                    <option value="nervioso">Nervioso / Asustadizo</option>
+                                    <option value="agresivo">Agresivo / Muerde (Requiere Precaución)</option>
+                                    <option value="venenoso">Especie Venenosa / Peligrosa</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exp_motivo_consulta">Motivo de Ingreso (Breve)</label>
+                                <textarea id="exp_motivo_consulta" name="motivo_consulta" rows="2" placeholder="Ej. Atropellado, Vómito desde ayer..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <span class="material-symbols-rounded" style="font-size: 18px; color: var(--text-secondary);">person</span>
+                                Tutor Responsable
+                            </div>
+                        </div>
+                        <div class="info-grid-2col bento-form-grid"> 
+                            <div class="form-group">
+                                <label for="exp_tutor_nombre">Nombre Completo <span class="required">*</span></label>
+                                <input type="text" id="exp_tutor_nombre" name="tutor_nombre" required placeholder="Persona que autoriza">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exp_tutor_tel">Teléfono de Emergencia <span class="required">*</span></label>
+                                <input type="tel" id="exp_tutor_tel" name="tutor_telefono" required pattern="[0-9]{10}" placeholder="10 dígitos">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+                        
+                        <button type="button" id="btn_guardar_expediente" class="btn btn-primary" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 8px; padding: 12px; font-size: 14px;">
+                            <span class="material-symbols-rounded" style="font-size: 18px;">save</span>
+                            Guardar Expediente
+                        </button>
+
+                        <button type="button" id="btn_completar_expediente" class="btn btn-outline" style="width: 100%; justify-content: center; display: none; align-items: center; gap: 8px; padding: 12px; font-size: 14px;">
+                            <span class="material-symbols-rounded" style="font-size: 18px;">folder_shared</span>
+                            Completar Expediente
+                        </button>
+
+                        <button type="submit" id="btn_iniciar_consulta" class="btn btn-primary" style="width: 100%; justify-content: center; display: none; align-items: center; gap: 8px; padding: 12px; font-size: 14px; background-color: #059669; border-color: #059669;">
+                            <span class="material-symbols-rounded" style="font-size: 18px;">emergency</span>
+                            Iniciar Consulta Ahora
+                        </button>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</aside>

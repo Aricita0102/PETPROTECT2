@@ -1,0 +1,61 @@
+mutation AddNewOwner(
+  $firstName: String!
+  $lastName: String!
+  $phoneNumber: String!
+) @auth(level: USER) {
+  owner_insert(
+    data: {firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber}
+  )
+}
+
+query GetPetDetails($petId: UUID!) @auth(level: USER) {
+  pet(id: $petId) {
+    name
+    species
+    breed
+    dateOfBirth
+    owner {
+      firstName
+      lastName
+      email
+      phoneNumber
+    }
+    medicalRecordEntries {
+      diagnosis
+      treatment
+      entryDate
+      notes
+    }
+  }
+}
+
+mutation ScheduleAppointment(
+  $petId: UUID!
+  $assignedVeterinarianId: UUID!
+  $appointmentDate: Date!
+  $appointmentTime: String!
+  $reason: String!
+  $status: String!
+  $notes: String
+) @auth(level: USER) {
+  appointment_insert(
+    data: {
+      petId: $petId
+      assignedVeterinarianId: $assignedVeterinarianId
+      appointmentDate: $appointmentDate
+      appointmentTime: $appointmentTime
+      reason: $reason
+      status: $status
+      notes: $notes
+    }
+  )
+}
+
+query ListAvailableVeterinarians @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  clinicUsers(where: {role: {eq: "veterinarian"}}) {
+    id
+    firstName
+    lastName
+    specialty
+  }
+}

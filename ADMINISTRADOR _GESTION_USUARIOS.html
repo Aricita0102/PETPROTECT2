@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Personal | Protect Pet</title>
+    <link rel="stylesheet" href="/src/css/admin_gestion_usuarios_css.css">
+</head>
+<body>
+    
+    <a href="PRINCIPAL.html" class="botonVolver">← Volver al Panel</a>
+    
+    <div class="contenedorGestion">
+        <header class="barraAcciones">
+            <div class="textoCabecera">
+                <h1>Equipo de Trabajo</h1>
+                <p>Administra quién tiene acceso a la clínica.</p>
+            </div>
+            <div class="resumenPersonal">
+                <span class="etiqueta">Usuarios Totales: <strong id="conteoTotal">--</strong></span>
+            </div>
+        </header>
+
+        <nav class="pestanasNavegacion">
+            <button class="pestana activa" id="btnPestanaPendientes">Solicitudes Pendientes</button>
+            <button class="pestana" id="btnPestanaActivos">Personal Activo</button>
+        </nav>
+
+        <main class="areaContenido">
+            
+            <section class="seccionSolicitudes" id="contenedorPendientes">
+                <div style="text-align: center; padding: 2rem; color: #888;">
+                    <p>Cargando solicitudes...</p>
+                </div>
+            </section>
+
+            <section class="seccionActivos" id="contenedorActivos" style="display: none;">
+                <div id="listaActivosVertical" class="lista-vertical-personal">
+                    <div style="text-align: center; padding: 2rem; color: #888;">
+                        <p>Cargando equipo...</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script type="module" src="/src/js/admin_gestion_logica.js"></script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+/* ==========================================================================
+   MÓDULO INVENTARIO: CATÁLOGO CLÍNICO (PET PROTECT)
+   ========================================================================== */
+
+/* --- Encabezado --- */
+.encabezado-modulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 80px;
+    margin-bottom: 30px;
+    padding: 0 5px;
+}
+
+.titulos-modulo h2 {
+    font-size: 26px;
+    color: var(--cobalto, #032F40);
+    margin: 8px 0 4px 0;
+}
+
+.titulos-modulo p {
+    color: var(--texto-gris, #64748B);
+    font-size: 14px;
+    margin: 0;
+}
+
+.migas-pan {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--texto-gris);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.migas-pan .material-symbols-rounded { font-size: 16px; color: var(--cielo); }
+.migas-pan .separador { color: #CBD5E1; }
+.migas-pan strong { color: var(--cobalto); font-weight: 700; }
+
+.acciones-modulo { display: flex; gap: 12px; }
+
+/* --- Tabla Bento --- */
+.tabla-contenedor {
+    background: #FFFFFF;
+    border-radius: 24px;
+    border: 1px solid var(--border-color, #E2E8F0);
+    box-shadow: 0 10px 15px -3px rgba(3, 47, 64, 0.05);
+    overflow: hidden;
+}
+
+.barra-herramientas-tabla {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    background: #FFFFFF;
+}
+
+.buscador-universal-bento.oscuro {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 350px;
+}
+.buscador-universal-bento.oscuro input { 
+    background: transparent; border: none; outline: none; width: 100%;
+    color: var(--cobalto); font-size: 14px;
+}
+
+/* --- Estructura Tabla SAAS --- */
+.envoltorio-tabla { overflow-x: auto; }
+
+.tabla-saas {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.tabla-saas th {
+    background: #F8FAFC;
+    color: #475569;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    padding: 16px 24px;
+    border-bottom: 2px solid #E2E8F0;
+}
+
+.tabla-saas td {
+    padding: 20px 24px;
+    border-bottom: 1px solid #F1F5F9;
+    vertical-align: middle;
+}
+
+.tabla-saas tbody tr:hover { background: #FDFDFD; }
+
+/* --- Elementos de Celda --- */
+.celda-producto { display: flex; align-items: center; gap: 16px; }
+
+.icono-producto {
+    width: 44px; height: 44px; background: #F1F5F9;
+    color: var(--cielo); display: grid; place-items: center;
+    border-radius: 12px; font-size: 20px !important;
+}
+
+.info-texto strong { display: block; color: var(--cobalto); font-size: 14px; }
+.info-texto small { color: var(--texto-gris); font-size: 12px; }
+
+/* --- Badges Premium --- */
+.badge-estado {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: inline-block;
+}
+.badge-estado.optimo { background: rgba(5, 150, 105, 0.1); color: #059669; }
+.badge-estado.advertencia { background: rgba(217, 119, 6, 0.1); color: #D97706; }
+.badge-estado.critico { background: rgba(220, 38, 38, 0.1); color: #DC2626; }
+
+/* --- Modal y Formulario Bento --- */
+.modal-superpuesto {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(3, 47, 64, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 3000;
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; visibility: hidden; transition: all 0.3s ease;
+}
+
+.modal-superpuesto.visible { opacity: 1; visibility: visible; }
+
+.tarjeta-modal-bento {
+    background: #FFFFFF; width: 100%; max-width: 650px;
+    border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+    transform: translateY(20px); transition: transform 0.3s ease;
+}
+
+.modal-superpuesto.visible .tarjeta-modal-bento { transform: translateY(0); }
+
+.encabezado-modal {
+    padding: 24px 30px; border-bottom: 1px solid #E2E8F0;
+    display: flex; justify-content: space-between; align-items: center;
+}
+
+.formulario-saas { padding: 30px; }
+
+.rejilla-formulario { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.input-premium {
+    width: 100%; padding: 12px; border-radius: 10px;
+    border: 1px solid #E2E8F0; background: #F8FAFC;
+    font-size: 14px; outline: none; transition: 0.3s;
+}
+
+.input-premium:focus { border-color: var(--naranja); box-shadow: 0 0 0 4px rgba(242, 116, 5, 0.1); }

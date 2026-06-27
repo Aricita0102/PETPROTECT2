@@ -1,0 +1,178 @@
+<div class="encabezado-modulo">
+    <div class="titulos-modulo">
+        <div class="migas-pan">
+            <span class="material-symbols-rounded">medical_services</span> 
+            <span>Inventario</span> <span class="separador">/</span> <strong>Insumos Clínicos</strong>
+        </div>
+        <h2>Catálogo de Insumos</h2>
+        <p>Jeringas, gasas, material qx y consumibles de uso interno.</p>
+    </div>
+    <div class="acciones-modulo">
+        <button class="boton-solido secundario" aria-label="Exportar Excel">
+            <span class="material-symbols-rounded">download</span> Exportar
+        </button>
+        <button class="boton-solido primaria" id="btn-abrir-modal-insumo">
+            <span class="material-symbols-rounded">add</span> Nuevo Insumo
+        </button>
+    </div>
+</div>
+
+<div class="tarjeta-bento tabla-contenedor">
+    <div class="barra-herramientas-tabla">
+        <div class="buscador-universal-bento oscuro">
+            <span class="material-symbols-rounded">search</span>
+            <input type="text" id="input-busqueda-insumo" placeholder="Buscar por nombre, código o marca...">
+        </div>
+        <div class="filtros-tabla">
+            <select id="select-filtro-insumo" class="select-premium" aria-label="Filtrar por categoría">
+                <option value="todos">Todas las categorías</option>
+                <option value="descartables">Descartables (Jeringas, Agujas)</option>
+                <option value="quirurgico">Material Quirúrgico</option>
+                <option value="curacion">Material de Curación</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="envoltorio-tabla">
+        <table class="tabla-saas" id="tabla-productos-insumos">
+            <thead>
+                <tr>
+                    <th>Insumo / Marca</th>
+                    <th>Categoría</th>
+                    <th>Código / SKU</th>
+                    <th>Unidad de Medida</th>
+                    <th class="texto-derecha">Stock Actual</th>
+                    <th class="texto-centro">Estado</th>
+                    <th class="texto-centro">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="celda-producto">
+                            <span class="icono-producto material-symbols-rounded">healing</span>
+                            <div class="info-texto">
+                                <strong>Gasa Estéril 10x10cm</strong>
+                                <small>Leukoplast</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="etiqueta-categoria curacion">Curación</span>
+                        <div style="display: flex; align-items: center; gap: 4px; margin-top: 4px; font-size: 11px; color: #10B981; font-weight: 600;">
+                            <span class="material-symbols-rounded" style="font-size: 14px;">verified</span> Estéril
+                        </div>
+                    </td>
+                    <td class="texto-mono">INS-GAS-10X10</td>
+                    <td>Paquete (100 pz)</td>
+                    <td class="texto-derecha"><strong>15</strong> <small>Pqts</small></td>
+                    <td class="texto-centro"><span class="badge-estado optimo">Óptimo</span></td>
+                    <td class="texto-centro">
+                        <button class="boton-fantasma-icono btn-editar-insumo" aria-label="Editar insumo"><span class="material-symbols-rounded">edit</span></button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="celda-producto">
+                            <span class="icono-producto material-symbols-rounded">vaccines</span>
+                            <div class="info-texto">
+                                <strong>Jeringa 3ml con Aguja</strong>
+                                <small>Nipro</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="etiqueta-categoria descartables">Descartables</span>
+                    </td>
+                    <td class="texto-mono">INS-JER-3ML</td>
+                    <td>Caja (100 pz)</td>
+                    <td class="texto-derecha texto-peligro"><strong>2</strong> <small>Cajas</small></td>
+                    <td class="texto-centro"><span class="badge-estado critico">Agotándose</span></td>
+                    <td class="texto-centro">
+                        <button class="boton-fantasma-icono btn-editar-insumo" aria-label="Editar insumo"><span class="material-symbols-rounded">edit</span></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="modal-nuevo-insumo" class="modal-superpuesto" aria-hidden="true">
+    <div class="tarjeta-modal-bento">
+        <header class="encabezado-modal">
+            <div>
+                <h3>Nuevo Insumo Clínico</h3>
+                <p>Registre material para uso interno del hospital.</p>
+            </div>
+            <button class="boton-cerrar-modal" id="btn-cerrar-modal-insumo" aria-label="Cerrar modal">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+        </header>
+
+        <form id="form-nuevo-insumo" class="formulario-saas">
+            <div class="rejilla-formulario">
+                
+                <div class="grupo-input ancho-completo">
+                    <label for="ins-nombre">Nombre del Insumo *</label>
+                    <input type="text" id="ins-nombre" class="input-premium" placeholder="Ej. Hilo de Sutura Nylon 3-0" required>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="ins-marca">Marca / Fabricante</label>
+                    <input type="text" id="ins-marca" class="input-premium" placeholder="Ej. Ethicon">
+                </div>
+
+                <div class="grupo-input">
+                    <label for="ins-categoria">Categoría *</label>
+                    <select id="ins-categoria" class="input-premium" required>
+                        <option value="descartables">Descartables (Jeringas, Agujas)</option>
+                        <option value="quirurgico">Quirófano (Suturas, Bisturí)</option>
+                        <option value="curacion">Curación (Gasas, Vendas)</option>
+                        <option value="laboratorio">Laboratorio (Tubos, Reactivos)</option>
+                    </select>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="ins-unidad">Unidad de Almacenamiento *</label>
+                    <select id="ins-unidad" class="input-premium" required>
+                        <option value="caja">Caja</option>
+                        <option value="paquete">Paquete</option>
+                        <option value="pieza">Pieza Individual</option>
+                        <option value="rollo">Rollo</option>
+                    </select>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="ins-codigo">Código Interno / SKU *</label>
+                    <input type="text" id="ins-codigo" class="input-premium texto-mono" placeholder="Ej. INS-001" required>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="ins-stock">Stock Inicial (Cajas/Pqts)</label>
+                    <input type="number" id="ins-stock" class="input-premium texto-derecha" placeholder="0" step="1">
+                </div>
+                
+                <div class="grupo-input">
+                    <label for="ins-minimo">Alerta de Stock Mínimo</label>
+                    <input type="number" id="ins-minimo" class="input-premium texto-derecha" placeholder="5" step="1">
+                </div>
+
+                <div class="grupo-input ancho-completo" style="margin-top: 10px;">
+                    <label class="checkbox-medico" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: #F0FDF4; border-radius: 8px; border: 1px solid #86EFAC;">
+                        <input type="checkbox" id="ins-esteril" style="width: 20px; height: 20px; accent-color: #10B981;">
+                        <span style="color: #065F46; font-weight: 600;">Este material es completamente Estéril</span>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="acciones-formulario">
+                <button type="button" class="boton-solido secundario" id="btn-cancelar-insumo">Cancelar</button>
+                <button type="submit" class="boton-solido primaria">
+                    <span class="material-symbols-rounded">save</span> Guardar Insumo
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

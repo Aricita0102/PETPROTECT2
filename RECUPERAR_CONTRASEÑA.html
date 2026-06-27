@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Acceso | Protect Pet</title>
+    <link rel="stylesheet" href="/src/css/recuperarcontraseña_css.css">
+</head>
+<body>
+
+    <div class="contenedorRecuperar">
+        <div class="contenedorLogo">
+            <img src="./img/logoprotectpet.png" alt="Protect Pet Logo" class="logotipoImagen">
+        </div>
+
+        <div class="bloqueInformativo">
+            <h1>¿Olvidaste tu contraseña?</h1>
+            <p>No te preocupes, suele pasar. Ingresa el correo asociado a tu cuenta de la clínica y te enviaremos instrucciones para restablecerla.</p>
+        </div>
+
+        <div id="contenedorErrores" style="display: none; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease;"></div>
+        <div id="contenedorExito" style="display: none; background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease;"></div>
+
+        <form class="formularioRecuperar" id="formRecuperar" onsubmit="event.preventDefault();">
+            <div class="grupoEntrada">
+                <label>Correo electrónico</label>
+                <input type="email" id="correoRecuperar" placeholder="ejemplo@protectpet.com" required>
+            </div>
+
+            <button type="submit" class="botonEnviar">Enviar instrucciones</button>
+        </form>
+
+        <div class="pieRecuperar">
+            <a href="LOGIN.html" class="enlaceRegresar">← Volver al inicio de sesión</a>
+        </div>
+    </div>
+
+    <script type="module" src="/src/js/recuperar_logica.js"></script>
+</body>
+</html>

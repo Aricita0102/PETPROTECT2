@@ -1,0 +1,145 @@
+/* Configuración de Fuente Century Gothic */
+@font-face {
+    font-family: 'Century Gothic';
+    src: local('Century Gothic');
+}
+
+/* Colores Directos según tu paleta: #032F40, #89C2D9, #F5F5F5, #F29F05 */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Century Gothic', sans-serif;
+    background-color: #F5F5F5;
+    color: #032F40;
+}
+
+.interfazAsistente {
+    display: flex;
+    height: 100vh;
+}
+
+/* Barra Lateral (Reutilizada y consistente) */
+.barraLateral {
+    width: 280px;
+    background-color: #032F40;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+}
+
+.puntoNaranja {
+    width: 12px;
+    height: 12px;
+    background-color: #F29F05;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.menuAsistente a {
+    display: block;
+    color: #89C2D9;
+    text-decoration: none;
+    padding: 1rem 0;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.menuAsistente a.activo {
+    color: #F29F05; /* Naranja para item seleccionado */
+}
+
+/* Área de Contenido */
+.contenidoDirectorio {
+    flex: 1;
+    padding: 3rem;
+    overflow-y: auto;
+}
+
+.cabeceraDirectorio {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.botonNuevoCliente {
+    background-color: #032F40;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 15px;
+    font-family: 'Century Gothic';
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.barraBusqueda input {
+    width: 100%;
+    padding: 1.2rem;
+    border: 2px solid white;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    font-family: 'Century Gothic';
+    outline: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+}
+
+/* Estilo de Tabla */
+.tablaContenedor {
+    background-color: white;
+    border-radius: 35px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th {
+    padding-bottom: 1.5rem;
+    color: #89C2D9;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 1.5rem 0;
+    border-top: 1px solid #F5F5F5;
+}
+
+.etiquetaMascota {
+    background-color: #E6EEFF;
+    color: #032F40;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.botonVer {
+    background: transparent;
+    border: 1px solid #89C2D9;
+    color: #032F40;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-family: 'Century Gothic';
+    font-weight: bold;
+    cursor: pointer;
+}

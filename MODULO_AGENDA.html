@@ -1,0 +1,607 @@
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+<div class="contenedor-modulo-agenda">
+
+  <!-- ===== HERO CLINICO (ESTILO CONSULTA) ===== -->
+  <header class="hero-clinico no-imprimir">
+    <div class="hero-contenido">
+      
+      <div class="bloque-titulos">
+        <h1 class="titulo-hero">Agenda Clínica</h1>
+        <div style="display: flex; gap: 20px; margin-top: 8px; color: rgba(255, 255, 255, 0.85); font-size: 0.9rem; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 5px;">
+               
+                <span>Gestión de Citas y Horarios</span>
+            </div>
+        </div>
+      </div>
+
+      <div class="hero-acciones grupo-busqueda-proactiva">
+        <search class="input-con-icono buscador-predictivo" aria-label="Búsqueda de pacientes" style="position: relative;">
+          <input type="search" id="agenda-buscador-pacientes" class="entrada-texto-hero"
+                 placeholder="Buscar expediente, mascota o cita..." autocomplete="off" spellcheck="false">
+          <div id="agenda-resultados-busqueda" class="dropdown-resultados-pred" style="display:none;"></div>
+        </search>
+
+        <button class="boton-secundario" id="btn-guia-agenda" style="border:1px solid rgba(255,255,255,0.3); background:transparent; color:white; padding:10px 16px; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:6px;">
+          <span class="material-symbols-rounded" aria-hidden="true">help</span>
+          <span>Guía de uso</span>
+        </button>
+
+        <button class="boton-primario" onclick="window.abrirModalNuevaCita()">
+          <span class="material-symbols-rounded" aria-hidden="true">add_circle</span>
+          <span>Nueva Cita</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ===== BENTO PRINCIPAL ===== -->
+  <div class="contenedor-bento">
+    <div class="layout" >
+
+      <!-- ===== SIDEBAR ===== -->
+      <div class="sidebar">
+
+        <!-- Mini calendario -->
+        <div class="panel">
+          <div class="mc-head">
+            <span class="title" id="mini-calendar-title">Cargando...</span>
+            <div class="mc-nav">
+              <button onclick="window.moverMiniCalendario(-1)">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"/>
+                </svg>
+              </button>
+              <button onclick="window.moverMiniCalendario(1)">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="mc-grid" id="mini-calendar-grid"><!-- js render --></div>
+        </div>
+
+        <div class="panel">
+          <div class="cal-head">
+            <span class="title">Tipos de cita</span>
+          </div>
+          <div class="cal-item" style="cursor:pointer;" onclick="window.toggleFiltroCita(this)"><span class="checkbox cobalto"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Consulta general</div>
+          <div class="cal-item" style="cursor:pointer;" onclick="window.toggleFiltroCita(this)"><span class="checkbox naranja"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Vacunación</div>
+          <div class="cal-item" style="cursor:pointer;" onclick="window.toggleFiltroCita(this)"><span class="checkbox naranja-suave"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Desparasitación</div>
+          <div class="cal-item" style="cursor:pointer;" onclick="window.toggleFiltroCita(this)"><span class="checkbox rojo"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Cirugía</div>
+          <div class="cal-item" style="cursor:pointer;" onclick="window.toggleFiltroCita(this)"><span class="checkbox cobalto"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Seguimiento</div>
+          <div class="cal-item" style="cursor:pointer;" onclick="window.toggleFiltroCita(this)"><span class="checkbox rojo"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Urgencia</div>
+        </div>
+
+        <!-- Por Confirmar -->
+        <div class="panel" style="margin-top:20px; background:#fff; border:1px solid var(--borde); border-radius:12px; padding:16px;">
+          <div class="cal-head" style="margin-bottom:12px;">
+            <span class="title" style="font-weight:700; color:var(--cobalto); font-size:14px;">Por Confirmar</span>
+          </div>
+          <div id="lista-por-confirmar" style="display:flex; flex-direction:column; gap:10px;">
+            <div style="font-size:12px; color:var(--texto-sec); text-align:center;">Cargando...</div>
+          </div>
+        </div>
+
+
+      </div>
+      <!-- fin sidebar -->
+
+      <!-- ===== COLUMNA PRINCIPAL ===== -->
+      <div class="main-col">
+
+        <!-- Contenedor principal del calendario -->
+        <div class="agenda-card" style="padding: 24px;">
+          
+          <!-- Estadísticas -->
+          <div class="resumen-row" style="margin-bottom: 24px;">
+            <div class="resumen-card destacada-naranja">
+              <div class="resumen-icon cobalto">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+              </div>
+              <div><div class="resumen-label">Citas hoy</div><div class="resumen-value" id="res-citas-hoy">0</div></div>
+            </div>
+            <div class="resumen-card">
+              <div class="resumen-icon verde">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              </div>
+              <div><div class="resumen-label">Confirmadas</div><div class="resumen-value" id="res-confirmadas">0</div></div>
+            </div>
+            <div class="resumen-card">
+              <div class="resumen-icon cobalto">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              </div>
+              <div><div class="resumen-label">Agendadas</div><div class="resumen-value" id="res-agendadas">0</div></div>
+            </div>
+            <div class="resumen-card">
+              <div class="resumen-icon rojo">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+              </div>
+              <div><div class="resumen-label">Canceladas</div><div class="resumen-value" id="res-canceladas">0</div></div>
+            </div>
+            <div class="resumen-card">
+              <div class="resumen-icon gris">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <path d="M2 15h10"/><path d="M9 18l3-3-3-3"/>
+                </svg>
+              </div>
+              <div><div class="resumen-label">Finalizadas</div><div class="resumen-value" id="res-finalizadas">0</div></div>
+            </div>
+          </div>
+
+          <!-- Toolbar de fecha y vista (Cabecera) -->
+          <div class="toolbar" style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--borde);">
+            <h2>
+              <span id="label-rango-fechas">Cargando fecha...</span>
+              <span class="nav-arrows">
+                <button onclick="window.moverFecha(-1)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                  </svg>
+                </button>
+                <button onclick="window.moverFecha(1)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </button>
+              </span>
+            </h2>
+              <div class="toolbar-right" style="display:flex; gap:10px; align-items:center;">
+                <select id="agenda-filtro-estado" onchange="if(typeof window.cambiarFiltroEstado === 'function') window.cambiarFiltroEstado(this.value)" style="padding:8px 12px; border-radius:8px; border:1px solid #cbd5e1; font-family:'Inter',sans-serif; color:#475569; font-weight:600; font-size:13px; outline:none; cursor:pointer; background:white; height:38px;">
+                  <option value="todos">Todos los estados</option>
+                  <option value="agendada">Agendadas</option>
+                  <option value="confirmada">Confirmadas</option>
+                  <option value="cancelada">Canceladas</option>
+                  <option value="no_asistio">No asistidas</option>
+                </select>
+                <div class="select-box" id="selectVista" onclick="window.toggleDropdown()">
+                <span id="vistaLabel">Día</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+                <div class="select-dropdown" id="dropdownVistas">
+                  <div data-vista="dia" class="activo" onclick="window.cambiarVista('dia')">Día</div>
+                  <div data-vista="semana" onclick="window.cambiarVista('semana')">Semana</div>
+                  <div data-vista="mes" onclick="window.cambiarVista('mes')">Mes</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vista Día — Lista cronológica -->
+          <div class="vista activa" id="vista-dia" data-vista="dia" style="overflow-y:auto; height:calc(100vh - 280px); padding-right:10px;">
+            <div class="agenda-lista-dia" id="lista-citas-dia">
+              <!-- Renderizado por JS -->
+            </div>
+          </div>
+
+          <!-- Vista Semana -->
+          <div class="vista" id="vista-semana" data-vista="semana">
+            <div id="contenedor-semana"></div>
+          </div>
+
+          <!-- Vista Mes -->
+          <div class="vista" id="vista-mes" data-vista="mes">
+            <div id="contenedor-mes"></div>
+          </div>
+        </div>
+
+
+
+      </div>
+      <!-- fin main-col -->
+
+    </div>
+  </div>
+
+</div>
+
+
+
+<style>
+  .info-card-bento {
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      margin-bottom: 10px;
+      border: 1px solid #f1f5f9;
+  }
+  .info-card-bento .l { font-size: 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin: 0 0 4px; letter-spacing: 0.5px; }
+  .info-card-bento .v { font-size: 13px; font-weight: 700; color: #032F40; margin: 0; }
+</style>
+
+<!-- Modal: Detalle de Cita (Estilo Popover Minimalista) -->
+<div class="modal-overlay" id="modal-detalle-cita" onclick="window.cerrarDetalleCita()" style="
+    display:none; position:fixed; inset:0; z-index:99999; 
+    background:transparent; 
+    align-items:flex-start; justify-content:flex-start;">
+    
+  <div class="modal-content" id="modal-content-cita" style="
+        background:#fff;
+        border-radius:16px;
+        box-shadow:0 12px 48px rgba(0,0,0,0.12);
+        width: 320px; max-height:85vh;
+        display:flex; flex-direction:column;
+        overflow-y:auto; overflow-x:hidden;
+        font-family:'Montserrat',sans-serif;
+        position: absolute;
+    " onclick="event.stopPropagation()">
+    
+    <!-- Top Section (Avatar & Name) -->
+    <div style="position:relative; background:#f8fafc; padding:32px 20px 24px; display:flex; flex-direction:column; align-items:center; text-align:center; border-bottom:1px solid #f1f5f9;">
+        <!-- Botón Cerrar (Sin Emojis) -->
+        <button class="modal-close" onclick="window.cerrarDetalleCita()" style="position:absolute; top:12px; right:12px; background:transparent; border:none; width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#94a3b8; font-weight:800; font-size:16px; transition:color 0.2s;">
+            ✕
+        </button>
+
+        <div class="av" id="det-avatar" style="width:72px; height:72px; border-radius:50%; background:#e2e8f0; display:flex; align-items:center; justify-content:center; font-weight:800; color:#64748b; font-size:26px; margin-bottom:12px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">--</div>
+        
+        <div class="nombre" id="det-nombre" style="font-weight:800; color:#032F40; font-size:17px; margin-bottom:4px; letter-spacing:-0.3px;">Selecciona una cita</div>
+        <div class="sub" id="det-sub" style="font-size:12px; color:#64748b; font-weight:600;">—</div>
+    </div>
+
+    <!-- Banner de Cita Cancelada (Sin icono) -->
+    <div id="banner-cita-cancelada" style="display:none; background:#fee2e2; border-left:4px solid #dc2626; padding:10px 20px; color:#b91c1c; font-size:11px; font-weight:800; text-align:center; text-transform:uppercase; letter-spacing:0.5px;">
+      ESTA CITA FUE CANCELADA
+    </div>
+
+    <!-- Body Information -->
+    <div style="padding:20px; display:flex; flex-direction:column; gap:16px;">
+        
+        <!-- Motivo y Hora -->
+        <div>
+            <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:6px; letter-spacing:0.5px;">Motivo y Tipo</div>
+            <div id="det-motivo" style="font-weight:800; font-size:14px; color:#032F40; margin-bottom:4px;">—</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span id="det-tipo" style="font-weight:700; font-size:12px; color:#F27405;">—</span>
+                <span id="det-hora" style="font-weight:800; font-size:13px; color:#032F40; background:#f1f5f9; padding:4px 8px; border-radius:6px;">—</span>
+            </div>
+        </div>
+
+        <!-- Notas (Ocultas si están vacías, pero aquí tienen layout mínimo) -->
+        <div id="det-notas" style="font-style:italic; color:#64748b; font-size:12px; font-weight:500; background:#f8fafc; padding:10px; border-radius:8px; border-left:2px solid #cbd5e1;">
+            —
+        </div>
+
+        <div style="height:1px; background:#f1f5f9; width:100%;"></div>
+
+        <!-- Tutor -->
+        <div>
+            <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:4px; letter-spacing:0.5px;">Tutor Responsable</div>
+            <div id="det-propietario" style="font-weight:800; font-size:13px; color:#032F40;">—</div>
+            <div id="det-telefono" style="color:#64748b; font-weight:600; font-size:12px; margin-top:2px;">—</div>
+        </div>
+
+        <!-- Datos Físicos Opcionales -->
+        <div style="display:flex; gap:16px;">
+            <div style="flex:1;">
+                <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:2px; letter-spacing:0.5px;">Edad</div>
+                <div id="det-edad" style="color:#032F40; font-weight:700; font-size:12px;">—</div>
+            </div>
+            <div style="flex:1;">
+                <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:2px; letter-spacing:0.5px;">Peso</div>
+                <div id="det-peso" style="color:#032F40; font-weight:700; font-size:12px;">—</div>
+            </div>
+        </div>
+        
+        <!-- Estado -->
+        <div style="margin-top:4px;">
+            <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:6px; letter-spacing:0.5px;">Estado Actual</div>
+            <select id="det-selector-estado" class="det-estado-select" onchange="window.cambiarEstadoDesdeDetalle(this.value)" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid #e2e8f0; background:#fff; font-family:'Montserrat',sans-serif; color:#032F40; font-weight:700; font-size:12px; outline:none; cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,0.02);">
+              <option value="agendada">Agendada</option>
+              <option value="confirmada">Confirmada</option>
+              <option value="cancelada">Cancelada</option>
+              <option value="no_asistio">No asistió</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Actions Footer -->
+    <div class="modal-footer" style="padding:16px 20px 20px; background:#fff; display:flex; flex-direction:column; gap:8px;">
+        <button id="btn-det-iniciar" onclick="window.iniciarConsultaDesdeCita()" style="width:100%; padding:12px; border:none; border-radius:10px; background:#032F40; color:#fff; cursor:pointer; font-weight:800; font-size:13px; font-family:'Montserrat',sans-serif; transition:transform 0.2s; box-shadow:0 4px 12px rgba(3,47,64,0.15);">
+            Iniciar Consulta
+        </button>
+        <button id="btn-det-expediente" onclick="window.abrirExpedientePaciente()" style="width:100%; padding:10px; border:2px solid #f1f5f9; border-radius:10px; background:transparent; color:#475569; cursor:pointer; font-weight:800; font-size:12px; font-family:'Montserrat',sans-serif; transition:all 0.2s;">
+            Ver Expediente
+        </button>
+        
+        <div style="display:flex; justify-content:center; gap:16px; margin-top:12px;">
+            <button id="btn-det-reprogramar" onclick="window.reprogramarCita()" style="display:none; background:transparent; border:none; color:#64748b; font-size:11px; font-weight:700; cursor:pointer; text-decoration:underline;">Reprogramar</button>
+            <button id="btn-det-cancelar" onclick="window.cancelarCitaSeleccionada()" style="background:transparent; border:none; color:#dc2626; font-size:11px; font-weight:700; cursor:pointer; text-decoration:underline;">Cancelar Cita</button>
+        </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== MODAL FINALIZAR CITA ===== -->
+<div id="modal-finalizar-cita" class="modal-superpuesto"
+     style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;justify-content:center;align-items:center;">
+  <div class="modal-contenido" style="background:var(--blanco-puro);border-radius:16px;padding:24px;width:100%;max-width:420px;">
+    <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3>Finalizar consulta</h3>
+      <button onclick="window.cerrarModalFinalizar()" style="background:none;border:none;cursor:pointer;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Notas de cierre (opcional)</label>
+      <textarea id="finalizar-notas" rows="3"
+                style="width:100%;padding:10px;border:1px solid var(--borde);border-radius:8px;font-size:13px;resize:vertical;"
+                placeholder="Resumen de la consulta, indicaciones al propietario..."></textarea>
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;">
+        <input type="checkbox" id="finalizar-seguimiento" style="width:16px;height:16px;">
+        Agendar cita de seguimiento
+      </label>
+    </div>
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:12px;">
+      <button class="btn-accion-secundario" onclick="window.cerrarModalFinalizar()" style="border:none;background:transparent;font-weight:600;padding:10px 16px;">Cancelar</button>
+      <button class="btn-accion-primario" onclick="window.ejecutarFinalizarCita()" style="border:none;background:var(--primario);color:white;font-weight:700;border-radius:8px;padding:10px 24px;">Guardar y Finalizar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL ROJO DE ADVERTENCIA (CONFLICTO DE CITA) ===== -->
+<div id="modal-conflicto-cita" class="modal-superpuesto" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+  <div class="modal-contenido" style="background:var(--blanco-puro); border-radius:16px; padding:32px; width:100%; max-width:480px; text-align:center; box-shadow:0 10px 25px rgba(220, 38, 38, 0.2); border:2px solid #dc2626;">
+    <div style="width:64px; height:64px; border-radius:50%; background:#fee2e2; color:#dc2626; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+      <span class="material-symbols-rounded" style="font-size:32px;">warning</span>
+    </div>
+    <h2 style="color:#dc2626; font-family:'Montserrat',sans-serif; font-size:22px; font-weight:800; margin-bottom:12px; text-transform:uppercase;">Advertencia de Empalme</h2>
+    <p id="texto-conflicto-cita" style="color:var(--texto-sec); font-size:15px; line-height:1.6; margin-bottom:24px;">
+      Hay un empalme con otra cita agendada en ese horario. ¿Deseas forzar el guardado de la cita de todos modos?
+    </p>
+    
+    <div style="display:flex; gap:12px; justify-content:center; margin-top:24px;">
+      <button onclick="document.getElementById('modal-conflicto-cita').style.display='none'" style="flex:1; padding:12px; border-radius:8px; border:1px solid var(--borde); background:white; color:var(--texto-sec); font-weight:600; cursor:pointer; transition:all 0.2s;">
+        Cancelar
+      </button>
+      <button id="btn-confirmar-conflicto" disabled onclick="window.ejecutarGuardadoCita()" style="flex:1; padding:12px; border-radius:8px; border:none; background:#dc2626; color:white; font-weight:700; cursor:not-allowed; opacity:0.6; transition:all 0.2s;">
+        Sí, forzar guardado (10s)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL WHATSAPP INDIVIDUAL ===== -->
+<div id="modal-whatsapp-cita" class="modal-superpuesto" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+  <div class="modal-contenido" style="background:var(--blanco-puro); border-radius:16px; padding:32px; width:100%; max-width:450px; text-align:center;">
+    <div style="width:64px; height:64px; border-radius:50%; background:#dcfce3; color:#16a34a; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+      <span class="material-symbols-rounded" style="font-size:32px;">check_circle</span>
+    </div>
+    <h2 style="color:var(--texto-fuerte); font-family:'Montserrat',sans-serif; font-size:20px; font-weight:700; margin-bottom:12px;">Cita Agendada Exitosamente</h2>
+    <p style="color:var(--texto-sec); font-size:15px; line-height:1.6; margin-bottom:16px;">
+      ¿Deseas enviar un WhatsApp de confirmación al dueño ahora mismo?
+    </p>
+
+    <div class="form-group" style="text-align:left; margin-bottom:24px;">
+      <label style="font-size: 13px; font-weight: 600; color: var(--texto-fuerte); margin-bottom: 6px; display: block;">Número de celular (opcional si ya estaba en el registro)</label>
+      <input type="text" id="wa-numero-celular" class="input-moderno-f" style="width:100%;padding:10px;border:1px solid var(--borde);border-radius:8px;font-size:13px;" placeholder="Ej. 5512345678">
+    </div>
+    
+    <div style="display:flex; gap:12px; justify-content:center;">
+      <button onclick="document.getElementById('modal-whatsapp-cita').style.display='none'" style="flex:1; padding:12px; border-radius:8px; border:1px solid var(--borde); background:white; color:var(--texto-sec); font-weight:600; cursor:pointer;">
+        Cerrar
+      </button>
+</div>
+
+
+
+<style>
+  .info-card-bento {
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      margin-bottom: 10px;
+      border: 1px solid #f1f5f9;
+  }
+  .info-card-bento .l { font-size: 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin: 0 0 4px; letter-spacing: 0.5px; }
+  .info-card-bento .v { font-size: 13px; font-weight: 700; color: #032F40; margin: 0; }
+</style>
+
+<!-- Modal: Detalle de Cita (Estilo Popover Minimalista) -->
+<div class="modal-overlay" id="modal-detalle-cita" onclick="window.cerrarDetalleCita()" style="
+    display:none; position:fixed; inset:0; z-index:99999; 
+    background:transparent; 
+    align-items:flex-start; justify-content:flex-start;">
+    
+  <div class="modal-content" id="modal-content-cita" style="
+        background:#fff;
+        border-radius:16px;
+        box-shadow:0 12px 48px rgba(0,0,0,0.12);
+        width: 640px; max-height:85vh;
+        display:flex; flex-direction:column;
+        overflow-y:auto; overflow-x:hidden;
+        font-family:'Montserrat',sans-serif;
+        position: absolute;
+    " onclick="event.stopPropagation()">
+    
+    <div style="display:flex; flex-direction:row; padding:20px; gap:24px;">
+        
+        <!-- Columna Izquierda (Perfil y Estado) -->
+        <div style="width:220px; display:flex; flex-direction:column; gap:16px; border-right:1px solid #f1f5f9; padding-right:20px;">
+            <!-- Header Integrado -->
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="av" id="det-avatar" style="width:48px; height:48px; border-radius:12px; background:#e2e8f0; display:flex; align-items:center; justify-content:center; font-weight:800; color:#64748b; font-size:18px; flex-shrink:0;">--</div>
+                <div>
+                    <div class="nombre" id="det-nombre" style="font-weight:800; color:#032F40; font-size:15px; margin-bottom:2px; line-height:1.1;">Cargando...</div>
+                    <div class="sub" id="det-sub" style="font-size:11px; color:#64748b; font-weight:600;">—</div>
+                </div>
+            </div>
+            
+            <!-- Tutor -->
+            <div>
+                <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:2px; letter-spacing:0.5px;">Tutor</div>
+                <div id="det-propietario" style="font-weight:700; font-size:12px; color:#032F40; line-height:1.2;">—</div>
+                <div id="det-telefono" style="color:#64748b; font-weight:500; font-size:11px;">—</div>
+            </div>
+
+            <!-- Estado -->
+            <div>
+                <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:4px; letter-spacing:0.5px;">Estado</div>
+                <select id="det-selector-estado" class="det-estado-select" onchange="window.cambiarEstadoDesdeDetalle(this.value)" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid #e2e8f0; background:#fff; font-family:'Montserrat',sans-serif; color:#032F40; font-weight:700; font-size:11px; outline:none; cursor:pointer;">
+                  <option value="agendada">Agendada</option>
+                  <option value="confirmada">Confirmada</option>
+                  <option value="cancelada">Cancelada</option>
+                  <option value="no_asistio">No asistió</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Columna Derecha (Detalles y Botones) -->
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:16px;">
+            
+            <!-- Botón Cerrar Absolute -->
+            <button class="modal-close" onclick="window.cerrarDetalleCita()" style="position:absolute; top:12px; right:12px; background:transparent; border:none; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#94a3b8; font-weight:800; font-size:14px; transition:color 0.2s;">✕</button>
+
+            <!-- Banner Cancelado -->
+            <div id="banner-cita-cancelada" style="display:none; background:#fee2e2; padding:6px 10px; border-radius:4px; color:#b91c1c; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
+              ESTA CITA FUE CANCELADA
+            </div>
+
+            <!-- Motivo y Hora -->
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-top:8px;">
+                <div style="flex:1;">
+                    <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:2px; letter-spacing:0.5px;">Motivo y Tipo</div>
+                    <div id="det-motivo" style="font-weight:800; font-size:13px; color:#032F40; margin-bottom:4px; line-height:1.2;">—</div>
+                    <span id="det-tipo" style="font-weight:700; font-size:11px; color:#F27405;">—</span>
+                </div>
+                <div style="text-align:right;">
+                    <span id="det-hora" style="font-weight:800; font-size:13px; color:#032F40; background:#f8fafc; border:1px solid #e2e8f0; padding:6px 12px; border-radius:6px; display:inline-block;">—</span>
+                </div>
+            </div>
+
+            <!-- Físicos y Notas -->
+            <div style="display:flex; gap:16px;">
+                <div style="width:70px;">
+                    <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:2px;">Edad</div>
+                    <div id="det-edad" style="color:#032F40; font-weight:700; font-size:12px;">—</div>
+                </div>
+                <div style="width:70px;">
+                    <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:2px;">Peso</div>
+                    <div id="det-peso" style="color:#032F40; font-weight:700; font-size:12px;">—</div>
+                </div>
+                <div style="flex:1;">
+                    <div id="det-notas" style="font-style:italic; color:#64748b; font-size:11px; font-weight:500; background:#f8fafc; padding:8px 12px; border-radius:6px; border-left:2px solid #cbd5e1; max-height:44px; overflow:hidden; text-overflow:ellipsis;">—</div>
+                </div>
+            </div>
+
+            <!-- Botonera -->
+            <div style="display:flex; justify-content:flex-end; align-items:center; gap:10px; margin-top:auto; padding-top:12px; border-top:1px solid #f1f5f9;">
+                <button id="btn-det-reprogramar" onclick="window.reprogramarCita()" style="display:none; background:transparent; border:none; color:#64748b; font-size:10px; font-weight:700; cursor:pointer; text-decoration:underline;">Reprogramar</button>
+                <button id="btn-det-cancelar" onclick="window.cancelarCitaSeleccionada()" style="background:transparent; border:none; color:#dc2626; font-size:10px; font-weight:700; cursor:pointer; text-decoration:underline; margin-right:auto;">Cancelar Cita</button>
+                
+                <button id="btn-det-expediente" onclick="window.abrirExpedientePaciente()" style="padding:10px 14px; border:2px solid #f1f5f9; border-radius:8px; background:transparent; color:#475569; cursor:pointer; font-weight:800; font-size:11px; font-family:'Montserrat',sans-serif; transition:all 0.2s;">
+                    Ver Expediente
+                </button>
+                <button id="btn-det-iniciar" onclick="window.iniciarConsultaDesdeCita()" style="padding:10px 20px; border:none; border-radius:8px; background:#032F40; color:#fff; cursor:pointer; font-weight:800; font-size:12px; font-family:'Montserrat',sans-serif; transition:transform 0.2s; box-shadow:0 4px 10px rgba(3,47,64,0.15);">
+                    Iniciar Consulta
+                </button>
+            </div>
+
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL FINALIZAR CITA ===== -->
+<div id="modal-finalizar-cita" class="modal-superpuesto"
+     style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;justify-content:center;align-items:center;">
+  <div class="modal-contenido" style="background:var(--blanco-puro);border-radius:16px;padding:24px;width:100%;max-width:420px;">
+    <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3>Finalizar consulta</h3>
+      <button onclick="window.cerrarModalFinalizar()" style="background:none;border:none;cursor:pointer;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Notas de cierre (opcional)</label>
+      <textarea id="finalizar-notas" rows="3"
+                style="width:100%;padding:10px;border:1px solid var(--borde);border-radius:8px;font-size:13px;resize:vertical;"
+                placeholder="Resumen de la consulta, indicaciones al propietario..."></textarea>
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;">
+        <input type="checkbox" id="finalizar-seguimiento" style="width:16px;height:16px;">
+        Agendar cita de seguimiento
+      </label>
+    </div>
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:12px;">
+      <button class="btn-accion-secundario" onclick="window.cerrarModalFinalizar()" style="border:none;background:transparent;font-weight:600;padding:10px 16px;">Cancelar</button>
+      <button class="btn-accion-primario" onclick="window.ejecutarFinalizarCita()" style="border:none;background:var(--primario);color:white;font-weight:700;border-radius:8px;padding:10px 24px;">Guardar y Finalizar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL ROJO DE ADVERTENCIA (CONFLICTO DE CITA) ===== -->
+<div id="modal-conflicto-cita" class="modal-superpuesto" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+  <div class="modal-contenido" style="background:var(--blanco-puro); border-radius:16px; padding:32px; width:100%; max-width:480px; text-align:center; box-shadow:0 10px 25px rgba(220, 38, 38, 0.2); border:2px solid #dc2626;">
+    <div style="width:64px; height:64px; border-radius:50%; background:#fee2e2; color:#dc2626; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+      <span class="material-symbols-rounded" style="font-size:32px;">warning</span>
+    </div>
+    <h2 style="color:#dc2626; font-family:'Montserrat',sans-serif; font-size:22px; font-weight:800; margin-bottom:12px; text-transform:uppercase;">Advertencia de Empalme</h2>
+    <p id="texto-conflicto-cita" style="color:var(--texto-sec); font-size:15px; line-height:1.6; margin-bottom:24px;">
+      Hay un empalme con otra cita agendada en ese horario. ¿Deseas forzar el guardado de la cita de todos modos?
+    </p>
+    
+    <div style="display:flex; gap:12px; justify-content:center; margin-top:24px;">
+      <button onclick="document.getElementById('modal-conflicto-cita').style.display='none'" style="flex:1; padding:12px; border-radius:8px; border:1px solid var(--borde); background:white; color:var(--texto-sec); font-weight:600; cursor:pointer; transition:all 0.2s;">
+        Cancelar
+      </button>
+      <button id="btn-confirmar-conflicto" disabled onclick="window.ejecutarGuardadoCita()" style="flex:1; padding:12px; border-radius:8px; border:none; background:#dc2626; color:white; font-weight:700; cursor:not-allowed; opacity:0.6; transition:all 0.2s;">
+        Sí, forzar guardado (10s)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL WHATSAPP INDIVIDUAL ===== -->
+<div id="modal-whatsapp-cita" class="modal-superpuesto" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+  <div class="modal-contenido" style="background:var(--blanco-puro); border-radius:16px; padding:32px; width:100%; max-width:450px; text-align:center;">
+    <div style="width:64px; height:64px; border-radius:50%; background:#dcfce3; color:#16a34a; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+      <span class="material-symbols-rounded" style="font-size:32px;">check_circle</span>
+    </div>
+    <h2 style="color:var(--texto-fuerte); font-family:'Montserrat',sans-serif; font-size:20px; font-weight:700; margin-bottom:12px;">Cita Agendada Exitosamente</h2>
+    <p style="color:var(--texto-sec); font-size:15px; line-height:1.6; margin-bottom:16px;">
+      ¿Deseas enviar un WhatsApp de confirmación al dueño ahora mismo?
+    </p>
+
+    <div class="form-group" style="text-align:left; margin-bottom:24px;">
+      <label style="font-size: 13px; font-weight: 600; color: var(--texto-fuerte); margin-bottom: 6px; display: block;">Número de celular (opcional si ya estaba en el registro)</label>
+      <input type="text" id="wa-numero-celular" class="input-moderno-f" style="width:100%;padding:10px;border:1px solid var(--borde);border-radius:8px;font-size:13px;" placeholder="Ej. 5512345678">
+    </div>
+    
+    <div style="display:flex; gap:12px; justify-content:center;">
+      <button onclick="document.getElementById('modal-whatsapp-cita').style.display='none'" style="flex:1; padding:12px; border-radius:8px; border:1px solid var(--borde); background:white; color:var(--texto-sec); font-weight:600; cursor:pointer;">
+        Cerrar
+      </button>
+      <button onclick="window.ejecutarEnvioWhatsAppIndividual()" style="flex:1; padding:12px; border-radius:8px; border:none; background:#25D366; color:white; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+        <span class="material-symbols-rounded" style="font-size:18px;">chat</span> Enviar Mensaje
+      </button>
+    </div>
+  </div>
+</div>

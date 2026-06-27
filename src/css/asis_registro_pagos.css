@@ -1,0 +1,938 @@
+/* ============================================================
+   CENTRO DE COBRO - PROTECT PET
+   Paleta: #032F40 (Cobalto) | #89C2D9 (Cielo) | #F27405 (Naranja)
+   ============================================================ */
+
+/* 1. IMPORTACIONES EXTERNAS */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap');
+
+/* 2. FUENTES LOCALES */
+@font-face {
+    font-family: 'Century Gothic';
+    src: local('Century Gothic');
+}
+
+/* 3. RESET Y BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Century Gothic', sans-serif;
+    background-color: #F5F5F5;
+    color: #032F40;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* --- ELEMENTOS DE CARGA (OVERLAY) --- */
+#loadingOverlay {
+    display: none; /* Se activa por JS */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 9999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #F27405;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Estilo para la imagen del conejo (Estado vacío) */
+.logopago {
+    width: 250px;
+    height: auto;
+    display: block;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+/* --- HEADER --- */
+.encabezado-modulo {
+    background: #FFFFFF;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #E9EEF0;
+    height: 80px;
+    flex-shrink: 0;
+}
+
+.bloque-titulos h1 {
+    font-size: 1.8rem;
+    color: #F27405;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin: 0;
+}
+
+.enlace-volver-panel {
+    text-decoration: none;
+    color: #89C2D9;
+    font-weight: bold;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: 0.3s;
+}
+
+.enlace-volver-panel:hover {
+    color: #032F40;
+    transform: translateX(-3px);
+}
+
+.datos-clinica-header {
+    text-align: right;
+}
+
+#txtNombreClinicaHeader {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #032F40;
+    margin-bottom: 2px;
+}
+
+.badge-rol {
+    background-color: #F27405;
+    color: white;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.usuario-nombre-header {
+    color: #89C2D9;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* --- LAYOUT PRINCIPAL --- */
+.contenedor-caja {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* PANEL IZQUIERDO (COLA DE TICKETS) */
+.panel-cola {
+    width: 400px;
+    background: #FFFFFF;
+    border-right: 1px solid #E9EEF0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.02);
+    z-index: 10;
+}
+
+.header-cola {
+    padding: 1.5rem;
+    border-bottom: 1px solid #F0F2F5;
+    background: #FFFFFF;
+}
+
+.header-cola h3 {
+    color: #032F40;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.badge-contador {
+    background: #F27405;
+    color: white;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.input-busqueda-mini {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 15px;
+    border: 1.5px solid #F0F2F5;
+    border-radius: 12px;
+    font-family: inherit;
+    background: #FBFCFD;
+    transition: 0.3s;
+    outline: none;
+}
+
+.input-busqueda-mini:focus {
+    border-color: #89C2D9;
+    background: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(137, 194, 217, 0.1);
+}
+
+.lista-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: #F8FAFB;
+}
+
+/* Scrollbar Personalizado */
+.lista-scroll::-webkit-scrollbar, 
+.panel-detalle::-webkit-scrollbar { width: 8px; }
+.lista-scroll::-webkit-scrollbar-thumb, 
+.panel-detalle::-webkit-scrollbar-thumb { background-color: #D9E9F0; border-radius: 4px; }
+
+/* CARDS DE TICKET EN LA COLA */
+.card-ticket {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-left: 6px solid #89C2D9;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.card-ticket:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(3, 47, 64, 0.08);
+}
+
+.card-ticket.seleccionado {
+    border-color: #89C2D9;
+    border-left-color: #F27405;
+    background: #FFF8F0;
+}
+
+.card-ticket.pagado {
+    border-left-color: #2E7D32;
+    background: #F1F8E9;
+    opacity: 0.9;
+}
+
+.card-ticket.pagado h4 { color: #2E7D32; }
+
+.card-ticket h4 {
+    margin-bottom: 5px;
+    color: #032F40;
+    font-size: 1.15rem;
+    font-weight: bold;
+}
+
+.card-ticket p {
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.card-ticket .dueno-mini {
+    color: #89C2D9;
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.tag-hora {
+    font-size: 0.75rem;
+    color: #89C2D9;
+    font-weight: bold;
+    display: inline-block;
+    background: #F0F7FA;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-top: 5px;
+}
+
+.precio-preview {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-weight: bold;
+    color: #F27405;
+    font-size: 1.1rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #89C2D9;
+    font-weight: bold;
+    opacity: 0.7;
+}
+
+/* PANEL DERECHO (DETALLE Y COBRO) */
+.panel-detalle {
+    flex: 1;
+    padding: 2.5rem;
+    overflow-y: auto;
+    background-color: #F5F5F5;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.estado-vacio-grande {
+    text-align: center;
+    color: #9CA3AF;
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.estado-vacio-grande h2 {
+    font-size: 1.8rem;
+    color: #032F40;
+    margin-bottom: 10px;
+}
+
+#detalleCobroActivo {
+    width: 100%;
+    max-width: 800px;
+    background: white;
+    border-radius: 30px;
+    padding: 3rem;
+    box-shadow: 0 15px 40px rgba(3, 47, 64, 0.05);
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.header-ticket {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid #F0F2F5;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+#lblPaciente {
+    font-size: 2rem;
+    color: #032F40;
+    margin-bottom: 5px;
+}
+
+.meta-info {
+    color: #89C2D9;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.badge-estado-pendiente {
+    background: #FFF3E0;
+    color: #F57C00;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.badge-estado-pagado {
+    background: #E8F5E9;
+    color: #2E7D32;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.folio-box {
+    text-align: right;
+    background: #F5F5F5;
+    padding: 10px 20px;
+    border-radius: 12px;
+}
+
+.folio-box small {
+    display: block;
+    font-size: 0.7rem;
+    color: #F27405;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.folio-box span {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #032F40;
+}
+
+.tabla-items {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2.5rem;
+}
+
+.tabla-items th {
+    text-align: left;
+    color: #89C2D9;
+    font-size: 0.85rem;
+    padding: 12px 0;
+    text-transform: uppercase;
+    border-bottom: 1px solid #E9EEF0;
+}
+
+.tabla-items td {
+    padding: 15px 0;
+    border-bottom: 1px solid #F9FAFB;
+    font-size: 1.05rem;
+    color: #333;
+}
+
+.fila-total td {
+    border-top: 2px solid #032F40;
+    font-size: 1.6rem;
+    font-weight: bold;
+    padding-top: 20px;
+    color: #032F40;
+}
+
+#lblTotalGrande {
+    color: #F27405;
+}
+
+.zona-pago {
+    background: #F8FAFB;
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid #E9EEF0;
+}
+
+.zona-pago h3 {
+    font-size: 1rem;
+    color: #89C2D9;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.grid-metodos {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.btn-metodo {
+    padding: 25px;
+    border: 2px solid white;
+    background: white;
+    border-radius: 18px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    font-family: inherit;
+}
+
+.btn-metodo:hover {
+    border-color: #89C2D9;
+    color: #032F40;
+    transform: translateY(-2px);
+}
+
+.btn-metodo.activo {
+    background-color: #032F40;
+    border-color: #032F40;
+    color: white;
+    box-shadow: 0 8px 20px rgba(3, 47, 64, 0.2);
+}
+
+.panel-calculadora {
+    background: white;
+    padding: 20px 25px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #E9EEF0;
+    animation: fadeIn 0.2s;
+}
+
+.input-grupo-dinero label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #032F40;
+    font-size: 0.9rem;
+}
+
+.input-grupo-dinero input {
+    padding: 12px 15px;
+    font-size: 1.4rem;
+    border: 1.5px solid #E9EEF0;
+    border-radius: 12px;
+    width: 180px;
+    font-family: inherit;
+    color: #032F40;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-grupo-dinero input:focus {
+    border-color: #F27405;
+}
+
+.resultado-cambio {
+    text-align: right;
+}
+
+.resultado-cambio small {
+    display: block;
+    color: #89C2D9;
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.resultado-cambio span {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2E7D32;
+}
+
+.acciones-finales {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 15px;
+}
+
+.btn-pagar-final {
+    width: 100%;
+    padding: 22px;
+    background: #032F40;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    font-family: inherit;
+    box-shadow: 0 10px 25px rgba(3, 47, 64, 0.15);
+}
+
+.btn-pagar-final:disabled {
+    background: #E0E0E0;
+    color: #999;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-pagar-final:hover:not(:disabled) {
+    background: #F27405;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(242, 116, 5, 0.3);
+}
+
+.btn-secundario-gris {
+    width: 100%;
+    padding: 22px;
+    background: white;
+    border: 2px solid #E0E0E0;
+    color: #555;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    font-family: inherit;
+}
+
+/* MODULO AGREGAR PRODUCTOS/EXTRAS */
+.panel-agregar-items {
+    background-color: #F0F7FA;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    border: 1px dashed #89C2D9;
+}
+
+.panel-agregar-items h4 {
+    font-size: 0.95rem;
+    color: #032F40;
+    margin-bottom: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.grid-inputs-venta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.input-caja-chico {
+    padding: 12px 15px;
+    border: 1.5px solid #E9EEF0;
+    border-radius: 12px;
+    font-family: inherit;
+    outline: none;
+    font-size: 0.95rem;
+    color: #032F40;
+    background: white;
+}
+
+.input-caja-chico:focus {
+    border-color: #F27405;
+    box-shadow: 0 4px 10px rgba(242, 116, 5, 0.1);
+}
+
+.grupo-cantidad {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1.5px solid #E9EEF0;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 42px;
+}
+
+.grupo-cantidad button {
+    background: #F8FAFB;
+    border: none;
+    width: 35px;
+    height: 100%;
+    font-weight: bold;
+    cursor: pointer;
+    color: #032F40;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+.grupo-cantidad button:hover {
+    background: #E0E0E0;
+    color: #F27405;
+}
+
+.grupo-cantidad input {
+    width: 45px;
+    text-align: center;
+    border: none;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #032F40;
+    pointer-events: none;
+    background: white;
+    height: 100%;
+}
+
+/* BOTÓN NARANJA CENTURY GOTHIC */
+.btn-azul-icon {
+    background-color: #F27405; /* Naranja Protect Pet */
+    color: white;
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    font-size: 1.4rem;
+    font-family: 'Century Gothic', sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(242, 116, 5, 0.2);
+}
+
+.btn-azul-icon:hover {
+    background-color: #d66504;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(242, 116, 5, 0.3);
+}
+
+.btn-borrar-item {
+    background: #FFEBEE;
+    border: 1px solid #FFCDD2;
+    color: #D32F2F;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.btn-borrar-item:hover {
+    background-color: #D32F2F;
+    color: white;
+    transform: rotate(90deg);
+}
+
+/* ============================================================
+   DISEÑO DEL TICKET DE IMPRESIÓN Y LÓGICA DE VISIBILIDAD
+   ============================================================ */
+
+/* Contenedor Base del Ticket */
+.ticket-layout {
+    display: none; 
+    width: 302px; /* Aprox 80mm */
+    padding: 15px;
+    background-image: url('../img/ticketfondo.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: repeat !important;
+    color: #000000 !important;
+    font-family: 'Century Gothic', sans-serif;
+    border: 1px solid #EEE;
+    position: relative;
+}
+
+/* LÓGICA DE VISIBILIDAD PARA IMPRESIÓN MANUAL */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    
+    #ticketImpresion, #ticketImpresion * {
+        visibility: visible;
+    }
+    
+    #ticketImpresion {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 302px;
+        display: block !important;
+        border: none !important;
+    }
+
+    @page {
+        margin: 0;
+    }
+}
+
+.ticket-content {
+    width: 100%;
+    background: transparent !important;
+}
+
+.t-header {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.t-logo-img {
+    width: 120px; 
+    height: auto;
+    margin: 0 auto 5px auto;
+    display: block;
+}
+
+.t-brand-name {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 2px;
+    color: #000000 !important;
+}
+
+.t-address {
+    font-size: 8pt;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: #000000 !important;
+}
+
+.t-meta-grid { 
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 8pt; 
+    border-top: 1px dashed #000; 
+    border-bottom: 1px dashed #000; 
+    padding: 5px 0;
+    text-align: left;
+    color: #000000 !important;
+}
+
+.t-label {
+    font-weight: bold;
+    display: block;
+    font-size: 7pt;
+    color: #000000 !important;
+}
+
+.t-cajero-box {
+    font-size: 8pt;
+    margin: 5px 0;
+    text-align: center;
+    color: #000000 !important;
+}
+
+.t-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    font-size: 9pt; 
+    margin: 8px 0; 
+    color: #000000 !important;
+}
+
+.t-table th { 
+    text-align: left; 
+    border-bottom: 1px solid #000; 
+    font-size: 8pt;
+    padding-bottom: 3px;
+}
+
+.t-table td { 
+    padding: 3px 0; 
+    vertical-align: top;
+}
+
+.t-divider { 
+    border: none; 
+    border-top: 1px dashed #000; 
+    margin: 8px 0; 
+}
+
+.t-totals {
+    font-size: 9pt;
+    color: #000000 !important;
+}
+
+.t-row-mini {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+}
+
+.t-total-big { 
+    font-size: 13pt; 
+    font-weight: bold; 
+    border-top: 1px solid #000; 
+    padding-top: 4px; 
+    display: flex; 
+    justify-content: space-between; 
+    margin-top: 5px;
+    color: #000000 !important;
+}
+
+.t-metodo {
+    font-size: 9pt;
+    font-weight: bold;
+    margin-top: 5px;
+    text-align: center;
+    color: #000000 !important;
+}
+
+.t-footer {
+    text-align: center;
+    font-size: 7pt;
+    margin-top: 10px;
+    color: #000000 !important;
+}
+
+.t-policy, .t-factura {
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.barcode-font { 
+    font-family: 'Libre Barcode 39 Text', cursive; 
+    font-size: 30pt; 
+    display: block; 
+    text-align: center; 
+    margin: 5px 0;
+}
+
+.t-qr-section {
+    margin-top: 10px;
+}
+
+.t-qr-box {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+.t-qr-box canvas, .t-qr-box img {
+    width: 80px !important;
+    height: 80px !important;
+}
+
+.scan-me {
+    font-weight: bold;
+    font-size: 7pt;
+}
+
+.t-software-branding {
+    margin-top: 15px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding-top: 8px;
+    text-align: center;
+}
+
+.brand-row-soft {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-weight: bold;
+    font-size: 8pt;
+    color: #000000 !important;
+}
+
+.soft-logo {
+    width: 90px; 
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(1) contrast(1.5); 
+}
+
+#ticketImpresion * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}

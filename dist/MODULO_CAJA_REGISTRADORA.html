@@ -1,0 +1,234 @@
+<link rel="stylesheet" crossorigin href="/assets/MODULO_CAJA_REGISTRADORA-DZZReRvJ.css">
+<div class="pos-wrapper">
+  <div class="pos">
+
+    <!-- ===== Catálogo ===== -->
+    <div class="catalogo">
+      <div class="top-bar">
+        <!-- Botón Pantalla Completa -->
+        <button class="caja-icon-btn" id="btn-caja-fullscreen" aria-label="Pantalla completa" title="Pantalla completa">
+          <span class="material-symbols-rounded" id="icono-fullscreen">fullscreen</span>
+        </button>
+
+        <!-- Botón Guía de Uso -->
+        <button class="caja-icon-btn" id="btn-guia-caja" aria-label="Guía de uso" title="Guía de uso">
+          <span class="material-symbols-rounded">help</span>
+        </button>
+
+        <div class="titulo-venta">Nueva venta</div>
+
+        <!-- Buscador -->
+        <div class="caja-buscador-wrap">
+          <span class="material-symbols-rounded caja-search-icon">search</span>
+          <input id="caja-buscador" type="text" placeholder="Buscar producto o código…" autocomplete="off">
+        </div>
+      </div>
+
+      <!-- Grid de productos (poblado por JS) -->
+      <div class="grid-productos" id="caja-grid-productos">
+        <div class="caja-estado-grid caja-loading">
+          <span class="material-symbols-rounded caja-icon-estado">sync</span>
+          <span>Cargando catálogo...</span>
+        </div>
+      </div>
+
+      <!-- Categorías con iconos -->
+      <div class="categorias">
+        <button class="nav-arrow" id="caja-cat-prev" aria-label="Anterior">
+          <span class="material-symbols-rounded">chevron_left</span>
+        </button>
+
+        <button class="cat-btn activo" data-caja-cat="todo">
+          <span class="material-symbols-rounded cat-icon">apps</span>
+          Todo
+        </button>
+
+        <button class="cat-btn" data-caja-cat="tienda">
+          <span class="material-symbols-rounded cat-icon">storefront</span>
+          Tienda
+        </button>
+
+        <button class="cat-btn" data-caja-cat="farmacia">
+          <span class="material-symbols-rounded cat-icon">medication</span>
+          Farmacia
+        </button>
+
+        <button class="cat-btn" data-caja-cat="dietas">
+          <span class="material-symbols-rounded cat-icon">pet_supplies</span>
+          Dietas
+        </button>
+
+        <button class="nav-arrow" id="caja-cat-next" aria-label="Siguiente">
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== Ticket ===== -->
+    <div class="ticket">
+      <div class="cliente-bar">
+        <div class="transaccion-titulo">Ticket</div>
+        <div class="transaccion">
+          Transacción
+          <strong class="num" id="caja-num-transaccion">#0000001</strong>
+        </div>
+      </div>
+
+      <!-- Lista de ítems (poblada por JS) -->
+      <div class="lista-items" id="caja-lista-items">
+        <div class="caja-ticket-vacio">
+          <span class="material-symbols-rounded" style="font-size:2.2rem;color:var(--cobalto-suave);opacity:0.35;">receipt_long</span>
+          <span>El ticket está vacío.<br>Selecciona productos del catálogo.</span>
+        </div>
+      </div>
+
+      <!-- Resumen de totales -->
+      <div class="resumen" id="caja-resumen">
+        <span>Subtotal: <b class="num">$0.00</b></span>
+        <span>IVA 16%: <b class="num">$0.00</b></span>
+        <span>Total: <b class="num">$0.00</b></span>
+        <span>Artículos: <b class="num">0</b></span>
+      </div>
+
+      <div class="footer-ticket">
+        <button class="flecha-arriba" onclick="window.cajaMod.limpiarCarrito()" title="Limpiar ticket" aria-label="Limpiar ticket">
+          <span class="material-symbols-rounded">delete_sweep</span>
+        </button>
+        <button class="btn-cobrar" id="caja-btn-cobrar" disabled>
+          <span>Cobrar</span>
+          <span class="num">$0.00</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  </div>
+
+  <!-- ===== Modal Checkout Preview (Réplica del Checkout Clínico) ===== -->
+  <aside id="modal-checkout-caja" class="modal-backdrop-premium" style="display:none; justify-content:center; align-items:center; z-index: 10000; position: fixed; inset: 0;">
+    <!-- Cargamos los estilos del checkout original dinámicamente -->
+    
+    <div id="vista-checkout-clinico" style="width: 100%; height: 100%; background: rgba(0,0,0,0.4);">
+        <div class="checkout-container no-imprimir">
+            
+            <!-- STEPPER NAVEGACIÓN -->
+            <div style="padding: 24px 32px; border-bottom: 1px solid var(--checkout-border); background: white; position: relative;">
+                <button type="button" onclick="window.cajaMod.cerrarModalCheckout()" style="position: absolute; right: 24px; top: 24px; width: 40px; height: 40px; border-radius: 50%; border: none; background: var(--checkout-fondo); color: var(--checkout-texto); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);" onmouseover="this.style.background='#f1f5f9'; this.style.color='#ef4444';" onmouseout="this.style.background='var(--checkout-fondo)'; this.style.color='var(--checkout-texto)';">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+                <div class="stepper-nav" style="max-width: 500px;">
+                    <div class="step-item active" id="caja-step-nav-1"><div class="step-circle" style="background-color: var(--checkout-naranja); color: white;">1</div><span class="step-text font-titulos" style="color: var(--checkout-naranja);">Entregables</span></div>
+                    <div class="step-line" id="caja-line-nav-1"></div>
+                    <div class="step-item" id="caja-step-nav-2"><div class="step-circle">2</div><span class="step-text font-titulos">Liquidación</span></div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex: 1; overflow: hidden;">
+                
+                <!-- CONTENIDO CENTRAL -->
+                <div style="flex: 1; display: flex; flex-direction: column; background: var(--checkout-fondo); overflow: hidden;">
+                    
+                    <!-- PASO 1: ENTREGABLES -->
+                    <div id="caja-view-step-1" class="view-step active" style="flex: 1; overflow-y: auto; padding: 40px;">
+                        <div style="max-width: 650px; margin: 0 auto; width: 100%;">
+                            <h2 class="font-titulos" style="font-size: 26px; margin-bottom: 8px;">Entregables de Venta</h2>
+                            <p style="margin-bottom: 30px;">La venta está lista. ¿Cómo deseas entregar el comprobante de compra?</p>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                                <div class="acordeon-card" id="card-caja-whatsapp" onclick="window.cajaMod.toggleCheckoutOpcion('whatsapp')" style="padding: 24px; text-align: center; cursor: pointer; border: 2px solid transparent;">
+                                    <span class="material-symbols-rounded" style="font-size: 40px; color: #25D366; margin-bottom: 12px;">chat</span>
+                                    <h3 class="font-titulos" style="font-size: 16px;">WhatsApp</h3>
+                                    <p style="font-size: 12px; margin-top: 4px;">Enlace al ticket digital</p>
+                                </div>
+                                <div class="acordeon-card" id="card-caja-imprimir" onclick="window.cajaMod.toggleCheckoutOpcion('imprimir')" style="padding: 24px; text-align: center; cursor: pointer; border: 2px solid transparent;">
+                                    <span class="material-symbols-rounded" style="font-size: 40px; color: var(--checkout-cobalto); margin-bottom: 12px;">print</span>
+                                    <h3 class="font-titulos" style="font-size: 16px;">Impresión</h3>
+                                    <p style="font-size: 12px; margin-top: 4px;">Ticket térmico</p>
+                                </div>
+                            </div>
+
+                            <div id="caja-checkout-wa-input" style="display: none; margin-bottom: 30px; background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--checkout-border); box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                                <label style="font-size: 14px; font-weight: bold; color: var(--checkout-cobalto); display:flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                                    <span class="material-symbols-rounded" style="color: var(--checkout-texto); font-size: 20px;">phone_iphone</span> 
+                                    Número de Celular del Cliente
+                                </label>
+                                <input type="tel" id="in-caja-whatsapp" style="width:100%; padding: 14px 16px; border: 2px solid var(--checkout-border); border-radius: 8px; font-size: 16px; outline: none; transition: border-color 0.2s;" placeholder="Ej. 5512345678" maxlength="10" onfocus="this.style.borderColor='var(--checkout-naranja)'" onblur="this.style.borderColor='var(--checkout-border)'">
+                                <p style="font-size: 11px; color: var(--checkout-texto); margin-top: 8px;">A este número se enviará un mensaje con el enlace al ticket digital.</p>
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--checkout-border);">
+                                <button class="btn-checkout-primario" onclick="window.cajaMod.avanzarPasoCaja(2)">Proceder a Liquidación <span class="material-symbols-rounded">payments</span></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASO 2: LIQUIDACIÓN -->
+                    <div id="caja-view-step-2" class="view-step" style="display: none; flex: 1; overflow-y: auto; padding: 40px;">
+                        <div style="max-width: 650px; margin: 0 auto; width: 100%;">
+                            <h2 class="font-titulos" style="font-size: 26px; margin-bottom: 8px;">Liquidación de Cuenta</h2>
+                            <p style="margin-bottom: 24px;">Selecciona el método de pago del cliente.</p>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+                                <div class="acordeon-card metodo selected" id="caja-metodo-efectivo" onclick="window.cajaMod.setMetodoPagoCaja('efectivo')" style="padding: 20px; text-align: center; cursor: pointer; border: 2px solid var(--checkout-naranja); background: var(--checkout-naranja-claro);">
+                                    <span class="material-symbols-rounded" style="font-size: 32px; color: var(--checkout-naranja);">payments</span>
+                                    <div class="font-titulos" style="font-size: 14px; margin-top: 8px; color: var(--checkout-naranja);">Efectivo</div>
+                                </div>
+                                <div class="acordeon-card metodo" id="caja-metodo-tarjeta" onclick="window.cajaMod.setMetodoPagoCaja('tarjeta')" style="padding: 20px; text-align: center; cursor: pointer; border: 2px solid transparent;">
+                                    <span class="material-symbols-rounded" style="font-size: 32px; color: var(--checkout-texto);">credit_card</span>
+                                    <div class="font-titulos" style="font-size: 14px; margin-top: 8px;">Tarjeta</div>
+                                </div>
+                                <div class="acordeon-card metodo" id="caja-metodo-transferencia" onclick="window.cajaMod.setMetodoPagoCaja('transferencia')" style="padding: 20px; text-align: center; cursor: pointer; border: 2px solid transparent;">
+                                    <span class="material-symbols-rounded" style="font-size: 32px; color: var(--checkout-texto);">account_balance</span>
+                                    <div class="font-titulos" style="font-size: 14px; margin-top: 8px;">Transferencia</div>
+                                </div>
+                            </div>
+
+                            <div id="caja-panel-efectivo" class="acordeon-card" style="padding: 24px; margin-bottom: 24px;">
+                                <label style="display:block; font-weight:bold; margin-bottom:8px; color: var(--checkout-cobalto);">Monto Recibido en Efectivo</label>
+                                <input type="number" id="caja-input-monto-recibido" placeholder="0.00" oninput="window.cajaMod.calcularCambioCaja()" style="width: 100%; padding: 14px; font-size: 18px; border: 2px solid var(--checkout-border); border-radius: 8px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--checkout-naranja)'" onblur="this.style.borderColor='var(--checkout-border)'">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding: 16px; background: var(--checkout-fondo); border-radius: 8px; border: 1px solid var(--checkout-border);">
+                                    <span style="font-weight: bold; color: var(--checkout-texto); font-size: 16px;">Cambio a entregar:</span>
+                                    <span id="caja-display-cambio" style="font-weight: bold; font-size: 24px; color: var(--checkout-naranja);">$0.00</span>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--checkout-border);">
+                                <button class="btn-checkout-secundario" style="background: transparent; border: 1px solid var(--checkout-border); padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;" onclick="window.cajaMod.avanzarPasoCaja(1)">Atrás</button>
+                                <button class="btn-checkout-primario" id="btn-caja-confirmar-pago" onclick="window.cajaMod.procesarPagoCheckout()" style="font-size: 16px;">
+                                    Confirmar Pago <span class="material-symbols-rounded">check_circle</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <!-- SIDEBAR RESUMEN -->
+                <div class="checkout-sidebar">
+                    <h3 class="font-titulos" style="font-size: 18px; margin-bottom: 24px; display: flex; align-items: center; gap: 8px;">
+                        <span class="material-symbols-rounded" style="color: var(--checkout-naranja);">receipt_long</span> Resumen de Venta
+                    </h3>
+                    
+                    <div style="background: var(--checkout-fondo); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                            <span style="color: var(--checkout-texto);">Artículos</span>
+                            <span style="font-weight: 600; color: var(--checkout-cobalto);" id="caja-checkout-items">0</span>
+                        </div>
+                        <div style="height: 1px; background: var(--checkout-border); margin: 16px 0;"></div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 16px; font-weight: bold; color: var(--checkout-cobalto);">TOTAL</span>
+                            <span style="font-size: 24px; font-weight: bold; color: var(--checkout-naranja);" id="caja-checkout-total">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+  </aside>
+
+  <!-- Contenedor invisible para construir el Ticket HTML para la nube / impresión -->
+  <div id="caja-ticket-print" style="display:none; width: 300px; padding: 20px; background: white; color: black; font-family: monospace; font-size: 12px; margin: 0 auto; box-sizing: border-box;"></div>
+
+</div>

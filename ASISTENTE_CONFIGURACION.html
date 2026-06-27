@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración Asistente | Protect Pet</title>
+    <link rel="stylesheet" href="/src/css/asist_ajustes.css"> </head>
+<body>
+
+    <div class="interfazVeterinario">
+        
+        <aside class="navegacionLateral">
+            <div class="bloqueSuperior">
+                <div class="marca">
+                    <div class="puntoNaranja"></div>
+                    <span>PROTECT PET</span>
+                </div>
+                <nav class="menuInterno">
+                    <a href="#seccionBasica" class="itemActivo">Información Personal</a>
+                    <a href="#seccionCuenta">Seguridad de Cuenta</a>
+                    <a href="#seccionEquipo">Miembros del Equipo</a>
+                </nav>
+            </div>
+
+            <div class="perfilMedico">
+                <div class="fotoMini" id="sidebarFotoAsis"></div>
+                <div class="datosMedico">
+                    <p class="nombre" id="txtNombreSide">Cargando...</p>
+                    <p class="cedula" style="color: #F27405; font-size: 0.75rem; font-weight: bold; margin-bottom: 5px;">ASISTENTE</p>
+                    <a href="#" class="linkCerrarSesion" id="btnCerrarSesion">Cerrar Sesión</a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="areaTrabajo">
+            <header class="encabezadoDashboard">
+                <div class="titulos-seccion">
+                    <h1>Configuración de tu cuenta</h1>
+                    <div class="datos-clinica-header">
+                        
+                        <div class="textos-clinica">
+                            <h2 id="txtNombreClinica">Protect Pet HQ</h2>
+                    
+                            <p id="txtDireccionClinica">Cargando ubicación...</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="PRINCIPAL.html" class="enlace-volver-panel">
+                    <span class="flecha-volver">←</span> Volver al Panel
+                </a>
+            </header>
+
+            <section id="seccionBasica" class="tarjetaContenedora">
+                <h3>Información de Asistencia</h3>
+                <p class="subtitulo">Tus datos de contacto para la coordinación interna de la clínica.</p>
+                
+                <div class="contenedor-perfil-horizontal">
+                    <div class="columna-foto">
+                        <div id="fotoPerfilCont" class="marco-foto-ajustada">
+                            <span id="placeholderFoto">Subir Foto</span>
+                        </div>
+                        <input type="file" id="inputFotoPerfil" style="display: none;" accept="image/*">
+                        <button type="button" class="btn-naranja-chico" onclick="document.getElementById('inputFotoPerfil').click()">Cambiar Imagen</button>
+                    </div>
+
+                    <div class="columna-datos-form">
+                        <form id="formPerfilAsistente" class="formulario-ajuste">
+                            <div class="campo">
+                                <label>Nombre Completo</label>
+                                <input type="text" id="adjNombre" class="input-moderno-f" placeholder="Tu nombre">
+                            </div>
+                            
+                            <div class="grid-dual">
+                                <div class="campo">
+                                    <label>Área de Apoyo Principal</label>
+                                    <select id="adjArea" class="input-moderno-f">
+                                        <option value="Recepcion">Recepción y Triaje</option>
+                                        <option value="Enfermeria">Enfermería / Piso</option>
+                                        <option value="Laboratorio">Apoyo en Laboratorio</option>
+                                        <option value="Estetica">Estética y Baño</option>
+                                    </select>
+                                </div>
+                                <div class="campo">
+                                    <label>Médico Responsable (Asignado)</label>
+                                    <input type="text" id="adjMedicoAsignado" class="input-moderno-f field-readonly" readonly placeholder="Dr. Responsable">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-azul-fuerte btn-separado-top">Actualizar Información</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <section id="seccionCuenta" class="tarjetaContenedora">
+                <h3>Seguridad de la Cuenta</h3>
+                <p class="subtitulo">Gestiona tus credenciales de acceso al panel administrativo.</p>
+                <form id="formSeguridadCuenta" class="columna-datos-form">
+                    <div class="grid-dual">
+                        <div class="campo"><label>Email de Usuario</label><input type="email" id="adjCorreo" class="input-moderno-f"></div>
+                        <div class="campo"><label>Email de Emergencia</label><input type="email" id="adjCorreoEmergencia" class="input-moderno-f"></div>
+                    </div>
+                    <div class="grid-dual">
+                        <div class="campo"><label>Teléfono de Contacto</label><input type="tel" id="adjTelefono" class="input-moderno-f"></div>
+                        <div class="campo">
+                            <label>Seguridad</label>
+                            <button type="button" id="btnCambiarPass" class="btn-secundario-naranja-outline">Cambiar Contraseña</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-azul-fuerte">Guardar Cambios de Cuenta</button>
+                </form>
+            </section>
+
+            <section id="seccionEquipo" class="tarjetaContenedora">
+                <div class="cabeceraTarjeta">
+                    <h3>Miembros de la Sucursal</h3>
+                    <p class="subtitulo">Colegas y Médicos vinculados a tu centro de trabajo.</p>
+                </div>
+                <div id="listaMiembrosEquipo" class="lista-apilada-admin"></div>
+                <div class="zona-baja-equipo" style="margin-top: 2rem;">
+                    <button id="btnAbandonarEquipo" class="btn-secundario-naranja-outline">Salir del equipo</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="/src/js/config_asistente_logica.js"></script>
+</body>
+</html>

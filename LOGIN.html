@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Acceso seguro al sistema de gestión clínica PET PROTECT.">
+    <title>Acceso | Protect Pet</title>
+    <link rel="stylesheet" href="/src/css/login_css.css">
+</head>
+<body>
+
+    <main class="contenedorLogin">
+        
+        <section class="seccionVideo">
+            <video autoplay muted loop playsinline class="videoFondo">
+                <source src="/src/vid/videofondologin.mp4" type="video/mp4">
+                Tu navegador no soporta videos HTML5.
+            </video>
+
+            <div class="mascaraVideo">
+                <p class="textoVideo">Gestión clínica<br>sin límites.</p>
+            </div>
+        </section>
+
+        <section class="seccionFormulario">
+            <div class="envolturaFormulario">
+                
+                <div class="contenedorLogo">
+                    <img src="/img/protect pet sim.png" alt="Logo Protect Pet" class="logoLogin">
+                </div>
+
+                <header class="encabezadoLogin">
+                    <h1>Bienvenido de nuevo</h1>
+                    <p>Ingresa tus credenciales para acceder a la clínica.</p>
+                </header>
+                <div id="contenedorErrores" style="display: none; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease;"></div>
+               <!-- MANDATO DE PROACTIVIDAD: method="POST" previene que las claves se filtren en la URL si el JS falla -->
+<form class="formulario-login" id="formLogin" method="POST" action="#" novalidate>
+                    <div class="grupoInput">
+                        <label for="correoLogin">Correo electrónico</label>
+                        <input type="email" id="correoLogin" name="email" autocomplete="username" placeholder="ejemplo@protectpet.com" required>
+                    </div>
+
+                    <div class="grupoInput">
+                        <div class="cabeceraPassword">
+                            <label for="passLogin">Contraseña</label>
+                            <a href="RECUPERAR_CONTRASEÑA.html" class="linkOlvido" tabindex="4">¿Olvidaste tu contraseña?</a>
+                        </div>
+                        <div class="contenedorPassword">
+                            <input type="password" id="passLogin" name="password" autocomplete="current-password" placeholder="••••••••" required>
+                            
+                            <button type="button" class="btnVerPassword" id="btnTogglePass" aria-label="Mostrar contraseña" style="color: #032F40; display: flex; align-items: center; justify-content: center;">
+                                <svg id="iconoOjo" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="botonLogin">Entrar al Sistema</button>
+
+                    <div class="divisor">
+                        <span>o continúa con</span>
+                    </div>
+
+                    <button type="button" id="btnGoogle" class="botonGoogle">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+                        Iniciar con Google
+                    </button>
+                </form>
+
+                <footer class="pieLogin">
+                    <p>¿No tienes una cuenta? <a href="REGISTRO.html" class="linkRegistro">Regístrate aquí</a></p>
+                    
+                    
+                </footer>
+
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="/src/js/vistas/login_logica.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!-- ====================================================================
+     OVERLAY Y PANEL: DETALLE DE FÁRMACO (Estilo Notificaciones)
+     ==================================================================== -->
+<div class="notif-overlay" id="estudioOverlay" aria-hidden="true"></div>
+
+<aside class="panel-notificaciones" id="panelDetalleProducto" role="dialog" aria-modal="true" aria-label="Detalle de Fármaco" style="z-index: 1210;">
+    <!-- Cabecera cobalto -->
+    <div class="notif-header">
+        <div class="notif-header-top">
+            <div>
+                <p style="font-size:0.72rem; color:#89C2D9; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; margin:0 0 6px;">Inventario › Farmacia</p>
+                <h2 class="notif-titulo">Meloxicam 1.5mg</h2>
+            </div>
+            <div class="notif-header-acciones">
+                <button type="button" class="notif-btn-icono" id="btn-cerrar-panel-detalle" title="Cerrar panel" aria-label="Cerrar panel">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </div>
+        </div>
+        <p class="notif-resumen">Código: <strong>MEL-015</strong></p>
+
+        <!-- Chips simulados de estados -->
+        <div class="notif-filtros" style="margin-top: 10px;">
+            <button class="notif-chip activo" style="background:#10B981; border-color:#10B981;">Stock: Óptimo</button>
+            <button class="notif-chip">Controlado: No</button>
+        </div>
+    </div>
+
+    <!-- Cuerpo con scroll -->
+    <div class="notif-cuerpo" style="padding:24px;">
+        <div style="display:flex; flex-direction:column; gap:20px;">
+
+            <!-- Indicadores Principales -->
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;">
+                <div style="background:#fff; border:1px solid #e8eef5; border-radius:12px; padding:12px; text-align:center;">
+                    <div style="font-size:0.65rem; font-weight:700; color:#8da5b5; text-transform:uppercase; margin-bottom:4px;">Stock Total</div>
+                    <div style="font-size:1.1rem; font-weight:800; color:#032F40;">200 ml</div>
+                </div>
+                <div style="background:#fff; border:1px solid #e8eef5; border-radius:12px; padding:12px; text-align:center;">
+                    <div style="font-size:0.65rem; font-weight:700; color:#8da5b5; text-transform:uppercase; margin-bottom:4px;">R. Mínima</div>
+                    <div style="font-size:1.1rem; font-weight:800; color:#032F40;">50 ml</div>
+                </div>
+                <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:12px; padding:12px; text-align:center;">
+                    <div style="font-size:0.65rem; font-weight:700; color:#ef4444; text-transform:uppercase; margin-bottom:4px;">Por Caducar</div>
+                    <div style="font-size:1.1rem; font-weight:800; color:#ef4444;">1 Lote</div>
+                </div>
+            </div>
+
+            <!-- Información Farmacológica -->
+            <div style="background:#fff; border:1px solid #e8eef5; border-radius:14px; padding:16px;">
+                <h3 style="font-size:0.8rem; font-weight:800; color:#032F40; margin:0 0 14px; display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-rounded" style="font-size:18px; color:#F27405;">medical_information</span> Información Farmacológica
+                </h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:0.75rem;">
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Sustancia Activa</span> <span style="font-weight:700; color:#032F40;">Meloxicam</span></div>
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Ubicación</span> <span style="font-weight:700; color:#032F40;">Anaquel A - Nivel 2</span></div>
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Presentación</span> <span style="font-weight:700; color:#032F40;">Frasco 10ml</span></div>
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Vía Admin.</span> <span style="font-weight:700; color:#032F40;">SC / IV</span></div>
+                    <div style="grid-column:1 / span 2;"><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Categoría</span> <span style="font-weight:700; color:#032F40;">Analgésico / AINE</span></div>
+                </div>
+            </div>
+
+            <!-- Información Financiera -->
+            <div style="background:#fff; border:1px solid #e8eef5; border-radius:14px; padding:16px;">
+                <h3 style="font-size:0.8rem; font-weight:800; color:#032F40; margin:0 0 14px; display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-rounded" style="font-size:18px; color:#89C2D9;">payments</span> Información Financiera
+                </h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; font-size:0.75rem;">
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Costo Prov.</span> <span style="font-weight:700; color:#032F40;">$120.00</span></div>
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">Precio Púb.</span> <span style="font-weight:700; color:#032F40;">$250.00</span></div>
+                    <div><span style="display:block; color:#8da5b5; font-weight:600; margin-bottom:2px;">M. Bruto</span> <span style="font-weight:800; color:#10B981;">52%</span></div>
+                </div>
+            </div>
+
+            <!-- Desglose de Lotes -->
+            <div style="background:#fff; border:1px solid #e8eef5; border-radius:14px; padding:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <h3 style="font-size:0.8rem; font-weight:800; color:#032F40; margin:0; display:flex; align-items:center; gap:6px;">
+                        <span class="material-symbols-rounded" style="font-size:18px; color:#F27405;">inventory_2</span> Desglose de Lotes
+                    </h3>
+                    <a href="#" style="font-size:0.7rem; font-weight:700; color:#89C2D9; text-decoration:none; display:flex; align-items:center; gap:4px;">
+                        <span class="material-symbols-rounded" style="font-size:14px;">manage_search</span> Auditar
+                    </a>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <!-- Lote 1 -->
+                    <div style="border:1px solid #fecaca; border-radius:10px; padding:12px; background:#fff;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                            <div>
+                                <div style="font-size:0.75rem; font-weight:800; color:#032F40;">Lote: L-2023-A01</div>
+                                <div style="font-size:0.7rem; color:#ef4444; font-weight:600;">Caduca: 15 Oct 2026</div>
+                            </div>
+                            <span style="font-size:0.65rem; font-weight:700; background:#fef2f2; color:#ef4444; padding:2px 8px; border-radius:100px; border:1px solid #fecaca;">Crítico</span>
+                        </div>
+                        <div style="width:100%; background:#f1f5f9; height:6px; border-radius:100px; overflow:hidden;">
+                            <div style="width:90%; background:#ef4444; height:100%;"></div>
+                        </div>
+                        <div style="font-size:0.65rem; color:#8da5b5; margin-top:6px; text-align:right;">Restan 20 ml</div>
+                    </div>
+
+                    <!-- Lote 2 -->
+                    <div style="border:1px solid #e8eef5; border-radius:10px; padding:12px; background:#fff;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                            <div>
+                                <div style="font-size:0.75rem; font-weight:800; color:#032F40;">Lote: L-2023-B05</div>
+                                <div style="font-size:0.7rem; color:#8da5b5; font-weight:600;">Caduca: 12 Ago 2028</div>
+                            </div>
+                            <span style="font-size:0.65rem; font-weight:700; background:#ecfdf5; color:#10b981; padding:2px 8px; border-radius:100px; border:1px solid #a7f3d0;">Óptimo</span>
+                        </div>
+                        <div style="width:100%; background:#f1f5f9; height:6px; border-radius:100px; overflow:hidden;">
+                            <div style="width:10%; background:#10b981; height:100%;"></div>
+                        </div>
+                        <div style="font-size:0.65rem; color:#8da5b5; margin-top:6px; text-align:right;">Restan 180 ml</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barcode SVG Placeholder (simulado visualmente para el panel angosto) -->
+            <div style="background:#fff; border:1px dashed #c2d4df; border-radius:14px; padding:16px; text-align:center;">
+                <span class="material-symbols-rounded" style="font-size:32px; color:#c2d4df;">barcode_scanner</span>
+                <div style="font-size:0.85rem; font-weight:800; color:#032F40; margin-top:6px; letter-spacing:2px;">7501234567890</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Pie -->
+    <div class="notif-footer">
+        <div>
+            <button type="button" class="notif-footer-btn secundario" style="padding:8px 12px; font-size:0.75rem;">Editar Ficha</button>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button type="button" class="notif-footer-btn primario" style="background:#F27405; display:flex; align-items:center; gap:6px; padding:8px 16px;">
+                <span class="material-symbols-rounded" style="font-size:16px;">inventory</span> Ajustar Stock
+            </button>
+        </div>
+    </div>
+</aside>

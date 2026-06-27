@@ -1,0 +1,151 @@
+﻿
+{"step_index":441,"source":"MODEL","type":"PLANNER_RESPONSE","status":"DONE","created_at":"2026-06-21T17:04:29Z","conte
+nt":"HTML listo. Ahora reescribo el JS completo con toda la lÃ³gica de 
+Supabase:","tool_calls":[{"name":"write_to_file","args":{"CodeContent":"/**\n * MÃ“DULO: Agenda ClÃnica (PET 
+PROTECT)\n * DESCRIPCIÃ“N: Conecta el maquetado estÃ¡tico de la Agenda a Supabase.\n *   - Calendario semanal con 
+citas reales por dÃa\n *   - Sala de espera en tiempo real (en_espera / en_consulta)\n *   - MÃ©tricas: citas 
+semanales, pacientes atendidos hoy, cirugÃas programadas\n * ARQUITECTURA: Vite / Supabase / ES Modules\n */\n\nimport 
+{ conexionSupabase } from '../../infraestructura/conexion.js';\nimport { obtenerSesionActiva } from 
+'../../infraestructura/sesion_store.js';\n\n// â”€â”€â”€ Estado del mÃ³dulo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â
+”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+â”€â”€â”€\nlet sucursalId = null;\n\n// â”€â”€â”€ Punto de entrada exportado (llamado por el router SPA) 
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nexport async function inicializarAgenda() {\n    
+console.log('[AGENDA] Inicializando mÃ³dulo...');\n\n    try {\n        const sesion = await obtenerSesionActiva();\n  
+      if (!sesion?.perfil?.sucursal_id) throw new Error('Sin sucursal en sesiÃ³n');\n        sucursalId = 
+sesion.perfil.sucursal_id;\n    } catch (err) {\n        console.error('[AGENDA] Error de sesiÃ³n:', err.message);\n   
+     // ContinÃºa en modo degradado sin bloquear la UI\n    }\n\n    configurarFechaCabecera();\n    
+configurarControlesVista();\n    configurarListenersBotones();\n\n    // Carga en paralelo para mÃ¡xima velocidad\n    
+await Promise.all([\n        cargarCitasSemana(),\n        cargarSalaEspera(),\n        actualizarMetricas()\n    
+]);\n}\n\n// â”€â”€â”€ Fallback: si el router llama al DOMContentLoaded antiguo 
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\ndocument.addEventListener('DOMContentLoaded', () => {\n    // Solo 
+activa si el mÃ³dulo se carga de forma standalone (sin SPA router)\n    if 
+(document.getElementById('metrica-atendidos')) {\n        inicializarAgenda();\n    }\n});\n\n// â”€â”€â”€ 1. CABECERA 
+DE FECHA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nfunction configurarFechaCabecera() {\n    const txtFechaActual = 
+document.getElementById('txtFechaActual');\n    const txtFechaLargaSeleccionada = 
+document.getElementById('txtFechaLargaSeleccionada');\n\n    const opciones = { weekday: 'long', year: 'numeric', 
+month: 'long', day: 'numeric' };\n    const fechaHoy = new Date().toLocaleDateString('es-MX', opciones);\n    const 
+fechaFormateada = fechaHoy.charAt(0).toUpperCase() + fechaHoy.slice(1);\n\n    if (txtFechaActual) 
+txtFechaActual.textContent = fechaFormateada;\n    if (txtFechaLargaSeleccionada) 
+txtFechaLargaSeleccionada.textContent = 'Hoy, ' + new Date().getDate();\n}\n\n// â”€â”€â”€ 2. CONTROLES DE VISTA (DÃa 
+/ Semana / Mes) 
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nfunction 
+configurarControlesVista() {\n    const botones = document.querySelectorAll('.btn-vista');\n    const vistas  = { dia: 
+'vista-dia', semana: 'vista-semana', mes: 'vista-mes' };\n\n    botones.forEach(btn => {\n        
+btn.addEventListener('click', () => {\n            botones.forEach(b => b.classList.remove('activo'));\n            
+btn.classList.add('activo');\n\n            Object.values(vistas).forEach(id => {\n                const el = 
+document.getElementById(id);\n                if (el) el.style.display = 'none';\n            });\n\n            const 
+vistaActiva = vistas[btn.dataset.vista];\n            const elActivo = document.getElementById(vistaActiva);\n         
+   if (elActivo) elActivo.style.display = '';\n        });\n    });\n}\n\n// â”€â”€â”€ 3. CALENDARIO SEMANAL DESDE 
+SUPABASE 
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nasync 
+function cargarCitasSemana() {\n    // Calcular lunes y domingo de la semana actual\n    const hoy    = new Date();\n  
+  const diaSem = hoy.getDay(); // 0=Dom, 1=Lun, ..., 6=Sab\n    const diffLunes = (diaSem === 0 ? -6 : 1 - diaSem);\n  
+  const lunes  = new Date(hoy);\n    lunes.setDate(hoy.getDate() + diffLunes);\n    lunes.setHours(0, 0, 0, 0);\n\n    
+const viernes = new Date(lunes);\n    viernes.setDate(lunes.getDate() + 4);\n    viernes.setHours(23, 59, 59, 
+999);\n\n    // Actualizar nÃºmeros de dÃa en la cabecera de cada columna\n    for (let i = 0; i < 5; i++) {\n        
+const fecha = new Date(lunes);\n        fecha.setDate(lunes.getDate() + i);\n        const numEl = 
+document.getElementById(`num-dia-${i + 1}`);\n        if (numEl) numEl.textContent = fecha.getDate();\n    }\n\n    // 
+Marcar la columna del dÃa actual con la clase dia-hoy\n    document.querySelectorAll('.columna-dia').forEach(col => 
+col.classList.remove('dia-hoy'));\n    const diaCols = [1, 2, 3, 4, 5]; // Lun=1, Mar=2, MiÃ©=3, Jue=4, Vie=5\n    
+const diaHoyISO = (diaSem >= 1 && diaSem <= 5) ? diaSem : null;\n    if (diaHoyISO) {\n        const colHoy = 
+document.querySelector(`.columna-dia[data-dia=\"${diaHoyISO}\"]`);\n        if (colHoy) 
+colHoy.classList.add('dia-hoy');\n    }\n\n    // Limpiar columnas antes de inyectar\n    diaCols.forEach(d => {\n     
+   const lista = document.getElementById(`citas-dia-${d}`);\n        if (lista) lista.innerHTML = '';\n    });\n\n    
+if (!sucursalId) {\n        // Sin sesiÃ³n: mostrar placeholder en todas las columnas\n        diaCols.forEach(d => 
+{\n            const lista = document.getElementById(`citas-dia-${d}`);\n            if (lista) lista.innerHTML = '<p 
+style=\"font-size:11px;color:#94a3b8;text-align:center;padding:8px;\">Sin datos</p>';\n        });\n        return;\n  
+  }\n\n    try {\n        const { data: citas, error } = await conexionSupabase\n            .from('citas')\n          
+  .select('id, fecha_hora, motivo_breve, estatus, paciente_id, pacientes(nombre)')\n            .eq('sucursal_id', 
+sucursalId)\n            .gte('fecha_hora', lunes.toISOString())\n            .lte('fecha_hora', 
+viernes.toISOString())\n            .order('fecha_hora', { ascending: true });\n\n        if (error) throw error;\n\n  
+      if (!citas || citas.length === 0) {\n            diaCols.forEach(d => {\n                const lista = 
+document.getElementById(`citas-dia-${d}`);\n                if (lista) lista.innerHTML = '<p 
+style=\"font-size:11px;color:#94a3b8;text-align:center;padding:8px;\">Sin citas</p>';\n            });\n            
+return;\n        }\n\n        // Distribuir citas en su columna correspondiente\n        citas.forEach(cita => {\n     
+       const fechaCita = new Date(cita.fecha_hora);\n            const diaSemCita = fechaCita.getDay(); // 0=Dom, 
+1=Lun ... 6=Sab\n            // Solo Lun-Vie (1-5)\n            if (diaSemCita < 1 || diaSemCita > 5) return;\n\n      
+      const lista = document.getElementById(`citas-dia-${diaSemCita}`);\n            if (!lista) return;\n\n           
+ const hora = fechaCita.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: true });\n           
+ const nombrePaciente = cita.pacientes?.nombre || 'Paciente';\n            const motivo = cita.motivo_breve || '';\n\n 
+           // Clase CSS segÃºn estatus\n            const clasesEstatus = {\n                'completada':   
+'cita-completada',\n                'finalizada':   'cita-completada',\n                'en_consulta':  
+'estado-en-progreso',\n                'urgencia':     'estado-urgencia',\n                'programada':   '',\n       
+         'confirmada':   '',\n                'en_espera':    '',\n            };\n            const claseExtra = 
+clasesEstatus[cita.estatus] ?? '';\n\n            lista.innerHTML += `\n                <div class=\"cita-minimalista 
+${claseExtra}\" data-id=\"${cita.id}\" title=\"${motivo}\">\n                    <div class=\"cita-titulo\">\n         
+               <i class=\"ph ph-paw-print\"></i> ${nombrePaciente}\n                    </div>\n                    
+<div class=\"cita-hora\">${hora}${motivo ? ' â€“ ' + motivo : ''}</div>\n                </div>`;\n        });\n\n    
+} catch (err) {\n        console.warn('[AGENDA] No se pudieron cargar las citas de la semana:', err.message);\n    
+}\n}\n\n// â”€â”€â”€ 4. SALA DE ESPERA DESDE SUPABASE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nasync function cargarSalaEspera() {\n    const contenedor = 
+document.getElementById('sala-espera-lista');\n    if (!contenedor) return;\n\n    if (!sucursalId) {\n        
+contenedor.innerHTML = '<p style=\"font-size:12px;color:#94a3b8;text-align:center;padding:16px;\">Inicia sesiÃ³n para 
+ver la sala de espera.</p>';\n        return;\n    }\n\n    const hoyInicio = new Date(); hoyInicio.setHours(0, 0, 0, 
+0);\n    const hoyFin    = new Date(); hoyFin.setHours(23, 59, 59, 999);\n\n    try {\n        const { data: 
+pacientes, error } = await conexionSupabase\n            .from('citas')\n            .select('id, fecha_hora, 
+motivo_breve, estatus, pacientes(nombre)')\n            .eq('sucursal_id', sucursalId)\n            .in('estatus', 
+['en_espera', 'en_consulta'])\n            .gte('fecha_hora', hoyInicio.toISOString())\n            .lte('fecha_hora', 
+hoyFin.toISOString())\n            .order('fecha_hora', { ascending: true });\n\n        if (error) throw error;\n\n   
+     if (!pacientes || pacientes.length === 0) {\n            contenedor.innerHTML = `\n                <div 
+style=\"text-align:center;color:#94a3b8;font-size:13px;padding:32px 0;\">\n                    <span 
+class=\"material-symbols-rounded\" 
+style=\"font-size:2rem;display:block;margin-bottom:8px;opacity:0.5;\">event_seat</span>\n                    La sala 
+de espera estÃ¡ vacÃa.\n                </div>`;\n            return;\n        }\n\n        contenedor.innerHTML = 
+pacientes.map(cita => {\n            const nombre    = cita.pacientes?.nombre || 'Paciente';\n            const 
+enEspera  = cita.estatus === 'en_espera';\n            const claseItem = enEspera ? 'llegada' : 'consulta';\n          
+  const textoDesc = enEspera\n                ? 'El tutor ha registrado la <strong>llegada</strong>.'\n                
+: 'PasÃ³ al <strong>Consultorio</strong>.';\n            const badgeTexto = enEspera ? 'EN SALA DE ESPERA' : 'EN 
+CONSULTA';\n            const badgeClase = enEspera ? 'badge-estado' : 'badge-estado azul';\n\n            // Tiempo 
+desde la cita\n            const minutos = Math.round((Date.now() - new Date(cita.fecha_hora).getTime()) / 60000);\n   
+         const tiempoTexto = minutos <= 0 ? 'Ahora' : minutos < 60 ? `Hace ${minutos} min` : `Hace 
+${Math.round(minutos / 60)}h`;\n\n            return `\n                <div class=\"item-consulta ${claseItem}\">\n   
+                 <div class=\"feed-header-info\">\n                        <span class=\"feed-nombre\"><i class=\"ph 
+ph-paw-print\"></i> ${nombre}</span>\n                        <span class=\"feed-tiempo\">${tiempoTexto}</span>\n      
+              </div>\n                    <p class=\"feed-texto\">${textoDesc}</p>\n                    <span 
+class=\"${badgeClase}\">${badgeTexto}</span>\n                </div>`;\n        }).join('');\n\n    } catch (err) {\n  
+      console.warn('[AGENDA] No se pudo cargar la sala de espera:', err.message);\n        contenedor.innerHTML = '<p 
+style=\"font-size:12px;color:#ef4444;padding:12px;\">Error al cargar sala de espera.</p>';\n    }\n}\n\n// â”€â”€â”€ 
+5. MÃ‰TRICAS RÃPIDAS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â
+”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nasync function actualizarMetricas() {\n    if 
+(!sucursalId) return;\n\n    const hoy       = new Date();\n    const hoyInicio = new Date(hoy); hoyInicio.setHours(0, 
+0, 0, 0);\n    const hoyFin    = new Date(hoy); hoyFin.setHours(23, 59, 59, 999);\n\n    // Semana actual\n    const 
+diaSem    = hoy.getDay();\n    const diffLunes = (diaSem === 0 ? -6 : 1 - diaSem);\n    const lunes     = new 
+Date(hoy); lunes.setDate(hoy.getDate() + diffLunes); lunes.setHours(0, 0, 0, 0);\n    const viernes   = new 
+Date(lunes); viernes.setDate(lunes.getDate() + 4); viernes.setHours(23, 59, 59, 999);\n\n    try {\n        const 
+[resSemana, resToday, resCirugias] = await Promise.all([\n            // Citas de la semana\n            
+conexionSupabase\n                .from('citas')\n                .select('id', { count: 'exact', head: true })\n      
+          .eq('sucursal_id', sucursalId)\n                .gte('fecha_hora', lunes.toISOString())\n                
+.lte('fecha_hora', viernes.toISOString()),\n\n            // Pacientes atendidos hoy (estatus finalizada/completada)\n 
+           conexionSupabase\n                .from('citas')\n                .select('id', { count: 'exact', head: 
+true })\n                .eq('sucursal_id', sucursalId)\n                .in('estatus', ['finalizada', 
+'completada'])\n                .gte('fecha_hora', hoyInicio.toISOString())\n                .lte('fecha_hora', 
+hoyFin.toISOString()),\n\n            // CirugÃas programadas esta semana\n            conexionSupabase\n              
+  .from('citas')\n                .select('id', { count: 'exact', head: true })\n                .eq('sucursal_id', 
+sucursalId)\n                .ilike('motivo_breve', '%cirug%')\n                .gte('fecha_hora', 
+lunes.toISOString())\n                .lte('fecha_hora', viernes.toISOString()),\n        ]);\n\n        const 
+elAtendidos = document.getElementById('metrica-atendidos');\n        const elSemana    = 
+document.getElementById('metrica-citas-semana');\n        const elCirugias  = 
+document.getElementById('metrica-cirugias');\n\n        if (elAtendidos) elAtendidos.textContent = resToday.count ?? 
+0;\n        if (elSemana)    elSemana.textContent    = resSemana.count ?? 0;\n        if (elCirugias)  
+elCirugias.textContent  = resCirugias.count ?? 0;\n\n    } catch (err) {\n        console.warn('[AGENDA] Error al 
+actualizar mÃ©tricas:', err.message);\n    }\n}\n\n// â”€â”€â”€ 6. LISTENERS DE BOTONES (preservados del cÃ³digo 
+original) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nfunction configurarListenersBotones() {\n    const 
+btnGuardarCita = document.getElementById('btnGuardarCita');\n    if (btnGuardarCita) {\n        
+btnGuardarCita.addEventListener('click', async (e) => {\n            e.preventDefault();\n            
+btnGuardarCita.innerHTML = `<span class=\"material-symbols-rounded\">check_circle</span> Guardado`;\n            
+setTimeout(() => {\n                btnGuardarCita.innerHTML = `<span 
+class=\"material-symbols-rounded\">event_available</span> Confirmar Cita`;\n                
+document.getElementById('formularioNuevaCita')?.reset();\n            }, 2000);\n        });\n    }\n\n    // Filtros 
+de especie/tipo (UI reactiva sin red)\n    const botonesFiltro = document.querySelectorAll('.btnFiltro');\n    const 
+nivelSuscripcionActual = 'basico';\n\n    botonesFiltro.forEach(btn => {\n        btn.addEventListener('click', () => 
+{\n            if (btn.classList.contains('bloqueado') && nivelSuscripcionActual === 'basico') {\n                
+alert('Esta funciÃ³n requiere el plan Protect Pet Pro.');\n                return;\n            }\n            
+botonesFiltro.forEach(b => b.classList.remove('activo'));\n            btn.classList.add('activo');\n        });\n    
+});\n}\n","Description":"Reescritura completa del mÃ³dulo de Agenda conectÃ¡ndolo a Supabase. Implementa 
+cargarCitasSemana, cargarSalaEspera, actualizarMetricas, y mantiene la lÃ³gica existente de botones y vistas.","Overwri
+te":true,"TargetFile":"c:\\Users\\danit\\Desktop\\PETPROTECT\\PETPROTECT2\\src\\js\\vistas\\modulos\\modulo_agenda_logi
+ca.js","toolAction":"Rewriting agenda module with Supabase integration","toolSummary":"Write agenda Supabase 
+module"}}]}
+
+

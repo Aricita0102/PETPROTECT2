@@ -1,0 +1,759 @@
+:root {
+    /* Paleta de Colores PET PROTECT */
+    --color-fondo: #F5F5F5;
+    --color-texto: #032F40;
+    --color-primario: #032F40; /* Azul Oscuro */
+    --color-acento: #F27405;   /* Naranja Vibrante */
+    --color-acento-hover: #d66504;
+    --color-secundario: #89C2D9; /* Azul Cielo */
+    --color-blanco: #FFFFFF;
+    
+    /* Tipografía y Sombras */
+    --fuente-principal: 'Century Gothic', sans-serif;
+    --sombra-suave: 0 10px 30px rgba(3, 47, 64, 0.1);
+    --sombra-fuerte: 0 15px 30px rgba(3, 47, 64, 0.2);
+    --radio-bento: 30px;
+}
+
+@font-face {
+    font-family: 'Century Gothic';
+    src: local('Century Gothic');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--fuente-principal);
+    background-color: var(--color-fondo); 
+    color: var(--color-texto); 
+    overflow-x: hidden;
+    /* SEO: 16px es el estándar mínimo recomendado para legibilidad */
+    font-size: 16px; 
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ==========================================================================
+   ANIMACIONES 3D AL HACER SCROLL
+   ========================================================================== */
+main {
+    perspective: 1000px; /* Profundidad para el efecto 3D */
+    overflow-x: hidden;
+}
+
+.seccion-animada {
+    opacity: 0;
+    transform: translateY(-50px) rotateX(15deg) scale(0.95);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, opacity;
+}
+
+.seccion-animada.aparecer {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg) scale(1);
+}
+
+/* NAVEGACIÓN  */
+header {
+    position: sticky;
+    top: 0;
+    background: rgba(245, 245, 245, 0.95);
+    backdrop-filter: blur(10px); /* Efecto Glassmorphism sutil */
+    z-index: 1000;
+}
+
+.barraNavegacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%; 
+    flex-wrap: wrap; 
+}
+
+.logotipo {
+    font-weight: bold;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    letter-spacing: -1px;
+    color: var(--color-primario);
+    white-space: nowrap; 
+}
+
+.imgLogotipo {
+    height: 50px; 
+    width: auto;  
+    object-fit: contain; 
+}
+
+.textoLogotipo {
+    margin-left: -15px; 
+}
+
+/* Menú y Botón Móvil */
+.botonMenuMovil {
+    display: none; /* Oculto por defecto en PC */
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: var(--color-primario);
+    cursor: pointer;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem; 
+}
+
+.menu a {
+    font-size: 1rem; 
+    font-weight: 600;
+    position: relative; 
+    transition: color 0.3s ease;
+}
+
+.menu a:not(.botonAcceso):hover {
+    color: var(--color-acento);
+}
+
+.menu a:not(.botonAcceso)::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--color-acento);
+    transition: width 0.3s ease;
+}
+
+.menu a:not(.botonAcceso):hover::after {
+    width: 100%;
+}
+
+.botonAcceso {
+    padding: 0.8rem 1.6rem;
+    border: 2px solid var(--color-primario);
+    background: transparent;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap; 
+}
+
+.botonAcceso:hover {
+    background: var(--color-primario);
+    color: var(--color-blanco);
+    transform: translateY(-3px);
+    box-shadow: var(--sombra-suave);
+}
+
+/* ==========================================================================
+   SECCIÓN HERO
+   ========================================================================== */
+.seccionHero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 5rem 10%;
+    align-items: center;
+    min-height: 80vh;
+    gap: 2rem;
+}
+
+.tituloPrincipal {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1.1;
+    margin-bottom: 2rem;
+}
+
+.textoAcento {
+    color: var(--color-acento); 
+}
+
+.descripcionCorta {
+    font-size: 1.25rem; 
+    margin-bottom: 2.5rem;
+    max-width: 80%;
+}
+
+.botonPrimario {
+    display: inline-block;
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    padding: 1.1rem 2.6rem;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.botonPrimario:hover {
+    background-color: var(--color-acento);
+    transform: translateY(-3px);
+    box-shadow: var(--sombra-fuerte);
+}
+
+.decoracionHero {
+    position: relative;
+    height: 400px;
+    background: var(--color-secundario);
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+.gato-hero {
+    position: absolute;
+    bottom:9;      
+    right: 10%;     
+    width: 100%;
+    transform: translateY(10%);
+    max-width:70%;   
+    object-fit: contain;
+    z-index: 1;    
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, transparent 5%, black 2%, black 90%);
+    mask-image: linear-gradient(to top, transparent 0%, transparent 15%, black 25%, black 100%);
+    
+    /* Efecto premium: Sombra suave para dar volumen sobre el fondo */
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));
+
+}
+
+/* Animación Funcional Hero */
+.tarjetaFlotante {
+    position: absolute;
+    background: var(--color-blanco);
+    padding: 1.5rem;
+    border-radius: 20px;
+    box-shadow: var(--sombra-suave);
+    font-size: 1.1rem; 
+    font-weight: bold;
+    z-index: 12; 
+}
+
+.bentoUno { top: -5%; left: -10%; border-left: 5px solid var(--color-acento); }
+.bentoDos { bottom: -1%; left: 60%; border-left: 5px solid var(--color-primario); }
+
+.animar-flote { animation: flotar 4s ease-in-out infinite; }
+.animar-flote-inverso { animation: flotar 5s ease-in-out infinite alternate-reverse; }
+
+@keyframes flotar {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+
+/* --- Bento Grid --- */
+.contenedorBento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* Mantengo la base en 250px o 'auto' para que las celdas se adapten al contenido */
+    grid-auto-rows: minmax(250px, auto); 
+    gap: 1.5rem;
+    padding: 5rem 10%;
+}
+
+.cajaBento {
+    border-radius: 30px;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; 
+    transition: transform 0.3s;
+    position: relative;
+    overflow: hidden; 
+}
+
+/* Ajuste sutil en títulos de tarjetas */
+.cajaBento h2 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.cajaBento h3 { font-size: 1.6rem; margin-bottom: 0.5rem; }
+.cajaBento p { font-size: 1.05rem; }
+
+.cajaBento h2, .cajaBento h3, .cajaBento p {
+    position: relative;
+    z-index: 2;
+}
+
+.cajaBento:hover { transform: scale(1.02); }
+
+.iconoBento {
+    position:absolute ; 
+    opacity: 0.9;
+    z-index: 1;         
+    transition: transform 0.4s ease;
+    object-fit: contain; 
+}
+
+/* --- CONTROL INDIVIDUAL DE IMÁGENES BENTO --- */
+
+/* 1. Tarjeta Grande (Simplicidad - Azul Oscuro) */
+.azulOscuro .iconoBento { 
+    width: 750px; 
+    top: -5px; 
+    right: -10px;
+}
+/* Aumento de altura específico para PC */
+.azulOscuro { 
+    background-color: #032F40; 
+    color: #F5F5F5; 
+    grid-column: span 2; 
+    grid-row: span 2;
+    min-height: 620px; /* Aumentado de 580px a 620px */
+}
+
+/* 2. Tarjeta Mediana 1 (Agenda - Naranja Vibrante) */
+.naranjaVibrante { justify-content: center; }
+.naranjaVibrante h3, .naranjaVibrante p { margin-left: 40%; width: 60%; text-align: left;color: var(--color-blanco); }
+.naranjaVibrante .iconoBento { width: 85%; top: 75%; transform: translateY(-60%); left:-50%; right: auto; }
+.naranjaVibrante:hover .iconoBento { transform: translateY(-50%) scale(1.1) rotate(5deg); }
+.naranjaVibrante { background-color: #F27405; color: #032F40; grid-column: span 2; }
+
+/* 3. Tarjeta Mediana 2 (Recetas - Azul Cielo) */
+.azulCielo .iconoBento { width: 280px; top: -25%; right: -1px; opacity: 0.8;}
+/* Aumento de altura específico */
+.azulCielo { 
+    background-color: #89C2D9; 
+    color: #032F40; 
+   
+    min-height: 350px; /* Aumentado de 320px a 350px */
+}
+
+/* 4. Tarjeta Pequeña (Finanzas - Naranja Intenso) */
+.naranjaIntenso .iconoBento { width: 300px; top: -3%; right: -1px; }
+/* Aumento de altura específico */
+.naranjaIntenso { 
+    background-color: #F27405; 
+    color: white; 
+    min-height: 350px; /* Aumentado de 320px a 350px */
+}
+
+.azulOscuro:hover .iconoBento, .azulCielo:hover .iconoBento, .naranjaIntenso:hover .iconoBento {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+/* ==========================================================================
+   SECCIÓN ROLES (DISEÑO UX/UI PREMIUM AESTHETIC)
+   ========================================================================== */
+.seccionRoles {
+    /* Aumentamos el padding para darle "respiro" o White Space (regla de oro en UX) */
+    padding: 6rem 10%;
+    background-color: var(--color-blanco);
+}
+
+.cabeceraRoles {
+    text-align: center;
+    margin-bottom: 4rem; /* Separamos más el título de las tarjetas */
+}
+
+.cabeceraRoles h2 {
+    font-size: clamp(2.2rem, 4vw, 3rem); /* Tipografía fluida */
+    color: var(--color-primario);
+    letter-spacing: -1px; /* Juntar un poco las letras da un look más moderno/editorial */
+}
+
+.tarjetasRoles {
+    /* Cambiamos Flexbox por CSS Grid: Es matemáticamente más preciso para tarjetas idénticas */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+}
+
+/* --- LA TARJETA AESTHETIC --- */
+.rolCard {
+    background-color: var(--color-blanco);
+    padding: 3rem 2.5rem;
+    border-radius: 20px; 
+    
+    /* ADIÓS AL BORDE DURO: Usamos un borde casi invisible y una sombra muuuuy tenue */
+    border: 1px solid rgba(3, 47, 64, 0.04);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); 
+    
+    /* Curva de animación premium (suave al inicio, rápida en medio, suave al final) */
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Detalle de UI: Una barra de color superior oculta que le da personalidad */
+.rolCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--color-secundario); /* Empieza con el azul cielo tranquilo */
+    transition: background 0.4s ease;
+}
+
+/* Efecto Hover (Microinteracción) */
+.rolCard:hover {
+    transform: translateY(-8px); /* Se levanta sutilmente */
+    box-shadow: 0 20px 40px rgba(3, 47, 64, 0.08); /* La sombra se profundiza */
+    border-color: transparent;
+}
+
+/* Al pasar el mouse, la línea superior "enciende" en tu Naranja Vibrante */
+.rolCard:hover::before {
+    background: var(--color-acento);
+}
+
+/* Jerarquía Tipográfica */
+.rolCard h4 { 
+    color: var(--color-primario); 
+    font-size: 1.5rem; 
+    font-weight: 800;
+    margin-bottom: 1rem; 
+}
+
+.rolCard p { 
+    font-size: 1.05rem; 
+    /* El secreto UX: Mutamos el color del texto a un gris/azulado para no cansar la vista */
+    color: #5a7d8c; 
+    line-height: 1.6;
+}
+/* ==========================================================================
+   SECCIÓN PRECIOS
+   ========================================================================== */
+.seccionPrecios {
+    padding: 5rem 10%;
+    background-color: var(--color-fondo);
+}
+
+.cabeceraPrecios {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.cabeceraPrecios h2 {
+    font-size: 2.8rem; 
+    color: var(--color-primario);
+    margin-bottom: 1rem;
+}
+
+.cabeceraPrecios p {
+    font-size: 1.2rem; 
+    color: #666;
+}
+
+.gridPrecios {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    align-items: center; 
+}
+
+.cardPrecio {
+    background: var(--color-blanco);
+    padding: 2.5rem;
+    border-radius: 30px;
+    position: relative;
+    border: 1px solid #E0E0E0;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.cardPrecio:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--sombra-fuerte);
+}
+
+.headerPrecio {
+    text-align: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px dashed #E0E0E0;
+    padding-bottom: 2rem;
+}
+
+.headerPrecio h3 {
+    font-size: 1.6rem; 
+    color: var(--color-primario);
+    margin-bottom: 10px;
+}
+
+.precio {
+    font-size: 2.8rem; 
+    font-weight: bold;
+    color: var(--color-primario);
+}
+
+.precio span {
+    font-size: 1rem;
+    color: #999;
+}
+
+.listaBeneficios {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+    flex-grow: 1; 
+}
+
+.listaBeneficios li {
+    margin-bottom: 15px;
+    color: #555;
+    font-size: 1rem; 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.botonPrecioOutline, .botonPrecioFull {
+    display: inline-block;
+    width: 100%;
+    padding: 1.1rem;
+    font-size: 1rem;
+    border-radius: 15px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.botonPrecioOutline {
+    background: transparent;
+    border: 2px solid var(--color-primario);
+    color: var(--color-primario);
+}
+
+.botonPrecioOutline:hover { 
+    background: var(--color-primario); 
+    color: var(--color-blanco); 
+    transform: translateY(-3px);
+}
+
+.botonPrecioFull {
+    background: var(--color-acento); 
+    border: none;
+    color: var(--color-blanco);
+    box-shadow: 0 5px 15px rgba(242, 116, 5, 0.3);
+}
+
+.botonPrecioFull:hover { 
+    background: var(--color-acento-hover); 
+    transform: scale(1.02) translateY(-3px); 
+}
+
+.recomendado { 
+    border: 2px solid var(--color-acento); 
+    transform: scale(1.05); 
+    z-index: 2; 
+}
+
+.etiquetaRecomendado { 
+    position: absolute; 
+    top: -15px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    background-color: var(--color-acento); 
+    color: var(--color-blanco); 
+    padding: 5px 20px; 
+    border-radius: 20px; 
+    font-size: 0.9rem; 
+    font-weight: bold; 
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.piePagina {
+    padding: 3rem 10%;
+    text-align: center;
+    background-color: var(--color-primario);
+    color: var(--color-secundario);
+    font-size: 0.9rem; 
+}
+
+/* ==========================================================================
+   MEDIA QUERIES (RESPONSIVIDAD PREMIUM Y FLUIDA)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Tablet y Portátiles pequeñas (hasta 1024px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+    .barraNavegacion { padding: 1.5rem 5%; gap: 1.5rem; justify-content: center; }
+    
+    /* Reorganizamos el Hero a 1 columna (Texto arriba, Gato abajo) */
+    .seccionHero { 
+        grid-template-columns: 1fr; 
+        text-align: center; 
+        padding: 4rem 5%; 
+        gap: 3rem; /* Espacio para respirar entre texto y el gato */
+    }
+    
+    .tituloPrincipal { font-size: 3.2rem; }
+    .descripcionCorta { margin: 0 auto 2.5rem auto; max-width: 100%; }
+    
+    /* --- EL GATO VUELVE A LA VIDA EN TABLET --- */
+    .decoracionHero { 
+        display: block; /* Quitamos el display: none */
+        width: 100%;
+        max-width: 500px; /* Evita que crezca desproporcionadamente */
+        margin: 0 auto; /* Centrado horizontal perfecto */
+        height: 380px; /* Ajuste sutil de altura */
+    }
+
+    /* Ajustamos las tarjetas flotantes para que no se salgan de la pantalla */
+    .tarjetaFlotante {
+        padding: 1rem 1.2rem;
+        font-size: 0.95rem;
+    }
+    .bentoUno { top: -5%; left: 0%; }
+    .bentoDos { bottom: 5%; right: -2%; }
+    
+    /* --- BENTO GRID: AJUSTES TABLET --- */
+    .contenedorBento { 
+        grid-template-columns: 1fr; 
+        padding: 4rem 5%; 
+    }
+    
+    .azulOscuro { grid-column: span 1; grid-row: span 1; min-height: 400px; margin-left: 20px; }
+    .azulOscuro .img-responsiva {
+        width: 60%; 
+        top: -50px; 
+        left: 50%; 
+
+        transform: translateX(-50%); 
+    }
+    
+    /* Reset Naranja Vibrante */
+    .cajaBento.naranjaVibrante { 
+        grid-column: span 1; 
+        flex-direction: column; 
+        justify-content: flex-end; 
+        min-height: 360px;       
+        padding-top: 150px;      
+        padding-left: 2.9rem;    
+    }
+    
+    .naranjaVibrante .contenidoBento { 
+        width: 100%;  
+        text-align: right; 
+        color: var(--color-blanco);
+        margin-left: 20px;
+        padding: 0px; 
+    }
+    
+    .naranjaVibrante .img-responsiva { 
+        position: absolute;
+        width: 580px;            
+        height: auto;            
+        top: -160px;             
+        left: -100%;            
+        bottom: auto;            
+        transform: none; 
+        object-fit: contain;    
+        border-radius: 0;       
+    }
+    
+    .naranjaVibrante:hover .img-responsiva { transform: scale(1.05); }
+    
+    .cajaBento.azulCielo, 
+    .cajaBento.naranjaIntenso {
+        min-height: 360px; 
+        padding-top: 150px;
+    }
+    
+    .azulCielo .img-responsiva { 
+        position: absolute;
+        width: 140%;                
+        height: auto;                
+        left: 50%;                   
+        transform: translateX(-50%); 
+        top: auto;                   
+        bottom: 45%;                 
+    }
+    
+    .cajaBento.naranjaIntenso { padding-top: 180px; }
+    
+    .naranjaIntenso .img-responsiva { 
+        position: absolute;
+        width: 140%;        
+        height: auto;                
+        left: 50%;                   
+        transform: translateX(-50%); 
+        top: auto;                   
+        bottom: 15%;               
+    }
+
+    /* Ajustes Roles y Precios */
+    .seccionRoles { padding: 5rem 5%; }
+    .tarjetasRoles { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+    .rolCard:last-child { grid-column: span 2; max-width: 50%; margin: 0 auto; }
+    
+    .seccionPrecios { padding: 4rem 5%; }
+    .gridPrecios { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
+    .recomendado { transform: scale(1); order: -1; margin-bottom: 2rem; }
+}
+
+/* --------------------------------------------------------------------------
+   Teléfonos Móviles (hasta 768px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .barraNavegacion { justify-content: space-between; }
+    .botonMenuMovil { display: block; } 
+    
+    .menu {
+        display: none; 
+        flex-direction: column;
+        position: absolute;
+        top: 100%; 
+        left: 0; 
+        width: 100%;
+        background: rgba(245, 245, 245, 0.95); 
+        backdrop-filter: blur(10px); 
+        -webkit-backdrop-filter: blur(10px); 
+        border-top: 1px solid rgba(3, 47, 64, 0.05); 
+        padding: 2rem 0;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); 
+    }
+    .menu.activo { display: flex; }
+    
+    /* --- HERO EN MÓVIL --- */
+    .tituloPrincipal { font-size: 2.3rem; }
+    
+    .decoracionHero {
+        height: 280px; /* Reducimos la altura para no ocupar toda la pantalla */
+        max-width: 320px; /* Hacemos la forma más pequeña */
+        margin-top: 1rem;
+    }
+    
+    /* Reducimos las tarjetas flotantes o las pegamos más a la forma 
+       para evitar scroll horizontal en pantallas muy estrechas (ej. iPhone SE) */
+    .tarjetaFlotante {
+        padding: 0.8rem;
+        font-size: 0.8rem;
+    }
+    .bentoUno { left: -10%; top: -10%; } /* Las metemos un poco hacia el centro */
+    .bentoDos { right: 5%; bottom: 5%; }
+
+    /* Ajustes Roles Móvil */
+    .seccionRoles { padding: 4rem 5%; }
+    .cabeceraRoles { margin-bottom: 3rem; }
+    .tarjetasRoles { grid-template-columns: 1fr; gap: 1.5rem; }
+    .rolCard:last-child { grid-column: span 1; max-width: 100%; }
+    .rolCard { padding: 2.5rem 2rem; }
+    .rolCard:hover { transform: none; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); }
+    .rolCard:hover::before { background: var(--color-secundario); }
+
+    /* --- ANIMACIONES OPTIMIZADAS --- */
+    .seccion-animada {
+        transform: translateY(-20px); /* Transición 2D más ligera para ahorrar batería */
+        transition: all 0.6s ease-out; 
+    }
+}

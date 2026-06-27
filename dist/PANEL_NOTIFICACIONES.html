@@ -1,0 +1,91 @@
+<!-- ==========================================================================
+   PANEL DE NOTIFICACIONES — PET PROTECT
+   Archivo: PANEL_NOTIFICACIONES.html
+   Se inyecta en el DOM del PRINCIPAL.html al iniciar el SPA.
+   ========================================================================== -->
+
+<!-- Overlay oscuro para cerrar al hacer clic fuera -->
+<div class="notif-overlay" id="notifOverlay" aria-hidden="true"></div>
+
+<!-- Panel lateral -->
+<aside class="panel-notificaciones" id="panelNotificaciones" role="dialog" aria-modal="true" aria-label="Centro de Notificaciones">
+
+    <!-- CABECERA ─────────────────────────────────────────────────────────── -->
+    <div class="notif-header">
+        <div class="notif-header-top">
+            <h2 class="notif-titulo">Notificaciones</h2>
+            <div class="notif-header-acciones">
+                <button class="notif-btn-icono" id="notifBtnMarcarTodas" title="Marcar todas como leídas" aria-label="Marcar todas como leídas">
+                    <span class="material-symbols-rounded">done_all</span>
+                </button>
+                <button class="notif-btn-icono" id="notifBtnCerrar" title="Cerrar panel" aria-label="Cerrar notificaciones">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </div>
+        </div>
+        <p class="notif-resumen" id="notifResumen">Cargando alertas...</p>
+
+        <!-- CHIPS FILTRO SECCIÓN -->
+        <div class="notif-filtros" id="notifFiltros" role="group" aria-label="Filtros de notificaciones">
+            <button class="notif-chip activo" data-filtro="todos">Todos</button>
+            <button class="notif-chip" data-filtro="stock">Inventario</button>
+            <button class="notif-chip" data-filtro="urgencia">Urgencias</button>
+            <button class="notif-chip" data-filtro="sistema">Sistema</button>
+        </div>
+    </div>
+
+    <!-- BUSCADOR ─────────────────────────────────────────────────────────── -->
+    <div class="notif-buscador-wrap">
+        <div class="notif-buscador">
+            <span class="material-symbols-rounded" aria-hidden="true">search</span>
+            <input
+                type="text"
+                id="notifInputBuscar"
+                placeholder="Buscar en notificaciones..."
+                autocomplete="off"
+                aria-label="Buscar notificaciones"
+            >
+        </div>
+    </div>
+
+    <!-- CUERPO SCROLLEABLE ───────────────────────────────────────────────── -->
+    <div class="notif-cuerpo" id="notifCuerpo" role="list" aria-live="polite">
+        <!-- Skeletons de carga -->
+        <div class="notif-skeleton" aria-hidden="true">
+            <div class="notif-skeleton-ico"></div>
+            <div class="notif-skeleton-lines">
+                <div class="notif-skeleton-line largo"></div>
+                <div class="notif-skeleton-line corto"></div>
+                <div class="notif-skeleton-line mini"></div>
+            </div>
+        </div>
+        <div class="notif-skeleton" aria-hidden="true">
+            <div class="notif-skeleton-ico"></div>
+            <div class="notif-skeleton-lines">
+                <div class="notif-skeleton-line largo"></div>
+                <div class="notif-skeleton-line corto"></div>
+                <div class="notif-skeleton-line mini"></div>
+            </div>
+        </div>
+        <div class="notif-skeleton" aria-hidden="true">
+            <div class="notif-skeleton-ico"></div>
+            <div class="notif-skeleton-lines">
+                <div class="notif-skeleton-line largo"></div>
+                <div class="notif-skeleton-line corto"></div>
+                <div class="notif-skeleton-line mini"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIE DEL PANEL ────────────────────────────────────────────────────── -->
+    <div class="notif-footer">
+        <button class="notif-footer-btn secundario" id="notifBtnActualizar">
+            <span class="material-symbols-rounded" style="font-size:15px; vertical-align:-3px;">refresh</span>
+            Actualizar
+        </button>
+        <button class="notif-footer-btn primario" id="notifBtnVerInventario">
+            Ver Inventario
+        </button>
+    </div>
+
+</aside>

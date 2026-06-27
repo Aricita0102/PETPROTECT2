@@ -1,0 +1,197 @@
+<!-- Capa de superposición fija sobre todo el viewport (Backdrop) -->
+<div class="modal-backdrop-premium modal-lateral-backdrop" id="modalDetalleProducto" role="dialog" aria-modal="true" aria-labelledby="tituloModalProducto" aria-hidden="true">
+    
+    <!-- Panel deslizante Off-Canvas con diseño de Ventana Bento Grande -->
+    <div class="ventana-modal-bento grande modal-lateral-panel">
+        
+        <!-- Botón premium circular de cierre integrado -->
+        <button class="boton-cerrar-modal-bento btn-cerrar-lateral" id="btnCerrarModalDetalle" aria-label="Cerrar ventana de detalles">
+            <span class="material-symbols-rounded">close</span>
+        </button>
+
+        <!-- Contenedor interno con scroll vertical independiente de la SPA -->
+        <div class="contenido-interno-modal contenido-scrollable" style="padding: 0 !important;">
+            
+            <!-- CABECERA PREMIUM: Identidad clínica en degradado azul y cobalto -->
+            <div class="cabecera-clinica-degradado" style="background: linear-gradient(135deg, #002f6c 0%, #004b8d 100%); padding: 32px; color: #ffffff; position: relative;">
+                <div class="breadcrumbs" style="color: rgba(255, 255, 255, 0.7); margin-bottom: 8px;">
+                    Product <span style="color: rgba(255, 255, 255, 0.4); margin: 0 6px;">&gt;</span> Product Detail
+                </div>
+
+                <header class="product-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                    <div class="header-title-area" style="display: flex; align-items: center; gap: 12px;">
+                        <h1 id="tituloModalProducto" style="font-size: 28px; font-weight: 700; color: #ffffff; margin: 0; letter-spacing: -0.5px;">Green Sweater</h1>
+                        <span class="code-chip" style="font-size: 12px; font-weight: 600; color: #ffffff; padding: 4px 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 100px; background: rgba(255, 255, 255, 0.15);">Code: SWE</span>
+                    </div>
+                    <div class="header-actions" style="display: flex; align-items: center; gap: 12px;">
+                        <button class="text-action-btn" style="background: none; border: none; color: rgba(255, 255, 255, 0.8); font-size: 13px; font-weight: 500; cursor: pointer; text-decoration: underline;">Create Inventory plan</button>
+                        <button class="btn btn-outline" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.4); color: #ffffff; padding: 8px 18px; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s;">Edit</button>
+                        <button class="btn btn-primary" style="background: #ffffff; border: none; color: #002f6c; padding: 8px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">Update Quantity</button>
+                    </div>
+                </header>
+            </div>
+
+            <!-- CUERPO DEL DASHBOARD INTERNO (Distribución Bento de Pantalla Completa) -->
+            <div style="padding: 32px;">
+                <div class="dashboard-grid">
+                    
+                    <!-- Columna Izquierda: Identificadores Visuales -->
+                    <div class="grid-column">
+                        
+                        <!-- Tarjeta de Imagen -->
+                        <div class="card image-gallery-card" style="border: 1px solid #e5e7eb; background: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <div class="image-placeholder" style="width: 100%; height: 260px; background-color: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                            <div class="gallery-controls" style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px;">
+                                <button class="gallery-arrow" style="background: #f3f4f6; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #374151;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                </button>
+                                <div class="gallery-dots" style="display: flex; gap: 8px;">
+                                    <span class="dot active" style="width: 8px; height: 8px; border-radius: 50%; background-color: #004b8d;"></span>
+                                    <span class="dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: #e5e7eb;"></span>
+                                    <span class="dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: #e5e7eb;"></span>
+                                    <span class="dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: #e5e7eb;"></span>
+                                    <span class="dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: #e5e7eb;"></span>
+                                </div>
+                                <button class="gallery-arrow" style="background: #f3f4f6; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #374151;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta de Código de Barras -->
+                        <div class="card barcode-card" style="border: 1px solid #e5e7eb; background: #ffffff; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <h3 style="font-size: 14px; font-weight: 600; color: #374151; margin: 0 0 16px 0; text-align: left; text-transform: uppercase; letter-spacing: 0.5px;">Scanner Barcode</h3>
+                            <div class="barcode-svg-container" style="background: #ffffff; padding: 12px; border: 1px dashed #d1d5db; border-radius: 6px; display: inline-flex; justify-content: center;">
+                                <svg width="220" height="70" viewBox="0 0 220 80">
+                                    <rect width="220" height="80" fill="#ffffff"/>
+                                    <rect x="10" y="5" width="3" height="70" fill="black"/>
+                                    <rect x="15" y="5" width="1" height="70" fill="black"/>
+                                    <rect x="20" y="5" width="4" height="70" fill="black"/>
+                                    <rect x="28" y="5" width="2" height="70" fill="black"/>
+                                    <rect x="34" y="5" width="1" height="70" fill="black"/>
+                                    <rect x="38" y="5" width="5" height="70" fill="black"/>
+                                    <rect x="48" y="5" width="2" height="70" fill="black"/>
+                                    <rect x="53" y="5" width="1" height="70" fill="black"/>
+                                    <rect x="58" y="5" width="3" height="70" fill="black"/>
+                                    <rect x="65" y="5" width="4" height="70" fill="black"/>
+                                    <rect x="72" y="5" width="1" height="70" fill="black"/>
+                                    <rect x="80" y="5" width="2" height="70" fill="black"/>
+                                    <rect x="85" y="5" width="2" height="70" fill="black"/>
+                                    <rect x="92" y="5" width="4" height="70" fill="black"/>
+                                    <rect x="100" y="5" width="1" height="70" fill="black"/>
+                                    <rect x="105" y="5" width="3" height="70" fill="black"/>
+                                    <rect x="112" y="5" width="2" height="70" fill="black"/>
+                                    <rect x="118" y="5" width="5" height="70" fill="black"/>
+                                    <rect x="126" y="5" width="1" height="70" fill="black"/>
+                                    <rect x="130" y="5" width="3" height="70" fill="black"/>
+                                    <rect x="136" y="5" width="4" height="70" fill="black"/>
+                                    <rect x="144" y="5" width="1" height="70" fill="black"/>
+                                    <rect x="148" y="5" width="2" height="70" fill="black"/>
+                                    <rect x="154" y="5" width="4" height="70" fill="black"/>
+                                    <rect x="162" y="5" width="2" height="70" fill="black"/>
+                                    <rect x="168" y="5" width="1" height="70" fill="black"/>
+                                    <rect x="172" y="5" width="3" height="70" fill="black"/>
+                                </svg>
+                            </div>
+                            <div class="barcode-number" style="font-size: 16px; font-weight: 600; color: #111827; letter-spacing: 4px; margin-top: 10px;">40181 700982</div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Métricas e Información Dinámica -->
+                    <div class="grid-column">
+                        
+                        <!-- Fila Bento de Estados Clínicos de Stock -->
+                        <div class="stats-row">
+                            <div class="stat-box" style="border: 1px solid #e5e7eb; background: #ffffff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                                <div class="stat-label" style="font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">On hand</div>
+                                <div class="stat-value" id="modal-stock-total" style="font-size: 26px; font-weight: 700; color: #002f6c; margin-top: 4px;">200</div>
+                            </div>
+                            <div class="stat-box" style="border: 1px solid #e5e7eb; background: #ffffff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                                <div class="stat-label" style="font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">To be delivered</div>
+                                <div class="stat-value" style="font-size: 26px; font-weight: 700; color: #4b5563; margin-top: 4px;">50</div>
+                            </div>
+                            <div class="stat-box" style="border: 1px solid #e5e7eb; background: #ffffff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                                <div class="stat-label" style="font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">To be ordered</div>
+                                <div class="stat-value" style="font-size: 26px; font-weight: 700; color: #ef4444; margin-top: 4px;">50</div>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta de Información Base -->
+                        <div class="card" style="border: 1px solid #e5e7eb; background: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <div class="section-header" style="margin-bottom: 16px;">
+                                <div class="section-title" style="font-size: 14px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#004b8d" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                    Basic information
+                                </div>
+                            </div>
+                            <div class="info-grid-2col" style="border-top: 1px solid #f3f4f6; padding-top: 12px;">
+                                <div class="info-item" style="padding: 6px 0;"><span class="info-label" style="color: #6b7280;">Product name</span><span class="info-val" id="modal-nombre-comercial" style="font-weight: 600; color: #111827;">Green Sweater</span></div>
+                                <div class="info-item" style="padding: 6px 0;"><span class="info-label" style="color: #6b7280;">Location</span><span class="info-val" style="font-weight: 600; color: #111827;">Warehouse A</span></div>
+                                <div class="info-item" style="padding: 6px 0;"><span class="info-label" style="color: #6b7280;">Vendor</span><span class="info-val" style="font-weight: 600; color: #111827;">AS.laz Store</span></div>
+                                <div class="info-item" style="padding: 6px 0;"><span class="info-label" style="color: #6b7280;">Code</span><span class="info-val" id="modal-sustancia-activa" style="font-weight: 600; color: #111827;">SWE</span></div>
+                                <div class="info-item" style="padding: 6px 0;"><span class="info-label" style="color: #6b7280;">SKU</span><span class="info-val" style="font-weight: 600; color: #111827;">-</span></div>
+                                <div class="info-item" style="padding: 6px 0;"><span class="info-label" style="color: #6b7280;">Barcode</span><span class="info-val" style="font-weight: 600; color: #111827;">40181700082</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta de Venta e Indicadores Financieros -->
+                        <div class="card" style="border: 1px solid #e5e7eb; background: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <div class="section-header" style="margin-bottom: 16px;">
+                                <div class="section-title" style="font-size: 14px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#004b8d" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                    Sale information
+                                </div>
+                            </div>
+                            <div class="info-grid-3col" style="border-top: 1px solid #f3f4f6; padding-top: 12px;">
+                                <div class="info-item" style="flex-direction: column; align-items: flex-start; gap: 4px;"><span class="info-label" style="color: #6b7280;">Price</span><span class="info-val" style="font-size: 16px; font-weight: 700; color: #111827;">$100.00</span></div>
+                                <div class="info-item" style="flex-direction: column; align-items: flex-start; gap: 4px;"><span class="info-label" style="color: #6b7280;">Profit</span><span class="info-val" style="font-size: 16px; font-weight: 700; color: #16a34a;">$50.00</span></div>
+                                <div class="info-item" style="flex-direction: column; align-items: flex-start; gap: 4px;"><span class="info-label" style="color: #6b7280;">Margin</span><span class="info-val" style="font-size: 16px; font-weight: 700; color: #2563eb;">50%</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta de Control e Historial de Inventarios -->
+                        <div class="card" style="border: 1px solid #e5e7eb; background: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                                <div class="section-title" style="font-size: 14px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#004b8d" stroke-width="2.5"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+                                    Inventory Details
+                                </div>
+                                <a href="#" class="history-link" style="font-size: 12px; color: #004b8d; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    Update History
+                                </a>
+                            </div>
+                            
+                            <div class="info-grid-2col" style="border-top: 1px solid #f3f4f6; padding-top: 12px; margin-bottom: 20px;">
+                                <div class="info-item" style="padding: 4px 0;"><span class="info-label" style="color: #6b7280;">Quantity Available</span><span class="info-val" style="font-weight: 700; color: #111827;">200</span></div>
+                                <div class="info-item" style="padding: 4px 0;"><span class="info-label" style="color: #6b7280;">Unit of Measure</span><span class="info-val" id="modal-unidad-medida" style="font-weight: 600; color: #4b5563;">Item</span></div>
+                            </div>
+
+                            <div class="sub-label-list" style="font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">Relevant Inventory Plans</div>
+                            
+                            <div class="plan-list" style="display: flex; flex-direction: column; gap: 8px;">
+                                <div class="plan-item" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 8px;">
+                                    <div class="plan-icon" style="color: #004b8d; display: flex; transform: scale(1.1);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+                                    <div class="plan-details" style="flex: 1; display: flex; flex-direction: column;">
+                                        <span class="plan-name" style="font-size: 13px; font-weight: 600; color: #111827;">[Urgent] T-shirt Inventory</span>
+                                        <span class="plan-sub" style="font-size: 11px; color: #9ca3af; margin-top: 2px;">1 product</span>
+                                    </div>
+                                    <span class="badge badge-todo" style="background: #f3f4f6; color: #4b5563; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 100px; border: 1px solid #e5e7eb;">Todo</span>
+                                    <div class="progress-container" style="width: 60px; background: #e5e7eb; height: 6px; border-radius: 100px; overflow: hidden; margin-left: 8px;"><div class="progress-bar" style="width: 0%; height: 100%; background: #004b8d;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

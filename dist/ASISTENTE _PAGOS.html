@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caja y Cobros | Protect Pet</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+    
+  <script type="module" crossorigin src="/assets/ASISTENTE _PAGOS-DlBt4h9y.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-Dezn_h7o.js">
+  <link rel="stylesheet" crossorigin href="/assets/ASISTENTE _PAGOS-C0sce-rK.css">
+</head>
+<body>
+<div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; font-family: 'Century Gothic', sans-serif;">
+    <div style="border: 4px solid #f3f3f3; border-top: 4px solid #F27405; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px;"></div>
+    <p style="color: #032F40; font-weight: bold;">Procesando cobro y generando ticket...</p>
+    <style>
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</div>
+    <header class="encabezado-modulo no-print">
+        <div class="contenedor-herramientas">
+            <div class="bloque-titulos">
+                <a href="PRINCIPAL.html" class="enlace-volver-panel">← Volver al Panel</a>
+                <h1>Centro de Cobro</h1>
+            </div>
+        </div>
+        <div class="datos-clinica-header">
+            <div class="textos-clinica" style="text-align: right;">
+                <p id="txtNombreClinicaHeader">Cargando...</p>
+                <div class="info-user-badge">
+                    <span class="badge-rol">CAJA / ASISTENTE</span>
+                    <span class="usuario-nombre-header" id="txtNombreUsuario">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="contenedor-caja no-print">
+        
+        <aside class="panel-cola">
+            <div class="header-cola">
+                <h3>Por Cobrar <span id="contadorPendientes" class="badge-contador">0</span></h3>
+                <input type="text" id="filtroTicket" placeholder="Buscar paciente, dueño o folio..." class="input-busqueda-mini">
+            </div>
+            
+            <div id="listaTickets" class="lista-scroll">
+                <div class="empty-state">
+                    <p>Cargando tickets...</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="panel-detalle">
+            <div id="estadoVacio" class="estado-vacio-grande">
+                <img src="./img/conejo.png" alt="Logo Protect Pet" class="logopago">
+                <h2>Selecciona un ticket para cobrar :D</h2>
+                <p>Las órdenes enviadas por los veterinarios aparecerán a la izquierda.</p>
+            </div>
+
+            <div id="detalleCobroActivo" style="display: none;">
+                <div class="header-ticket">
+                    <div>
+                        <h2 id="lblPaciente">Nombre Mascota</h2>
+                        <p class="meta-info">Propietario: <span id="lblDuenoHeader" style="color:#032F40; font-weight:bold;">--</span></p>
+                        <p class="meta-info">Atendido por: <span id="lblMedico">Dr. --</span></p>
+                        <span id="badgeEstadoTicket" class="badge-estado-pendiente">PENDIENTE</span>
+                    </div>
+                    <div class="folio-box">
+                        <small>FOLIO</small>
+                        <span id="lblFolio">#000</span>
+                    </div>
+                </div>
+
+                <div class="panel-agregar-items" id="panelAgregarItems">
+                    <h4>Agregar Producto / Extra</h4>
+                    <div class="grid-inputs-venta">
+                        <input type="text" id="addConcepto" placeholder="Ej: Correa, Premios..." class="input-caja-chico" style="flex: 2;">
+                        <input type="number" id="addPrecio" placeholder="$ Precio" class="input-caja-chico">
+                        
+                        <div class="grupo-cantidad">
+                            <button type="button" onclick="cambiarCant(-1)">-</button>
+                            <input type="number" id="addCant" value="1" readonly>
+                            <button type="button" onclick="cambiarCant(1)">+</button>
+                        </div>
+                        
+                        <button type="button" id="btnAgregarItem" class="btn-azul-icon">＋</button>
+                    </div>
+                </div>
+
+                <div class="cuerpo-ticket">
+                    <table class="tabla-items">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">Concepto</th>
+                                <th style="width: 15%; text-align: center;">Cant.</th>
+                                <th style="width: 20%; text-align: right;">P. Unit</th>
+                                <th style="width: 15%; text-align: right;">Total</th>
+                                <th style="width: 5%;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaItemsTicket"></tbody>
+                        <tfoot>
+                            <tr class="fila-total">
+                                <td colspan="3">TOTAL A PAGAR</td>
+                                <td colspan="2" style="text-align: right;">$<span id="lblTotalGrande">0.00</span></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="zona-pago" id="zonaPagoContainer">
+                    <h3>Selecciona Método de Pago</h3>
+                    
+                    <div class="grid-metodos">
+                        <button type="button" class="btn-metodo" data-metodo="Efectivo" onclick="seleccionarMetodo('Efectivo')">Efectivo</button>
+                        <button type="button" class="btn-metodo" data-metodo="Tarjeta" onclick="seleccionarMetodo('Tarjeta')">Tarjeta</button>
+                        <button type="button" class="btn-metodo" data-metodo="Transferencia" onclick="seleccionarMetodo('Transferencia')">Transferencia</button>
+                    </div>
+
+                    <div id="panelCalculadora" class="panel-calculadora" style="display: none;">
+                        <div class="input-grupo-dinero">
+                            <label>Recibido ($):</label>
+                            <input type="number" id="inputRecibido" placeholder="0.00" oninput="calcularCambio()">
+                        </div>
+                        <div class="resultado-cambio">
+                            <small>CAMBIO A ENTREGAR</small>
+                            <span id="lblCambio">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="acciones-finales">
+                        <button type="button" id="btnSoloImprimir" class="btn-secundario-gris">Imprimir Ticket</button>
+                        <button id="btnProcesarPago" class="btn-pagar-final" disabled>Confirmar Pago ($<span id="lblTotalBtn">0.00</span>)</button>
+                    </div>
+                </div>
+                
+                <div id="mensajeYaPagado" style="display: none; text-align: center; padding: 20px;">
+                    <p style="color: #2E7D32; font-weight: bold; font-size: 1.2rem; margin-bottom: 15px;">Este ticket ya fue cobrado.</p>
+                    <div style="display: flex; flex-direction: column; gap: 10px; max-width: 350px; margin: 0 auto;">
+                        <button type="button" id="btnReimprimirPagado" class="btn-azul-icon" style="width: 100%; padding: 12px; border-radius: 10px;">
+                            Reimprimir Ticket
+                        </button>
+                        <button type="button" id="btnReenviarWhatsapp" class="btn-secundario-gris" style="width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #25D366; color: #25D366; background: white; font-weight: bold;">
+                            Reenviar Ticket por WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ticketImpresion" class="ticket-layout">
+        <div class="ticket-content">
+            <header class="t-header">
+                <div class="t-brand-col">
+                    <img id="printLogoClinica" src="./img/conejo.png" alt="Logo Clínica" class="t-logo-img">
+                    <h2 class="t-brand-name" id="printNombreClinica">CLÍNICA</h2>
+                </div>
+                <p class="t-address" id="printDireccionClinica">Dirección Sucursal</p>
+                
+                <div class="t-meta-grid">
+                    <div>
+                        <span class="t-label">FECHA Y HORA</span>
+                        <p id="printFechaHora">--/--/----</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="t-label">FOLIO</span>
+                        <p id="printFolio" class="t-folio">#00000</p>
+                    </div>
+                </div>
+                
+                <div class="t-cajero-box">
+                    Le atendió: <strong id="printCajero">--</strong>
+                </div>
+            </header>
+
+            <hr class="t-divider">
+
+            <div class="t-body">
+                <table class="t-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Cant.</th>
+                            <th style="width: 60%;">Descripción</th>
+                            <th style="width: 25%; text-align: right;">Importe</th>
+                        </tr>
+                    </thead>
+                    <tbody id="printItems"></tbody>
+                </table>
+            </div>
+
+            <hr class="t-divider">
+
+            <div class="t-totals">
+                <div class="t-row-mini"><span>Subtotal</span><span id="printSubtotal">$0.00</span></div>
+                <div class="t-row-mini"><span>Impuestos (IVA)</span><span id="printImpuestos">$0.00</span></div>
+                <div class="t-total-big"><span>TOTAL</span><span id="printTotal">$0.00</span></div>
+                <p class="t-metodo">Método de Pago: <span id="printMetodo">EFECTIVO</span></p>
+            </div>
+
+            <div class="t-footer">
+                <div class="t-policy">
+                    <strong>POLÍTICA DE DEVOLUCIONES</strong>
+                    <p>Cambios solo dentro de los 3 días hábiles presentando este ticket. Medicamentos no tienen cambio.</p>
+                </div>
+                
+                <div class="t-factura">
+                    <strong>FACTURACIÓN ELECTRÓNICA</strong>
+                    <p>Solicite su factura en el sitio web durante el mes en curso.</p>
+                </div>
+
+                <div class="t-barcode-box">
+                    <span id="printFolioBarcode" class="barcode-font"></span>
+                </div>
+
+                <div class="t-qr-section">
+                    <div id="qrContainer" class="t-qr-box"></div>
+                    <p class="scan-me">Escanea para tu comprobante digital</p>
+                </div>
+
+                <div class="t-software-branding">
+                    <small>Sistema gestionado por</small>
+                    <div class="brand-row-soft">
+                        <img src="./img/logoprotectpet.png" alt="Protect Pet" class="soft-logo">
+                        <span>Protect Pet Software v3.0</span>
+                    </div>
+                    <div class="t-tech-data">
+                        <span>DV: <span id="printDigitoVer">X</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

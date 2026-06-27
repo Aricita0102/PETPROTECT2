@@ -1,0 +1,225 @@
+
+<div class="modulo-panel-control" id="moduloPanelControl">
+  
+  <main class="contenido-principal" id="contenidoPrincipal">
+    
+    <header class="encabezado-principal" id="encabezadoPrincipal">
+      <div class="barra-busqueda" id="barraBusqueda" style="position: relative;">
+        <span class="material-symbols-rounded icono-busqueda">search</span>
+        <input type="text" id="inputBusqueda" placeholder="Buscar paciente, tutor o ID..." autocomplete="off">
+        <div id="dropdownResultadosBusqueda" class="dropdown-resultados-pred" style="display: none;"></div>
+      </div>
+      <button class="boton-ayuda-tour" id="btnIniciarTourDashboard" title="Ver tutorial del Dashboard">
+    <span class="material-symbols-rounded" aria-hidden="true">help</span>
+  </button>
+      <div id="caja-horario-smart"></div>
+    </header>
+
+    <section class="seccion-bienvenida" id="seccionBienvenida">
+      <div class="texto-bienvenida" id="textoBienvenida">
+        <h1 id="tituloBienvenida">Bienvenida Doctora, ¡así están las cosas hoy!</h1>
+        <p class="fecha-actual" id="fechaActual">Hoy es 22 de Abril 2025</p>
+        <div class="acciones-bienvenida" id="accionesBienvenida">
+            <button class="btn-primario" id="btnVerTareas" disabled style="opacity: 0.6; cursor: not-allowed; position: relative;">
+              Ver tareas de hoy
+            </button>
+            <button class="btn-secundario" id="btnVerHorario">Scanner</button>
+  
+            <button class="pildora-estadistica primaria"
+                    id="btnNuevaCita"
+                    onclick="if(typeof window.abrirModalNuevaCita === 'function') { window.abrirModalNuevaCita('cita'); } else { document.querySelector('[data-target=\'MODULO_AGENDA\']')?.click(); }">
+              <span class="material-symbols-rounded" aria-hidden="true">calendar_add_on</span>
+              Nueva Cita
+            </button>
+
+          <button class="pildora-estadistica suave"
+                  id="btnNuevoIngreso"
+                  data-testid="btn-nuevo-ingreso"
+                  title="Registrar nuevo paciente">
+            <span class="material-symbols-rounded" aria-hidden="true">person_add</span>
+            Nuevo Ingreso
+          </button>
+        </div>
+      </div>
+      
+      <div class="tarjeta-notificaciones" id="tarjetaNotificaciones">
+        <div class="info-tarjeta">
+          <div class="encabezado-notificaciones">
+            <h3>Últimas notificaciones</h3>
+            <span class="texto-enlace-claro" id="btnVerNotificaciones">Ver más</span>
+          </div>
+          <ul class="lista-notificaciones-mini" id="listaNotificacionesDashboard">
+            <li class="item-notificacion" style="justify-content: center; color: #888; font-size: 0.9rem;">
+              Cargando notificaciones...
+            </li>
+          </ul>
+        </div>
+        <div class="figura-decorativa" id="figuraDecorativa"></div>
+      </div>
+    </section>
+
+    <section class="cuadricula-bento" id="cuadriculaBento">
+      
+      <!-- Consultas Activas (Agenda del día) -->
+      <div class="tarjeta tarjeta-consultas" id="tarjetaConsultas">
+        <div class="encabezado-tarjeta">
+          <h2>Agenda del día</h2>
+          <span class="texto-enlace" id="btnVerConsultas" onclick="document.querySelector('[data-target=\'MODULO_AGENDA\']')?.click();">Ir a la Agenda</span>
+        </div>
+        
+        <div class="contenedor-lista" style="margin-bottom: 15px;">
+          <h3 style="font-size: 11px; color: var(--texto-sec); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--borde); padding-bottom: 4px;">En Sala de Espera</h3>
+          <div id="lista-citas-espera">
+            <div class="item-lista" style="justify-content: center; color: var(--texto-sec); font-size: 0.85rem;">Cargando...</div>
+          </div>
+        </div>
+
+        <div class="contenedor-lista">
+          <h3 style="font-size: 11px; color: var(--texto-sec); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--borde); padding-bottom: 4px;">Próximas Consultas</h3>
+          <div id="lista-citas-hoy">
+            <div class="item-lista" style="justify-content: center; color: var(--texto-sec); font-size: 0.85rem;">Cargando...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tarjeta-flip-wrapper" style="perspective: 1000px; grid-column: span 1; height: 100%;">
+        <div class="flipper" id="flipperCasos" style="position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d;">
+          
+          <!-- LADO FRONTAL (Contenido Original) -->
+          <div class="flipper-front tarjeta tarjeta-registros" style="position: relative; width: 100%; height: 100%; backface-visibility: hidden; transform: rotateY(0deg); margin: 0;">
+            
+        <div class="encabezado-tarjeta">
+          <h2>Casos Clínicos</h2>
+          <span class="texto-enlace" id="btnVerHistorial" onclick="document.getElementById('flipperCasos').style.transform = 'rotateY(180deg)';">Historial</span>
+        </div>
+        <div class="seccion-contador">
+          <span class="numero-grande" id="dash-casos-total">—</span>
+          <p>Casos Atendidos (Mes)</p>
+        </div>
+        <!-- Contenedor Gráfica Dona -->
+        <div style="position: relative; height: 180px; width: 100%; margin: 15px auto;">
+            <canvas id="graficaCasosEstados"></canvas>
+        </div>
+        <div class="estadisticas-mini">
+          <div><strong id="dash-casos-finalizados">—</strong><p>Finalizadas</p></div>
+          <div><strong id="dash-casos-abiertas">—</strong><p>En Revisión</p></div>
+          <div><strong id="dash-pacientes-unicos">—</strong><p>Pacientes</p></div>
+        </div>
+      
+          </div>
+
+          <!-- LADO TRASERO (Historial) -->
+          <div class="flipper-back tarjeta" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; backface-visibility: hidden; transform: rotateY(180deg); margin: 0; display: flex; flex-direction: column; padding: 20px;">
+            <div class="encabezado-tarjeta" style="margin-bottom: 15px;">
+              <h2>Últimos Casos</h2>
+              <span class="texto-enlace" style="color:var(--naranja); cursor:pointer;" onclick="document.getElementById('flipperCasos').style.transform = 'rotateY(0deg)';">✕ Cerrar</span>
+            </div>
+            
+            <div class="lista-historial-casos" id="listaHistorialCasosBack" style="flex: 1; overflow-y: auto; padding-right: 5px;">
+              <!-- JS inyectará el historial aquí -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="tarjeta tarjeta-ingresos" id="tarjetaIngresos" style="position: relative; overflow: visible;">
+          <div class="encabezado-tarjeta" style="position: relative; overflow: visible;">
+            <h2>Ingresos</h2>
+            <div style="position: relative; display: flex; gap: 15px;">
+                <!-- Filtro Origen -->
+                <div style="position: relative;">
+                    <span class="texto-enlace" id="btnFiltrosOrigen" onclick="const menu = document.getElementById('menuFiltrosOrigen'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; document.getElementById('menuFiltrosFinanzas').style.display='none';">Origen: Todo ▼</span>
+                    <div id="menuFiltrosOrigen" style="display: none; position: absolute; right: 0; top: 25px; background: white; border: 1px solid var(--borde-sutil); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 130px; z-index: 100;">
+                        <ul id="listaFiltrosOrigen" style="list-style: none; padding: 0; margin: 0; text-align: left;">
+                            <li data-val="todo" style="padding: 10px 15px; font-size: 12px; cursor: pointer; border-bottom: 1px solid var(--fondo-app); color: var(--naranja); font-weight: bold;">Todo</li>
+                            <li data-val="mostrador" style="padding: 10px 15px; font-size: 12px; cursor: pointer; border-bottom: 1px solid var(--fondo-app);">Mostrador</li>
+                            <li data-val="consulta" style="padding: 10px 15px; font-size: 12px; cursor: pointer; border-bottom: 1px solid var(--fondo-app);">Consulta</li>
+                            <li data-val="vacunacion" style="padding: 10px 15px; font-size: 12px; cursor: pointer; border-bottom: 1px solid var(--fondo-app);">Vacunación</li>
+                            <li data-val="cirugia" style="padding: 10px 15px; font-size: 12px; cursor: pointer; border-bottom: 1px solid var(--fondo-app);">Cirugía</li>
+                            <li data-val="estetica" style="padding: 10px 15px; font-size: 12px; cursor: pointer;">Estética</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Filtro Tiempo -->
+                <div style="position: relative;">
+                    <span class="texto-enlace" id="btnFiltrosTiempo" onclick="const menu = document.getElementById('menuFiltrosFinanzas'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; document.getElementById('menuFiltrosOrigen').style.display='none';">Este Mes ▼</span>
+                    <div id="menuFiltrosFinanzas" style="display: none; position: absolute; right: 0; top: 25px; background: white; border: 1px solid var(--borde-sutil); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 120px; z-index: 100;">
+                        <ul id="listaFiltrosTiempo" style="list-style: none; padding: 0; margin: 0; text-align: left;">
+                            <li data-val="mes" style="padding: 10px 15px; font-size: 12px; cursor: pointer; border-bottom: 1px solid var(--fondo-app); color: var(--naranja); font-weight: bold;">Este Mes</li>
+                            <li data-val="mes_pasado" style="padding: 10px 15px; font-size: 12px; cursor: pointer; border-bottom: 1px solid var(--fondo-app);">Mes Pasado</li>
+                            <li data-val="ano" style="padding: 10px 15px; font-size: 12px; cursor: pointer;">Este Año</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+          </div>
+        <div class="seccion-contador">
+          <span class="numero-grande" id="dash-ingresos-total">—</span>
+          <p>Consultas del Mes, $</p>
+        </div>
+        <div class="desglose-financiero">
+          <div class="estadistica-financiera">
+            <span class="valor-financiero" id="dash-ingresos-mes">$—</span>
+            <span class="etiqueta-financiera">Este Mes</span>
+          </div>
+          <div class="estadistica-financiera">
+            <span class="valor-financiero" id="dash-ingresos-semana">$—</span>
+            <span class="etiqueta-financiera">Esta Semana</span>
+          </div>
+          <div class="estadistica-financiera">
+            <span class="valor-financiero" id="dash-ingresos-hoy">$—</span>
+            <span class="etiqueta-financiera">Hoy</span>
+          </div>
+        </div>
+        <!-- Contenedor para Chart.js -->
+        <div style="position: relative; height: 200px; width: 100%; margin-top: 20px;">
+            <canvas id="graficaIngresosMensuales"></canvas>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<!-- ====================================================================
+     MODAL ESCÁNER REMOTO 
+     ==================================================================== -->
+<div class="modal-backdrop-premium" id="escanerOverlay" aria-hidden="true" style="display:none; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(3,47,64,0.6); z-index:1500; backdrop-filter:blur(3px);">
+    <div class="ventana-modal-bento" style="width: 400px; max-width: 90vw; background: #FFFFFF; border-radius: 20px; padding: 24px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+        
+        <button type="button" class="boton-cerrar-modal-bento" id="btnCerrarEscanerModal" aria-label="Cerrar escáner" style="position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; color: #6b7a80;">
+            <span class="material-symbols-rounded">close</span>
+        </button>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="margin: 0 auto 12px; color: var(--cobalto, #032F40);">
+                <span class="material-symbols-rounded" style="font-size: 36px; font-variation-settings: 'wght' 300;">qr_code_2</span>
+            </div>
+            <h2 style="font-family: 'Montserrat', sans-serif; font-size: 22px; color: #032F40; font-weight: 700; margin-bottom: 4px;">Escáner Móvil</h2>
+            <p style="font-size: 13px; color: #6b7a80;">Usa tu celular como lector de código de barras.</p>
+        </div>
+
+        <div style="background: #eef2f3; border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 20px;">
+            <!-- Contenedor del QR dinámico -->
+            <div id="escanerQrContainer" style="background: #FFFFFF; padding: 16px; border-radius: 12px; display: inline-block; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <canvas id="escanerQrCanvas" width="180" height="180"></canvas>
+            </div>
+            <p style="font-size: 12px; font-weight: 600; color: #032F40; margin-top: 16px; letter-spacing: 1px;">PIN de conexión: <span id="escanerPinTxt" style="color: #F27405;">---</span></p>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; font-weight: 600;">
+            <span class="material-symbols-rounded" id="escanerStatusIcon" style="font-size: 18px; color: #F27405;">pending</span>
+            <span id="escanerStatusTxt" style="color: #6b7a80;">Esperando conexión...</span>
+        </div>
+
+        <div id="escanerFeedback" style="display: none; margin-top: 16px; padding: 12px; background: #E8F5E9; border: 1px solid #C8E6C9; border-radius: 8px; text-align: center;">
+            <span style="font-size: 13px; font-weight: bold; color: #2E7D32;">¡Código recibido!</span>
+            <div id="escanerFeedbackCode" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1B5E20; margin-top: 4px;"></div>
+        </div>
+        
+        <p style="font-size: 11px; color: #6b7a80; text-align: center; margin-top: 20px; line-height: 1.4;">
+            Al conectar, abre el módulo de <strong>Caja Registradora</strong> y mantén el celular activo. Los productos se irán agregando automáticamente.
+        </p>
+    </div>
+</div>

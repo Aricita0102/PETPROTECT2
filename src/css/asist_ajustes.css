@@ -1,0 +1,213 @@
+/* ============================================================
+   CONFIGURACIÓN DE IDENTIDAD - PROTECT PET (ASISTENTE)
+   Azul Cobalto: #032F40 | Azul Cielo: #89C2D9 | Naranja: #F27405 | Fondo: #F5F5F5 
+   ============================================================ */
+
+@font-face {
+    font-family: 'Century Gothic';
+    src: local('Century Gothic');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Century Gothic', sans-serif;
+    background-color: #F5F5F5;
+    color: #032F40;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+/* --- ESTRUCTURA GLOBAL (SIDEBAR A LA DERECHA) --- */
+.interfazVeterinario {
+    display: flex;
+    flex-direction: row-reverse;
+    height: 100vh;
+}
+
+/* --- SIDEBAR ESTILO PROTECT PET --- */
+.navegacionLateral {
+    width: 300px;
+    background-color: #032F40;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+}
+
+.marca { font-weight: bold; font-size: 1.3rem; display: flex; align-items: center; margin-bottom: 3rem; }
+.puntoNaranja { width: 10px; height: 10px; background-color: #F27405; border-radius: 50%; margin-right: 12px; }
+
+.menuInterno a {
+    display: block; color: #89C2D9; text-decoration: none; padding: 1.2rem;
+    margin-bottom: 0.8rem; border-radius: 15px; transition: 0.3s;
+}
+
+.menuInterno a.itemActivo, .menuInterno a:hover { 
+    background-color: rgba(255, 255, 255, 0.08); 
+    color: white; font-weight: bold;
+}
+
+.perfilMedico {
+    display: flex; align-items: center; gap: 12px;
+    border-top: 1px solid rgba(137, 194, 217, 0.2); padding-top: 1.5rem;
+}
+
+.fotoMini { 
+    width: 50px; height: 50px; 
+    background-color: #F27405; 
+    border-radius: 50%; 
+    background-position: center; 
+    background-size: cover; 
+    flex-shrink: 0;
+}
+
+.datosMedico .nombre { font-weight: bold; font-size: 0.9rem; color: white; margin: 0; }
+.linkCerrarSesion { color: #89C2D9; text-decoration: none; font-size: 0.75rem; font-weight: bold; transition: 0.3s; }
+.linkCerrarSesion:hover { color: #F27405; }
+
+/* --- ÁREA DE TRABAJO --- */
+.areaTrabajo {
+    flex: 1; padding: 3rem 4rem; overflow-y: auto; scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+.areaTrabajo::-webkit-scrollbar { display: none; }
+
+.encabezadoDashboard {
+    display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;
+}
+
+.mini-logo-clinica { width: 60px; height: 60px; object-fit: contain; background: white; padding: 5px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+.enlace-volver-panel {
+    text-decoration: none; color: #89C2D9; font-weight: bold; font-size: 1rem;
+    display: flex; align-items: center; gap: 8px; transition: 0.3s;
+}
+.enlace-volver-panel:hover { color: #032F40; transform: translateX(-5px); }
+
+/* --- TARJETAS --- */
+.tarjetaContenedora {
+    background: white; border-radius: 35px; padding: 3rem;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.03); margin-bottom: 2.5rem;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+.subtitulo { color: #89C2D9; font-size: 0.9rem; font-weight: bold; margin-bottom: 2rem; display: block; }
+
+/* --- FORMULARIOS --- */
+.contenedor-perfil-horizontal {
+    display: grid; grid-template-columns: 220px 1fr; gap: 3.5rem; align-items: start;
+}
+
+.marco-foto-ajustada {
+    width: 220px; height: 220px; 
+    background-color: #F27405; 
+    border: 3px dashed #89C2D9; border-radius: 25px;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    background-size: cover; background-position: center;
+}
+
+.columna-datos-form { display: flex; flex-direction: column; gap: 20px; }
+
+.campo label { display: block; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; color: #032F40; }
+
+.input-moderno-f {
+    width: 100%; padding: 1rem; border: 2px solid #F5F5F5;
+    border-radius: 15px; outline: none; background: #FBFCFD; transition: 0.3s;
+    font-family: 'Century Gothic', sans-serif;
+}
+.input-moderno-f:focus { border-color: #89C2D9; background: white; }
+
+/* Ajuste específico para el SELECT de áreas */
+select.input-moderno-f {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2389C2D9' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 20px) center;
+}
+
+/* Campos Readonly */
+.input-moderno-f[readonly], .field-readonly {
+    background-color: #F0F2F5 !important;
+    border-color: #E0E0E0 !important;
+    color: #89C2D9 !important;
+    cursor: not-allowed;
+    font-style: italic;
+}
+
+.grid-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 0.5rem; }
+
+/* --- BOTONES --- */
+.btn-naranja-chico {
+    background: #F27405; color: white; border: none;
+    padding: 12px 20px; border-radius: 12px; font-weight: bold;
+    cursor: pointer; width: 100%; transition: 0.3s;
+    font-family: 'Century Gothic'}
+.btn-naranja-chico:hover { background: #d66504; transform: translateY(-2px); }
+
+.btn-azul-fuerte {
+    background-color: #032F40; color: white; border: none;
+    padding: 1.2rem; border-radius: 15px; font-weight: bold;
+    cursor: pointer; width: 100%; transition: 0.3s;font-family: 'Century Gothic'
+}
+.btn-azul-fuerte:hover { background-color: #F27405; transform: translateY(-2px); }
+
+.btn-secundario-naranja-outline {
+    background: transparent; color: #F27405; border: 2px solid #F27405;
+    padding: 14px 30px; border-radius: 15px; font-weight: bold;
+    cursor: pointer; transition: 0.3s; width: 100%;
+    display: flex; align-items: center; justify-content: center;font-family: 'Century Gothic'
+}
+.btn-secundario-naranja-outline:hover { background: #F27405; color: white; }
+
+.btn-separado-top { margin-top: 3.5rem !important; }
+
+/* --- EQUIPO MÉDICO CON FOTOS --- */
+.lista-apilada-admin { display: flex; flex-direction: column; gap: 12px; }
+
+.tag-miembro {
+    background: #FBFCFD; padding: 1.2rem; border-radius: 20px;
+    border: 1px solid #F0F2F5; transition: 0.3s;
+}
+
+.usuario-actual { 
+    border-left: 5px solid #F27405; 
+    background: #032F40 !important; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+}
+
+.info-miembro-fila {
+    display: flex; justify-content: space-between; align-items: center; width: 100%;
+}
+
+.bloque-nombre-foto { display: flex; align-items: center; gap: 15px; }
+
+.foto-miembro-lista {
+    width: 45px; height: 45px; border-radius: 50%; object-fit: cover;
+    background-color: #F27405; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.nombre-m { font-weight: bold; font-size: 1rem; color: #032F40; }
+.usuario-actual .nombre-m { color: white; }
+.consultorio-m { font-size: 0.8rem; color: #89C2D9; font-weight: bold; text-align: right; }
+.usuario-actual .consultorio-m { color: #F27405; }
+
+/* --- RESPONSIVIDAD LANDSCAPE --- */
+@media (max-width: 1300px) {
+    .contenedor-perfil-horizontal { grid-template-columns: 180px 1fr; gap: 2rem; }
+    .marco-foto-ajustada { width: 180px; height: 180px; }
+    .navegacionLateral { width: 260px; }
+    .areaTrabajo { padding: 2rem 3rem; }
+}

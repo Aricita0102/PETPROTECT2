@@ -1,0 +1,699 @@
+﻿/* ==========================================================================
+   SISTEMA CLÍNICO PROTECT PET - NÚCLEO UX/UI
+   Estándar: Hero Overlap + Bento Grid + Glassmorfismo (Zero-Click & Safety First)
+   Validación Normativa: NOM-001-ZOO, NOM-064-ZOO, ECOP.
+   ========================================================================== */
+
+/* ==========================================================================
+   ESTILOS GENERALES (BASE Y ESCRITORIO)
+   ========================================================================== */
+
+/* --- 1. TIPOGRAFÍA Y VARIABLES --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+@font-face {
+    font-family: 'Sk-Modernist';
+    src: url('../fonts/Sk-Modernist-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap; /* Mejora la velocidad de carga visual */
+}
+:root {
+    /* Paleta de Colores  */
+    --cobalto: #032F40;
+    --naranja: #F27405;
+    --naranja-claro: rgba(242, 116, 5, 0.1); /* Fondo sutil Soft UI derivado del naranja */
+    --naranja-texto: #c65f04; /* Tono de contraste para texto de alerta */
+    --blanco-puro: #FFFFFF;
+    --cielo: #89C2D9;
+    
+    /* Tonos de Apoyo y Estructura */
+    --fondo-sitio: #F4F7FE;
+    --texto-gris: #64748B;
+    --borde-vidrio: rgba(255, 255, 255, 0.8);
+    
+    /* Tipografías del Sistema */
+    --fuente-titulos: 'Inter', sans-serif !important;
+    --fuente-cuerpo: 'Inter', sans-serif !important;
+    --sombra-premium: 0 15px 35px -5px rgba(3, 47, 64, 0.08);
+    --sombra-boton: 0 10px 20px rgba(242, 116, 5, 0.25);
+
+    /* Geometría */
+    --radio-bento: 32px;
+    --radio-isla: 80px;
+    --radio-input: 16px;
+    --transicion: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+
+    /* Alertas Clínicas (Safety First) */
+    --alerta-roja: #E53E3E;
+    --alerta-fondo-rojo: #FFF5F5;
+    --ok-verde: #38A169;
+
+    /* Tipografía */
+    --fuente-titulos: 'Sk-Modernist', sans-serif;
+    --fuente-cuerpo: 'Questrial', sans-serif;
+}
+
+/* --- 2. RESET Y BASE --- */
+body {
+    background-color: var(--fondo-sitio);
+    font-family: var(--fuente-cuerpo);
+    color: var(--cobalto);
+    margin: 0;
+    /* Ajuste Crítico: Sin padding arriba para pegar el Hero al Nav */
+    padding: 0 20px 20px 20px; 
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: inherit; }
+
+.no-imprimir {
+    /* Utilidad para ocultar UI al generar recetas/PDFs */
+}
+
+/* --- SOLUCIÓN SCROLL GLOBAL DEL MÓDULO --- */
+.vista-modulo {
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto; /* Permite navegar hacia abajo en todo el formato */
+    overflow-x: hidden;
+    padding-bottom: 60px;
+    background-color: var(--fondo-sitio);
+}
+
+/* --- 3. HERO OVERLAP (CONTEXTO CLÍNICO SUPERIOR) --- */
+.hero-clinico {
+    /* Degradado corporativo de Cobalto a Cielo */
+    background: linear-gradient(135deg, var(--cobalto) 0%, #064a66 50%, var(--cielo) 100%);
+    padding: 5px 40px 120px 40px; /* Padding inferior amplio para el overlap */
+    border-radius: 0 0 40px 40px; /* Pegado al nav arriba, curvo abajo */
+    color: var(--blanco-puro);
+    margin-top: -50px; /* Eleva el Hero para que la tarjeta pueda superponerse */
+    box-shadow: inset 0 -10px 20px rgba(0,0,0,0.1);
+}
+
+.hero-contenido {
+    max-width: 1700px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.titulo-hero {
+    font-family: var(--fuente-titulos);
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 80px 0 8px 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.subtitulo-hero {
+    font-family: var(--fuente-cuerpo);
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+/* ACTUALIZACIÓN: Alineación perfecta horizontal */
+.hero-acciones {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    /* margin-top removido, se aplica a los elementos hijos */
+}
+
+/* --- 4. SUPERFICIE ELEVADA & BENTO GRID (MÓDULO DE CONSULTA) --- */
+.superficie-clinica-elevada {
+    max-width: 1640px;
+    margin: 0 auto;
+    margin-top: -90px; /* EFECTO OVERLAP: Sube sobre el Hero */
+    position: relative;
+    z-index: 10;
+    padding: 0 20px;
+}
+
+.rejilla-bento-consulta {
+    display: grid;
+    /* Split-View: HUD (350px) | ECOP (1fr) | Expediente Histórico (0px oculto) */
+    grid-template-columns: 350px 1fr 0px; 
+    gap: 24px;
+    align-items: start;
+    transition: grid-template-columns 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.rejilla-bento-consulta.expediente-abierto {
+    grid-template-columns: 350px 1fr 400px; 
+}
+
+/* Componente Bento Card (Fortalecido para el Overlap) */
+.bento-card {
+    background: var(--blanco-puro); /* Sólido en overlap, no glass */
+    border: none;
+    border-radius: var(--radio-bento);
+    box-shadow: 0 20px 40px rgba(3, 47, 64, 0.08), 0 1px 3px rgba(0,0,0,0.05);
+    padding: 32px;
+    transition: var(--transicion);
+}
+
+/* --- 5. COMPONENTES INTERNOS GLOBALES: BUSCADOR, MODALES Y BOTONES --- */
+.buscador-predictivo { position: relative; }
+
+.input-busqueda, .entrada-texto-hero {
+    width: 300px;
+    padding: 12px 16px 12px 45px;
+    border: 2px solid rgba(3, 47, 64, 0.1);
+    border-radius: 12px; 
+     
+    font-family: var(--fuente-cuerpo);
+    font-size: 0.95rem;
+    font-weight: bold;
+    outline: none;
+    transition: var(--transicion);
+}
+.input-busqueda:focus, .entrada-texto-hero:focus {
+    border-color: var(--cielo);
+    box-shadow: 0 0 0 3px rgba(137, 194, 217, 0.2);
+}
+
+.dropdown-flotante {
+    /* FIX: position fixed escapa CUALQUIER stacking context de los padres
+       (hero-clinico, superficie-clinica-elevada, tarjeta-perfil, etc.).
+       El JS calcula top/left/width con getBoundingClientRect() del input. */
+    position: fixed;
+    z-index: 99999;
+    background: var(--blanco-puro);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    max-height: 300px;
+    overflow-y: auto;
+    margin-left: -100px;
+    border: 1px solid rgba(3, 47, 64, 0.1);
+    margin-top: -80px; /* separación visual mínima del input */
+    /* top / left / width → asignados dinámicamente por anclarDropdown() en JS */
+}
+
+.btn-naranja, .boton-primario {
+    background: var(--naranja);
+    color: white;
+    border: none;
+    padding: 14px 24px;
+     
+    font-size: 1rem;
+    border-radius: 14px;
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--sombra-boton);
+    transition: var(--transicion);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-naranja:hover, .boton-primario:hover { transform: translateY(-3px); filter: brightness(1.1); }
+
+.btn-cerrar-sutil {
+    background: transparent;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--texto-gris);
+    cursor: pointer;
+    transition: var(--transicion);
+    line-height: 1;
+}
+.btn-cerrar-sutil:hover { color: var(--alerta-roja); transform: scale(1.1); }
+
+/* --- 6. COLUMNA IZQ: PATIENT HUD COMPACTO Y STICKY --- */
+.tarjeta-perfil.compacta {
+    position: sticky;
+    top: 24px; /* Fijo al hacer scroll */
+    height: fit-content; /* Elimina scroll interno y ajusta altura al contenido */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 100;
+    padding: 24px;
+}
+
+.btn-cerrar-sutil.perfil-cerrar {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 110;
+}
+
+.cabecera-avatar-limpia {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-bottom: 12px;
+    position: relative;
+}
+
+.info-perfil-textos { padding: 0; }
+
+.titulo-paciente-limpio {
+    font-family: var(--fuente-titulos);
+    font-weight: 800; 
+    font-size: 1.6rem; 
+    color: var(--cobalto); 
+    margin: 0 0 4px 0;
+    line-height: 1.1;
+}
+
+.texto-secundario-limpio {
+    font-size: 0.95rem;
+    color: var(--texto-gris);
+}
+
+/* Alerta Médica Simple */
+.alerta-medica-simple {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--naranja-claro);
+    border-radius: 8px;
+    transition: var(--transicion);
+}
+
+.etiqueta-alerta {
+    color: var(--naranja-texto);
+    font-size: 0.80rem;
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+#txt-alergias-paciente {
+    background-color: var(--naranja);
+    color: var(--blanco-puro);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    animation: latido-naranja 2s infinite;
+}
+
+@keyframes latido-naranja {
+    0% { box-shadow: 0 0 0 0 rgba(242, 116, 5, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(242, 116, 5, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(242, 116, 5, 0); }
+}
+
+/* Cuadrícula Detalles Paciente 2 Columnas */
+.cuadricula-detalles-paciente {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 8px;
+    background: var(--fondo-sitio);
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.dato-simple { display: flex; flex-direction: column; font-size: 0.85rem; }
+.dato-completo { grid-column: span 2; }
+
+.dato-simple .lbl {
+    color: var(--texto-gris);
+    font-family: var(--fuente-titulos);
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.dato-simple strong {
+    color: var(--cobalto);
+    font-weight: bold;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- 7. COLUMNA CENTRAL: ECOP & FORMULARIO MINIMALISTA --- */
+.tarjeta-evolucion { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 32px; 
+    /* Se elimina height fija, crece según contenido */
+}
+
+.seccion-interna-limpia { margin-bottom: 12px; }
+
+.titulo-seccion-naranja {
+    font-family: var(--fuente-titulos); 
+    font-weight: 700; 
+    font-size: 1.25rem;
+    color: var(--cobalto); 
+    margin: 0 0 20px 0; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+}
+.titulo-seccion-naranja::before {
+    content: ''; 
+    display: inline-block; 
+    width: 6px; 
+    height: 20px;
+    background-color: var(--naranja); 
+    border-radius: 4px;
+}
+
+.rejilla-inputs-4col { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.rejilla-inputs-3col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.rejilla-inputs-2col { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.mt-20 { margin-top: 20px; }
+.mt-base { margin-top: 20px; } /* Legacy class support */
+
+.grupo-input-limpio { display: flex; flex-direction: column; gap: 8px; }
+.grupo-input-limpio label {
+    font-family: var(--fuente-titulos); 
+    font-size: 0.80rem; 
+    font-weight: 700;
+    color: var(--texto-gris); 
+    text-transform: uppercase;
+}
+
+.input-base-limpio, .input-area-limpia, select.input-base-limpio {
+    width: 100%; 
+    padding: 12px 16px; 
+    font-family: var(--fuente-cuerpo);
+    font-size: 1rem; 
+    font-weight: bold; 
+    color: var(--cobalto);
+    background-color: var(--blanco-puro); 
+    border: 1.5px solid rgba(3, 47, 64, 0.1);
+    border-radius: 12px; 
+    transition: var(--transicion); 
+    outline: none;
+}
+.input-base-limpio:focus, .input-area-limpia:focus { 
+    border-color: var(--naranja); 
+    box-shadow: 0 0 0 3px rgba(242, 116, 5, 0.15); 
+}
+.input-area-limpia { min-height: 100px; resize: vertical; }
+
+.error-msg { color: var(--alerta-roja); font-size: 0.8rem; font-weight: bold; }
+
+/* Botones Naranja Adaptados */
+.btn-naranja-chico {
+    background: rgba(242, 116, 5, 0.1);
+    color: var(--naranja);
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-family: var(--fuente-titulos);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transicion);
+}
+.btn-naranja-chico:hover { background: rgba(242, 116, 5, 0.2); }
+
+.btn-naranja-fantasma {
+    background: transparent;
+    color: var(--naranja);
+    border: 2px solid var(--naranja);
+    padding: 12px;
+    border-radius: 12px;
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    transition: var(--transicion);
+}
+.btn-naranja-fantasma:hover {
+    background: var(--naranja);
+    color: var(--blanco-puro);
+}
+
+.btn-naranja-solido {
+    background: var(--naranja);
+    color: var(--blanco-puro);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: var(--sombra-boton);
+    transition: var(--transicion);
+}
+.btn-naranja-solido:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+.btn-fantasma-gris {
+    background: transparent;
+    color: var(--texto-gris);
+    border: none;
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 12px;
+    transition: var(--transicion);
+}
+.btn-fantasma-gris:hover { color: var(--cobalto); }
+
+.acciones-pie-limpias {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+    border-top: 2px solid var(--fondo-sitio);
+    padding-top: 24px;
+    margin-top: 10px;
+}
+
+/* Pills de Sistemas Limpios */
+.rejilla-pills-limpia { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+.item-sistema-limpio { display: flex; flex-direction: column; gap: 8px; }
+.etiqueta-sistema { font-family: var(--fuente-titulos); font-size: 0.85rem; font-weight: 700; color: var(--texto-gris); text-transform: uppercase;}
+.control-pills-naranja {
+    display: flex;
+    background: var(--fondo-sitio);
+    border-radius: 10px;
+    padding: 4px;
+}
+.pill-btn-naranja {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px;
+    font-family: var(--fuente-titulos);
+    font-size: 0.85rem;
+    color: var(--texto-gris);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transicion);
+}
+.pill-btn-naranja.activo {
+    background: var(--blanco-puro);
+    color: var(--naranja);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    font-weight: 700;
+}
+
+/* Tablas Minimalistas */
+.contenedor-tabla-limpia { 
+    border: 1px solid rgba(0,0,0,0.05); 
+    border-radius: 12px; 
+    overflow-x: auto; 
+}
+.tabla-minimalista { width: 100%; border-collapse: collapse; text-align: left; }
+.tabla-minimalista th { 
+    background: var(--fondo-sitio); 
+    color: var(--cobalto); 
+    font-family: var(--fuente-titulos); 
+    font-size: 0.8rem; 
+    padding: 14px 16px; 
+}
+.tabla-minimalista td { 
+    padding: 14px 16px; 
+    font-size: 0.95rem; 
+    font-weight: bold; 
+    color: var(--texto-gris); 
+    border-bottom: 1px solid rgba(0,0,0,0.05); 
+}
+
+/* Totales Cargos */
+.contenedor-totales {
+    display: flex;
+    justify-content: flex-end;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: 20px;
+    padding-right: 16px;
+}
+.lbl-total { font-family: var(--fuente-titulos); font-size: 1rem; color: var(--cobalto); font-weight: 700; }
+.monto-total-naranja { font-family: var(--fuente-titulos); font-size: 1.8rem; font-weight: 800; color: var(--naranja); }
+
+
+/* --- 8. COLUMNA DERECHA: EXPEDIENTE HISTÓRICO (SPLIT-VIEW) --- */
+.tarjeta-expediente-lateral {
+    opacity: 0; visibility: hidden; overflow: hidden; transition: var(--transicion);
+    height: calc(100vh - 120px); position: sticky; top: 24px; display: flex; flex-direction: column;
+}
+.rejilla-bento-consulta.expediente-abierto .tarjeta-expediente-lateral { opacity: 1; visibility: visible; overflow-y: auto; }
+.cabecera-expediente {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid var(--borde-vidrio); padding-bottom: 12px; margin-bottom: 16px;
+}
+
+/* --- CLASES LEGACY PARA SOPORTE DE MODALES EXISTENTES --- */
+.grupo-input { display: flex; flex-direction: column; gap: 8px; }
+.grupo-input label {
+    font-family: var(--fuente-titulos); font-size: 0.80rem; font-weight: 700;
+    color: var(--texto-gris); text-transform: uppercase;
+}
+.input-base, select.input-base {
+    width: 100%; padding: 14px 16px; font-family: var(--fuente-cuerpo);
+    font-size: 1rem; font-weight: bold; color: var(--cobalto);
+    background-color: var(--blanco-puro); border: 1px solid rgba(3, 47, 64, 0.1);
+    border-radius: var(--radio-input); transition: var(--transicion); outline: none;
+}
+.input-base:focus { border-color: var(--cielo); box-shadow: 0 0 0 4px rgba(137, 194, 217, 0.2); }
+.btn-cobalto-ancho {
+    background: var(--cobalto);
+    color: white;
+    border: none;
+    padding: 14px;
+    font-size: 1rem;
+    border-radius: 12px;
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    width: 100%;
+    cursor: pointer;
+}
+
+
+/* ==========================================================================
+   MEDIA QUERIES: LAPTOS PEQUEÑAS Y TABLETS (1400px - 1199px)
+   ========================================================================== */
+
+@media (max-width: 1400px) {
+    .input-busqueda, .entrada-texto-hero { width: 250px; }
+}
+
+@media (max-width: 1199px) {
+    .rejilla-bento-consulta, .rejilla-bento-consulta.expediente-abierto {
+        grid-template-columns: 1fr; 
+    }
+    .hero-contenido { 
+        flex-direction: row; justify-content: space-between; align-items: center;
+    }
+    .superficie-clinica-elevada { 
+        margin-top: -180px; padding: 0 20px; width: 100%;
+    }
+    .hero-acciones { 
+        flex-direction: row; justify-content: space-between; align-items: center;
+        width: 100%; margin-top: 15px;
+    }
+    .input-busqueda, .entrada-texto-hero { 
+        width: 100%; flex: 1; margin-top: 0 !important; 
+    }
+    .boton-primario {
+        margin-top: 0 !important; 
+    }
+    .tarjeta-perfil.compacta {
+        position: relative; top: 0;
+    }
+    .tarjeta-expediente-lateral {
+        position: fixed; top: 0; right: -100%; width: 100%; max-width: 400px;
+        height: 100vh; z-index: 2000; border-radius: 0; border-left: 4px solid var(--cobalto);
+    }
+    .rejilla-bento-consulta.expediente-abierto .tarjeta-expediente-lateral { right: 0; }
+}
+
+
+/* ==========================================================================
+   MEDIA QUERIES: RESOLUCIONES MÓVILES / SMARTPHONES (767px)
+   ========================================================================== */
+
+@media (max-width: 767px) {
+    body { 
+        padding: 0 10px 10px 10px; 
+        overflow-x: hidden; 
+    }
+    .hero-clinico { 
+        padding: 30px 20px 220px 20px; 
+        border-radius: 0 0 25px 25px; 
+    }
+    .superficie-clinica-elevada { 
+        margin-top:-300px; 
+        padding: 0 10px; 
+        width: 100%;
+        position: relative; /* CORRECCIÓN PARA PERMITIR EL SCROLL GLOBAL */
+        max-width: 100vw;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    .titulo-hero { margin-top: 20%; font-size: 2.3rem; }
+    
+    .hero-acciones {
+        display: flex !important; flex-direction: row !important;
+        align-items: center !important; justify-content: space-between !important;
+        gap: 15px; width: 100%; margin-top: 20px; box-sizing: border-box;
+    }
+    .buscador-predictivo { flex: 1; width: auto; min-width: 0; margin: 0 !important; }
+    .input-busqueda, .entrada-texto-hero { width: 100% !important; margin: 0 !important; box-sizing: border-box; }
+
+    #btn-nuevo-paciente {
+        width: 50px !important; height: 50px !important; border-radius: 50% !important; 
+        padding: 0 !important; margin: 0 !important; display: flex !important;
+        justify-content: center !important; align-items: center !important;
+        flex-shrink: 0 !important; border: none; 
+    }
+    #btn-nuevo-paciente span:last-child { display: none !important; }
+    #btn-nuevo-paciente .material-symbols-rounded { font-size: 28px !important; margin: 0 !important; color: var(--blanco-puro); }
+    
+    .bento-card { 
+        padding: 20px; border-radius: 24px; width: 100%; max-width: 100%; 
+        box-sizing: border-box; overflow: hidden; 
+    }
+    
+    .tarjeta-perfil.compacta {
+        position: relative; top: 10px; z-index: 1000;
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15);
+        padding: 20px 16px;
+    }
+    
+    .titulo-paciente-limpio { 
+        font-size: 1.3rem; margin: 0; line-height: 1.2; display: block !important;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+    }
+    
+    .cuadricula-detalles-paciente {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important; 
+        padding: 12px; width: 100%; box-sizing: border-box; word-break: break-word;
+    }
+    
+    #btn-ver-expediente {
+        display: flex !important; width: 100%; min-height: 48px;
+        margin-top: 8px; box-sizing: border-box; justify-content: center; align-items: center;
+    }
+
+    .input-base-limpio, .btn-naranja-chico, .btn-naranja-solido, .btn-fantasma-gris {
+        min-height: 48px; box-sizing: border-box;
+    }
+
+    .rejilla-inputs-4col, .rejilla-inputs-3col, .rejilla-inputs-2col, .rejilla-cargos-limpia, .acciones-pie-limpias { 
+        display: flex; flex-direction: column;
+        width: 100%; box-sizing: border-box;
+    }
+}
+/* Boton Limpiar Paciente */
+.btn-cerrar-paciente-naranja { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; background: var(--naranja); color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(242, 116, 5, 0.3); z-index: 10; }
+.btn-cerrar-paciente-naranja:hover { transform: scale(1.1) rotate(90deg); background: #d96804; box-shadow: 0 6px 14px rgba(242, 116, 5, 0.4); }
+.bento-card { position: relative; }

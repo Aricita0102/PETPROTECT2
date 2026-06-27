@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Escaner Móvil - PetProtect</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Century+Gothic:wght@400;700&display=swap');
+
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+body {
+  font-family: 'Century Gothic', sans-serif;
+  background: #010F17;
+  color: #FFFFFF;
+}
+
+.phone-wrap {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.phone {
+  width: 100%;
+  max-width: 450px;
+  background: #032F40;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.status-bar {
+  background: #021F2B;
+  padding: 12px 20px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+}
+.status-session {
+  color: #F27405;
+}
+
+.top-header {
+  background: #021F2B;
+  padding: 10px 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.close-btn {
+  cursor: pointer;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+.close-btn:hover {
+  color: #F27405;
+}
+
+.header-center { 
+  text-align: left; 
+  flex-grow: 1; 
+}
+.header-title { 
+  font-size: 16px; 
+  font-weight: bold; 
+  letter-spacing: 0.5px; 
+}
+.header-subtitle { 
+  font-size: 10px; 
+  margin-top: 4px; 
+  color: #B0C4DE; 
+}
+
+.camera-area {
+  position: relative;
+  background: #000;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+#videoPreview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scan-frame {
+  position: absolute;
+  width: 70%;
+  height: 180px;
+  z-index: 2;
+}
+.sf-corner { 
+  position: absolute; 
+  width: 20px; 
+  height: 20px; 
+  border-color: #F27405; 
+  border-style: solid; 
+}
+.sf-tl { top: 0; left: 0; border-width: 3px 0 0 3px; }
+.sf-tr { top: 0; right: 0; border-width: 3px 3px 0 0; }
+.sf-bl { bottom: 0; left: 0; border-width: 0 0 3px 3px; }
+.sf-br { bottom: 0; right: 0; border-width: 0 3px 3px 0; }
+
+.scan-beam {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: #F27405;
+  box-shadow: 0 0 10px #F27405;
+  top: 10%;
+  animation: beam 2s infinite linear;
+}
+
+@keyframes beam {
+  0% { top: 10%; opacity: 0;}
+  10% { opacity: 1; }
+  50% { top: 90%; }
+  90% { opacity: 1; }
+  100% { top: 10%; opacity: 0;}
+}
+
+.cam-hint {
+  position: absolute;
+  bottom: 24px;
+  font-size: 12px;
+  color: #FFFFFF;
+  letter-spacing: 0.5px;
+  text-shadow: 0px 1px 3px rgba(0,0,0,0.8);
+  z-index: 2;
+  background: rgba(0,0,0,0.4);
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.bottom-panel { 
+  padding: 24px 20px; 
+  background: #032F40;
+}
+
+.instruction-box { 
+  text-align: center; 
+  margin-bottom: 24px; 
+}
+.instruction-box p {
+  font-size: 12px; 
+  color: #FFFFFF; 
+  line-height: 1.4;
+}
+
+.shutter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.side-action {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  color: #B0C4DE;
+  padding: 8px;
+  transition: color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.side-action svg { width:20px; height:20px; }
+.side-action:hover { 
+  color: #F27405; 
+}
+.side-action.active {
+  color: #F27405;
+}
+
+.shutter-btn {
+  width: 64px; 
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid #FFFFFF;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  cursor: pointer;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+.shutter-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.shutter-btn:hover { 
+  border-color: #F27405; 
+}
+.shutter-inner {
+  width: 52px; 
+  height: 52px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  transition: background 0.2s;
+}
+.shutter-btn:hover .shutter-inner { 
+  background: #F27405; 
+}
+.shutter-btn.scanning .shutter-inner {
+  background: #F27405;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1); }
+  100% { transform: scale(0.9); }
+}
+
+.manual-row { 
+  margin-bottom: 24px; 
+}
+.manual-row input {
+  width: 100%;
+  background: #021F2B;
+  border: 1px solid #021F2B;
+  padding: 14px;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-family: 'Century Gothic', sans-serif;
+  text-align: center;
+  outline: none;
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+.manual-row input::placeholder { 
+  color: #6C8D9B; 
+}
+.manual-row input:focus { 
+  border-color: #F27405; 
+}
+
+.result-banner {
+  display: none;
+  background: #021F2B;
+  border-left: 4px solid #F27405;
+  padding: 16px;
+  margin-bottom: 24px;
+  text-align: center;
+  border-radius: 0 8px 8px 0;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(10px); opacity:0;} to { transform: translateY(0); opacity:1;} }
+.result-banner.visible { 
+  display: block; 
+}
+.r-code { 
+  font-size: 16px; 
+  font-weight: bold; 
+  margin-bottom: 6px; 
+  letter-spacing: 1px;
+}
+.r-meta { 
+  font-size: 11px; 
+  color: #B0C4DE; 
+}
+
+.privacy-row {
+  text-align: center;
+  font-size: 10px;
+  color: #6C8D9B;
+  border-top: 1px solid #021F2B;
+  padding-top: 16px;
+  line-height: 1.6;
+}
+.privacy-row span { 
+  color: #FFFFFF; 
+  cursor: pointer; 
+  font-weight: bold;
+}
+.privacy-row span:hover { 
+  color: #F27405; 
+}
+</style>
+</head>
+<body>
+
+<div class="phone-wrap">
+  <div class="phone">
+
+    <div class="status-bar">
+      <span id="timeDisplay">--:--</span>
+      <span class="status-session" id="sessionDisplay">Conectando...</span>
+    </div>
+
+    <div class="top-header">
+      <div class="header-center">
+        <div class="header-title">PROTECT PET</div>
+        <div class="header-subtitle">Escaner Remoto de Inventario</div>
+      </div>
+      <div class="close-btn" id="btnCerrar">Cerrar</div>
+    </div>
+
+    <div class="camera-area" id="cameraArea">
+      <!-- Elemento de video de ZXing -->
+      <video id="videoPreview" autoplay playsinline muted></video>
+      
+      <div class="scan-frame" id="scanFrame" style="display:none;">
+        <div class="sf-corner sf-tl"></div>
+        <div class="sf-corner sf-tr"></div>
+        <div class="sf-corner sf-bl"></div>
+        <div class="sf-corner sf-br"></div>
+        <div class="scan-beam" id="scanBeam"></div>
+      </div>
+      <div class="cam-hint" id="camHint">INICIANDO CÁMARA...</div>
+    </div>
+
+    <div class="bottom-panel">
+
+      <div id="resultBanner" class="result-banner">
+        <div class="r-code" id="rCode">—</div>
+        <div class="r-meta" id="rMeta">ENVIADO A CAJA</div>
+      </div>
+
+      <div class="instruction-box">
+        <p id="instructionText">Apunta la cámara al código de barras. La lectura se realizará de manera automática.</p>
+      </div>
+
+      <div class="shutter-row">
+        <!-- Switch de cámara -->
+        <div class="side-action" id="btnSwitchCam">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          Girar
+        </div>
+
+        <div class="shutter-btn scanning" id="btnPauseResume">
+          <div class="shutter-inner"></div>
+        </div>
+
+        <!-- Linterna -->
+        <div class="side-action" id="btnTorch">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          Flash
+        </div>
+      </div>
+
+      <div class="manual-row">
+        <input type="number" id="manualField" placeholder="INGRESAR CÓDIGO MANUALMENTE" />
+      </div>
+
+      <div class="privacy-row">
+        PetProtect SmartScanner v1.0<br>
+        <span onclick="location.reload()">RECARGAR ESCÁNER</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/src/js/escaner/escaner_app.js"></script>
+</body>
+</html>

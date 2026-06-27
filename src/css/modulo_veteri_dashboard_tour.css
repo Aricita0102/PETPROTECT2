@@ -1,0 +1,52 @@
+/* ==========================================
+ * TOUR CSS - CLASE PREMIUM
+ * ========================================== */
+
+.tour-veterinario {
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+.tour-veterinario .driver-popover-title {
+    color: var(--color-primario, #032F40) !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 8px !important;
+}
+
+.tour-veterinario .driver-popover-description {
+    color: #4a5568 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+}
+
+.tour-veterinario .driver-popover-footer button {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+    padding: 6px 12px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.tour-veterinario .driver-popover-next-btn,
+.tour-veterinario .driver-popover-done-btn {
+    background-color: var(--color-acento, #F27405) !important;
+    color: white !important;
+}
+
+.tour-veterinario .driver-popover-next-btn:hover,
+.tour-veterinario .driver-popover-done-btn:hover {
+    filter: brightness(1.1) !important;
+}
+
+.tour-veterinario .driver-popover-prev-btn {
+    background-color: #e2e8f0 !important;
+    color: #4a5568 !important;
+}
+
+.tour-veterinario .driver-popover-prev-btn:hover {
+    background-color: #cbd5e1 !important;
+}

@@ -1,0 +1,205 @@
+<div class="encabezado-modulo">
+    <div class="titulos-modulo">
+        <div class="migas-pan">
+            <span class="material-symbols-rounded">inventory_2</span> 
+            <span>Inventario</span> <span class="separador">/</span> <strong>Farmacia Clínica</strong>
+        </div>
+        <h2>Catálogo de Medicamentos</h2>
+        <p>Gestión de stock fraccionado, lotes y caducidades clínicas.</p>
+    </div>
+    <div class="acciones-modulo">
+        <button class="boton-solido secundario" aria-label="Exportar Excel">
+            <span class="material-symbols-rounded">download</span> Exportar
+        </button>
+        <button class="boton-solido primaria" id="btn-abrir-modal-medicamento">
+            <span class="material-symbols-rounded">add</span> Nuevo Medicamento
+        </button>
+    </div>
+</div>
+
+<div class="tarjeta-bento tabla-contenedor">
+    <div class="barra-herramientas-tabla">
+        <div class="buscador-universal-bento oscuro">
+            <span class="material-symbols-rounded">search</span>
+            <input type="text" placeholder="Buscar por nombre, sustancia activa o lote...">
+        </div>
+        <div class="filtros-tabla">
+            <select class="select-premium" aria-label="Filtrar por estado">
+                <option value="todos">Todos los estados</option>
+                <option value="critico">Stock Crítico</option>
+                <option value="caducar">Por Caducar</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="envoltorio-tabla">
+        <table class="tabla-saas">
+            <thead>
+                <tr>
+                    <th>Producto / Sustancia Activa</th>
+                    <th>Presentación</th>
+                    <th>Lote</th>
+                    <th>Caducidad</th>
+                    <th class="texto-derecha">Stock Actual</th>
+                    <th class="texto-centro">Estado</th>
+                    <th class="texto-centro">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="celda-producto">
+                            <span class="icono-producto material-symbols-rounded">vaccines</span>
+                            <div class="info-texto">
+                                <strong>Nobivac Múltiple Canina</strong>
+                                <small>Virus vivo modificado</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>Vial 1 Dosis</td>
+                    <td class="texto-mono">L-89452</td>
+                    <td>12 Nov 2027</td>
+                    <td class="texto-derecha"><strong>45</strong> <small>dosis</small></td>
+                    <td class="texto-centro"><span class="badge-estado optimo">Óptimo</span></td>
+                    <td class="texto-centro">
+                        <button class="boton-fantasma-icono"><span class="material-symbols-rounded">edit</span></button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="celda-producto">
+                            <span class="icono-producto material-symbols-rounded">medication_liquid</span>
+                            <div class="info-texto">
+                                <strong>Ketamina 10%</strong>
+                                <small>Clorhidrato de ketamina</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>Frasco 50 ml</td>
+                    <td class="texto-mono">K-10221</td>
+                    <td class="texto-alerta">15 Jul 2026</td>
+                    <td class="texto-derecha"><strong>18.5</strong> <small>ml</small></td>
+                    <td class="texto-centro"><span class="badge-estado advertencia">Revisar</span></td>
+                    <td class="texto-centro">
+                        <button class="boton-fantasma-icono"><span class="material-symbols-rounded">edit</span></button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="celda-producto">
+                            <span class="icono-producto material-symbols-rounded">prescriptions</span>
+                            <div class="info-texto">
+                                <strong>Meloxicam 5mg</strong>
+                                <small>Analgésico / Antiinflamatorio</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>Caja 30 tabs</td>
+                    <td class="texto-mono">M-77410</td>
+                    <td>04 Ene 2028</td>
+                    <td class="texto-derecha texto-peligro"><strong>2</strong> <small>tabs</small></td>
+                    <td class="texto-centro"><span class="badge-estado critico">Agotándose</span></td>
+                    <td class="texto-centro">
+                        <button class="boton-fantasma-icono"><span class="material-symbols-rounded">edit</span></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="modalNuevoMedicamento" class="modal-superpuesto" aria-hidden="true">
+    <div class="tarjeta-modal-bento">
+        <header class="encabezado-modal">
+            <div>
+                <h3>Nuevo Medicamento</h3>
+                <p>Ingrese los datos para control clínico y de farmacia.</p>
+            </div>
+            <button class="boton-cerrar-modal" id="btn-cerrar-modal-medicamento" aria-label="Cerrar modal">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+        </header>
+
+        <form id="form-nuevo-medicamento" class="formulario-saas">
+            <div class="rejilla-formulario">
+                
+                <div class="grupo-input ancho-completo">
+                    <label for="med-nombre">Nombre Comercial del Producto *</label>
+                    <input type="text" id="med-nombre" class="input-premium" placeholder="Ej. Nobivac Múltiple Canina" required>
+                </div>
+
+                <div class="grupo-input ancho-completo">
+                    <label for="med-sustancia">Sustancia Activa / Descripción</label>
+                    <input type="text" id="med-sustancia" class="input-premium" placeholder="Ej. Virus vivo modificado">
+                </div>
+
+                <div class="grupo-input">
+                    <label for="med-via">Vía de Administración *</label>
+                    <select id="med-via" class="input-premium" required>
+                        <option value="po">Oral (PO)</option>
+                        <option value="im">Intramuscular (IM)</option>
+                        <option value="iv">Intravenosa (IV)</option>
+                        <option value="sc">Subcutánea (SC)</option>
+                        <option value="topico">Tópico / Oftálmico</option>
+                    </select>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="med-presentacion">Presentación</label>
+                    <select id="med-presentacion" class="input-premium">
+                        <option value="vial">Vial / Dosis</option>
+                        <option value="frasco_ml">Frasco (Líquido)</option>
+                        <option value="caja_tabs">Caja (Tabletas)</option>
+                    </select>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="med-unidad">Unidad de Medida (Consumo) *</label>
+                    <select id="med-unidad" class="input-premium" required>
+                        <option value="ml">Mililitros (ml)</option>
+                        <option value="mg">Miligramos (mg)</option>
+                        <option value="dosis">Dosis</option>
+                        <option value="tabs">Tabletas</option>
+                    </select>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="med-lote">Número de Lote *</label>
+                    <input type="text" id="med-lote" class="input-premium texto-mono" placeholder="Ej. L-89452" required>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="med-caducidad">Fecha de Caducidad *</label>
+                    <input type="date" id="med-caducidad" class="input-premium" required>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="med-stock">Stock Inicial</label>
+                    <input type="number" id="med-stock" class="input-premium texto-derecha" placeholder="0.00" step="0.01">
+                </div>
+                
+                <div class="grupo-input">
+                    <label for="med-minimo">Alerta de Stock Mínimo</label>
+                    <input type="number" id="med-minimo" class="input-premium texto-derecha" placeholder="5" step="1">
+                </div>
+
+                <div class="grupo-input ancho-completo" style="margin-top: 10px;">
+                    <label class="checkbox-medico" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: #FEF2F2; border-radius: 8px; border: 1px solid #FCA5A5;">
+                        <input type="checkbox" id="med-controlado" style="width: 20px; height: 20px; accent-color: #EF4444;">
+                        <span style="color: #991B1B; font-weight: 600;">⚠️ Medicamento Controlado (Requiere receta retenida)</span>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="acciones-formulario">
+                <button type="button" class="boton-solido secundario" id="btn-cancelar-modal">Cancelar</button>
+                <button type="submit" class="boton-solido primaria">
+                    <span class="material-symbols-rounded">save</span> Guardar Medicamento
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,404 @@
+/* =========================================
+   VARIABLES GLOBALES (Design Tokens)
+   ========================================= */
+:root {
+    --color-primario: #032F40;   /* Azul Cobalto */
+    --color-secundario: #89C2D9; /* Azul Cielo */
+    --color-fondo: #F5F5F5;      /* Blanco Gris */
+    --color-accion: #F27405;     /* Naranja */
+    --color-texto-oscuro: #333333;
+    --color-error: #D9534F;      /* Rojo */
+    --color-exito: #34C759;      /* Verde */
+    
+    --radio-borde: 16px;
+    --sombra-suave: 0 10px 30px rgba(3, 47, 64, 0.1);
+}
+
+/* =========================================
+   CONFIGURACIÓN GENERAL
+   ========================================= */
+@font-face {
+    font-family: 'Century Gothic';
+    src: local('Century Gothic');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Century Gothic', sans-serif;
+    background-color: var(--color-fondo);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-texto-oscuro);
+    padding: 20px; 
+}
+
+/* =========================================
+   CONTENEDOR PRINCIPAL
+   ========================================= */
+.contenedorRegistro {
+    width: 100%;
+    max-width: 1100px;
+    min-height: 85vh;
+    background: #ffffff;
+    display: flex;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--sombra-suave);
+}
+
+/* =========================================
+   PANEL LATERAL (Branding)
+   ========================================= */
+.panelLateral {
+    flex: 1;
+    background-color: var(--color-primario);
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    color: #ffffff;
+}
+
+.logotipoBlanco {
+    font-weight: bold;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+}
+
+.puntoNaranja {
+    width: 10px;
+    height: 10px;
+    background-color: var(--color-accion);
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.contenidoLateral {
+    z-index: 2;
+    margin-top: auto;
+    margin-bottom: 2rem;
+}
+
+.fraseImpacto {
+    font-size: 2.2rem;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+.listaBeneficios {
+    list-style: none;
+    color: var(--color-secundario);
+}
+
+.listaBeneficios li {
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.decoracionFondo {
+    position: absolute;
+    top: -10%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background-image: url('/src/img/veterinaria.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.15; 
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* =========================================
+   PANEL FORMULARIO (Derecho)
+   ========================================= */
+.panelFormulario {
+    flex: 1.2;
+    padding: 4rem 3rem;
+    overflow-y: auto;
+    background-color: #ffffff;
+}
+
+.panelFormulario::-webkit-scrollbar {
+    width: 8px;
+}
+.panelFormulario::-webkit-scrollbar-track {
+    background: transparent;
+}
+.panelFormulario::-webkit-scrollbar-thumb {
+    background-color: rgba(3, 47, 64, 0.1);
+    border-radius: 10px;
+}
+
+.cabeceraForm h1 {
+    font-size: 2rem;
+    color: var(--color-primario);
+    margin-bottom: 0.5rem;
+}
+
+.enlaceAzul {
+    color: var(--color-secundario);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.enlaceAzul:hover {
+    color: var(--color-primario);
+}
+
+/* =========================================
+   FORMULARIO Y ENTRADAS
+   ========================================= */
+.formulario {
+    margin-top: 2rem;
+}
+
+.grupoEntrada {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.filaDoble {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.grupoEntrada label {
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--color-primario);
+}
+
+.grupoEntrada input {
+    padding: 0.9rem 1.2rem;
+    border: 2px solid var(--color-fondo);
+    border-radius: var(--radio-borde);
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    background-color: #FAFAFA;
+    transition: all 0.3s ease;
+}
+
+.grupoEntrada input:focus {
+    border-color: var(--color-secundario);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(137, 194, 217, 0.1);
+}
+
+/* =========================================
+   UI SEGURIDAD: MEDIDOR Y ESTADOS
+   ========================================= */
+.medidorPassword {
+    height: 4px;
+    background-color: var(--color-fondo);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.barraFuerza {
+    height: 100%;
+    width: 0%; 
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* Clases de estado para Barra y Texto (Usadas por JS) */
+.fuerza-baja { background-color: var(--color-error); }
+.fuerza-media { background-color: var(--color-accion); }
+.fuerza-alta { background-color: var(--color-exito); }
+
+.texto-error { color: var(--color-error) !important; }
+.texto-alerta { color: var(--color-accion) !important; }
+.texto-exito { color: var(--color-exito) !important; }
+
+.ayudaTexto {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 6px;
+    line-height: 1.3;
+}
+
+/* =========================================
+   INPUTS CON ICONO (OJITO)
+   ========================================= */
+.input-con-icono {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-con-icono input {
+    width: 100%;
+    padding-right: 2.8rem; 
+}
+
+.btn-toggle-pass {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #888;
+    transition: transform 0.2s;
+    user-select: none;
+}
+
+.btn-toggle-pass:hover {
+    transform: scale(1.15);
+}
+
+/* =========================================
+   CHECKBOX LEGAL (LFPDPPP)
+   ========================================= */
+.grupoConsentimiento {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+    background-color: rgba(137, 194, 217, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.grupoConsentimiento input[type="checkbox"] {
+    margin-top: 3px;
+    accent-color: var(--color-accion);
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.grupoConsentimiento label {
+    font-size: 0.8rem;
+    color: #555;
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+/* =========================================
+   BOTONES Y ACCIONES
+   ========================================= */
+.botonEnviar {
+    width: 100%;
+    padding: 1.2rem;
+    background-color: var(--color-accion);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radio-borde);
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(242, 116, 5, 0.3);
+}
+
+.botonEnviar:hover:not(:disabled) {
+    background-color: var(--color-primario);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(3, 47, 64, 0.4);
+}
+
+.separadorSSO {
+    text-align: center;
+    margin: 2rem 0 1.5rem 0;
+    position: relative;
+}
+
+.separadorSSO::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background-color: #E0E0E0;
+    z-index: 1;
+}
+
+.separadorSSO span {
+    background-color: #ffffff;
+    padding: 0 15px;
+    position: relative;
+    z-index: 2;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.botonGoogle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 1.1rem;
+    background-color: #ffffff;
+    border: 2px solid #E0E0E0;
+    border-radius: var(--radio-borde);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--color-texto-oscuro);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.botonGoogle:hover:not(:disabled) {
+    background-color: #FAFAFA;
+    border-color: var(--color-secundario);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.botonGoogle:disabled,
+.botonEnviar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(100%);
+    box-shadow: none;
+    transform: none;
+}
+
+/* =========================================
+   RESPONSIVIDAD
+   ========================================= */
+@media (max-width: 900px) {
+    .contenedorRegistro {
+        flex-direction: column;
+        border-radius: 16px;
+    }
+    
+    .panelLateral {
+        display: none; 
+    }
+    
+    .panelFormulario {
+        padding: 2.5rem 1.5rem;
+    }
+    
+    .filaDoble {
+        grid-template-columns: 1fr;
+        gap: 0; 
+    }
+    
+    .cabeceraForm h1 {
+        font-size: 1.8rem;
+    }
+}

@@ -1,0 +1,170 @@
+<div class="contenedor-modulo-agenda">
+  
+  <!-- ===== HERO CLINICO ===== -->
+  <header class="hero-clinico no-imprimir">
+    <div class="hero-contenido">
+      <div class="bloque-titulos">
+        <h1 class="titulo-hero">Dietas de Prescripción</h1>
+        <div style="display: flex; gap: 20px; margin-top: 8px; color: rgba(255, 255, 255, 0.85); font-size: 0.9rem; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <span class="material-symbols-rounded" style="font-size: 18px;">nutrition</span>
+                <span>Alimentos terapéuticos y nutraceúticos de uso veterinario controlado</span>
+            </div>
+        </div>
+      </div>
+
+      <div class="hero-acciones">
+        <button class="boton-secundario" id="btn-exportar-dietas" aria-label="Exportar Excel" style="border:1px solid rgba(255,255,255,0.3); background:transparent; color:white; padding:10px 16px; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:6px;">
+          <span class="material-symbols-rounded" aria-hidden="true">download</span>
+          <span>Exportar Excel</span>
+        </button>
+        <button class="boton-primario" id="btn-abrir-modal-dieta">
+          <span class="material-symbols-rounded" aria-hidden="true">add_circle</span>
+          <span>Nueva Dieta</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== BENTO PRINCIPAL ===== -->
+  <div class="contenedor-bento">
+    <div class="layout" style="grid-template-columns: 1fr;">
+      
+      <!-- Panel de Tabla -->
+      <div class="panel">
+        <div class="cal-head" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+          <div style="display:flex; align-items:center; gap: 15px; flex: 1;">
+            <div class="buscador-universal-bento oscuro" style="max-width: 400px; flex: 1;">
+                <span class="material-symbols-rounded">search</span>
+                <input type="text" id="input-busqueda-dieta" placeholder="Buscar por nombre, marca o especie..." style="width: 100%; background: transparent; border: none; outline: none; font-size: 13px;">
+            </div>
+            
+            <div class="filtros-tabla" style="display:flex; align-items:center; gap:10px;">
+                <span class="material-symbols-rounded" style="color:var(--texto-mut); font-size: 18px;">filter_list</span>
+                <select id="select-filtro-dieta" class="select-premium" aria-label="Filtrar por tipo de dieta" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--borde); background: #f8fafc; color: var(--cobalto); font-weight: 600; font-size: 13px; cursor: pointer; outline: none; transition: border-color 0.2s;">
+                    <option value="todos">Todas las categorías</option>
+                    <option value="renal">Soporte Renal</option>
+                    <option value="hepatica">Soporte Hepático</option>
+                    <option value="digestiva">Digestivo Sensible</option>
+                    <option value="cardiaca">Soporte Cardíaco</option>
+                    <option value="obesidad">Control de Peso</option>
+                    <option value="dermatologica">Dermatológica</option>
+                    <option value="urinaria">Urinaria</option>
+                    <option value="articular">Articular / Movilidad</option>
+                </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="envoltorio-tabla">
+            <table class="tabla-saas" id="tabla-productos-dietas" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--borde); text-align: left; color: var(--texto-mut); font-size: 12px; text-transform: uppercase;">
+                        <th style="padding: 12px 10px;">Dieta / Marca</th>
+                        <th style="padding: 12px 10px;">Indicación Clínica</th>
+                        <th style="padding: 12px 10px;">Especie</th>
+                        <th style="padding: 12px 10px;">Presentación</th>
+                        <th style="padding: 12px 10px; text-align: right;">Stock Actual</th>
+                        <th style="padding: 12px 10px; text-align: center;">Estado</th>
+                        <th style="padding: 12px 10px; text-align: center;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-dietas">
+                    <!-- Fila de ejemplo 1 -->
+                    <tr data-producto-id="" data-nombre="Renal Support Feline" data-marca="Royal Canin" data-indicacion="renal" data-especie="Felino" data-presentacion="2 kg" data-stock="8" data-minimo="3" data-unidad="Bolsa" data-precio="485.00">
+                        <td style="padding: 12px 10px;">
+                            <div class="celda-producto" style="display:flex; align-items:center; gap:10px;">
+                                <span class="icono-producto material-symbols-rounded" style="color:var(--cobalto); background:var(--bg-main); padding:8px; border-radius:8px;">nutrition</span>
+                                <div class="info-texto" style="display:flex; flex-direction:column;">
+                                    <strong style="color:var(--cobalto);">Renal Support Feline</strong>
+                                    <small style="color:var(--texto-mut);">Royal Canin</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding: 12px 10px;">
+                            <span class="etiqueta-categoria renal" style="background:#E0E7FF; color:#4338CA; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:600;">Soporte Renal</span>
+                        </td>
+                        <td style="padding: 12px 10px;">
+                            <span style="display:flex; align-items:center; gap:4px; font-size:13px;">
+                                <span class="material-symbols-rounded" style="font-size:16px; color:#6b7280;">pets</span> Felino
+                            </span>
+                        </td>
+                        <td style="padding: 12px 10px;">Bolsa 2 kg</td>
+                        <td class="texto-derecha" style="padding: 12px 10px; text-align: right;"><strong>8</strong> <small>Bolsas</small></td>
+                        <td class="texto-centro" style="padding: 12px 10px; text-align: center;"><span class="badge-estado optimo" style="background:#D1FAE5; color:#10B981; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:12px;">Óptimo</span></td>
+                        <td class="texto-centro" style="padding: 12px 10px; text-align: center;">
+                            <button class="boton-fantasma-icono btn-ver-dieta" aria-label="Ver ficha de dieta" style="background:rgba(137, 194, 217, 0.15); border:none; color:var(--cobalto); cursor:pointer; padding:6px; border-radius:8px; transition:all 0.2s; display:inline-flex; align-items:center; justify-content:center;">
+                                <span class="material-symbols-rounded" style="font-size:20px;">visibility</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- Fila de ejemplo 2 -->
+                    <tr data-producto-id="" data-nombre="Gastro Intestinal Low Fat" data-marca="Hill's" data-indicacion="digestiva" data-especie="Canino" data-presentacion="3.5 kg" data-stock="2" data-minimo="4" data-unidad="Bolsa" data-precio="620.00">
+                        <td style="padding: 12px 10px;">
+                            <div class="celda-producto" style="display:flex; align-items:center; gap:10px;">
+                                <span class="icono-producto material-symbols-rounded" style="color:var(--cobalto); background:var(--bg-main); padding:8px; border-radius:8px;">local_dining</span>
+                                <div class="info-texto" style="display:flex; flex-direction:column;">
+                                    <strong style="color:var(--cobalto);">Gastro Intestinal Low Fat</strong>
+                                    <small style="color:var(--texto-mut);">Hill's</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding: 12px 10px;">
+                            <span class="etiqueta-categoria digestiva" style="background:#FEF3C7; color:#D97706; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:600;">Digestivo Sensible</span>
+                        </td>
+                        <td style="padding: 12px 10px;">
+                            <span style="display:flex; align-items:center; gap:4px; font-size:13px;">
+                                <span class="material-symbols-rounded" style="font-size:16px; color:#6b7280;">pets</span> Canino
+                            </span>
+                        </td>
+                        <td style="padding: 12px 10px;">Bolsa 3.5 kg</td>
+                        <td class="texto-derecha texto-peligro" style="padding: 12px 10px; text-align: right; color:#EF4444;"><strong>2</strong> <small>Bolsas</small></td>
+                        <td class="texto-centro" style="padding: 12px 10px; text-align: center;"><span class="badge-estado critico" style="background:#FEF2F2; color:#EF4444; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:12px;">Agotándose</span></td>
+                        <td class="texto-centro" style="padding: 12px 10px; text-align: center;">
+                            <button class="boton-fantasma-icono btn-ver-dieta" aria-label="Ver ficha de dieta" style="background:rgba(137, 194, 217, 0.15); border:none; color:var(--cobalto); cursor:pointer; padding:6px; border-radius:8px; transition:all 0.2s; display:inline-flex; align-items:center; justify-content:center;">
+                                <span class="material-symbols-rounded" style="font-size:20px;">visibility</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- Fila de ejemplo 3 -->
+                    <tr data-producto-id="" data-nombre="Urinary S/O Moderate Calorie" data-marca="Royal Canin" data-indicacion="urinaria" data-especie="Felino" data-presentacion="1.5 kg" data-stock="0" data-minimo="3" data-unidad="Bolsa" data-precio="390.00">
+                        <td style="padding: 12px 10px;">
+                            <div class="celda-producto" style="display:flex; align-items:center; gap:10px;">
+                                <span class="icono-producto material-symbols-rounded" style="color:var(--cobalto); background:var(--bg-main); padding:8px; border-radius:8px;">water_drop</span>
+                                <div class="info-texto" style="display:flex; flex-direction:column;">
+                                    <strong style="color:var(--cobalto);">Urinary S/O Moderate Calorie</strong>
+                                    <small style="color:var(--texto-mut);">Royal Canin</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding: 12px 10px;">
+                            <span class="etiqueta-categoria urinaria" style="background:#E0F2FE; color:#0369A1; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:600;">Urinaria</span>
+                        </td>
+                        <td style="padding: 12px 10px;">
+                            <span style="display:flex; align-items:center; gap:4px; font-size:13px;">
+                                <span class="material-symbols-rounded" style="font-size:16px; color:#6b7280;">pets</span> Felino
+                            </span>
+                        </td>
+                        <td style="padding: 12px 10px;">Bolsa 1.5 kg</td>
+                        <td class="texto-derecha" style="padding: 12px 10px; text-align: right; color:#ef4444;"><strong>0</strong> <small>Bolsas</small></td>
+                        <td class="texto-centro" style="padding: 12px 10px; text-align: center;"><span class="badge-estado agotado" style="background:#FEE2E2; color:#991B1B; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:12px;">Agotado</span></td>
+                        <td class="texto-centro" style="padding: 12px 10px; text-align: center;">
+                            <button class="boton-fantasma-icono btn-ver-dieta" aria-label="Ver ficha de dieta" style="background:rgba(137, 194, 217, 0.15); border:none; color:var(--cobalto); cursor:pointer; padding:6px; border-radius:8px; transition:all 0.2s; display:inline-flex; align-items:center; justify-content:center;">
+                                <span class="material-symbols-rounded" style="font-size:20px;">visibility</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Estado vacío (se muestra por JS si no hay resultados) -->
+  <div id="estado-vacio-dietas" style="display:none; text-align:center; padding:60px 20px; color:#6b7280;">
+      <span class="material-symbols-rounded" style="font-size:48px; color:#d1d5db;">search_off</span>
+      <p style="margin-top:12px; font-weight:500;">No se encontraron dietas con ese criterio.</p>
+  </div>
+</div>

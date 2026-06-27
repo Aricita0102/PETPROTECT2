@@ -1,0 +1,47 @@
+type ClinicUser @table {
+  firstName: String!
+  lastName: String!
+  email: String!
+  role: String!
+  phoneNumber: String
+  specialty: String
+}
+
+type Owner @table {
+  firstName: String!
+  lastName: String!
+  phoneNumber: String!
+  email: String
+  address: String
+}
+
+type Pet @table {
+  owner: Owner
+  name: String!
+  species: String!
+  breed: String!
+  dateOfBirth: Date!
+  medicalHistorySummary: String
+  microchipID: String
+}
+
+type Appointment @table {
+  pet: Pet
+  assignedVeterinarian: ClinicUser
+  appointmentDate: Date!
+  appointmentTime: String!
+  reason: String!
+  status: String!
+  notes: String
+}
+
+type MedicalRecordEntry @table {
+  pet: Pet
+  veterinarian: ClinicUser
+  entryDate: Date!
+  diagnosis: String!
+  treatment: String!
+  prescription: String
+  notes: String
+  followUpDate: Date
+}

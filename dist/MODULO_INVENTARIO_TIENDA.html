@@ -1,0 +1,82 @@
+<div class="contenedor-modulo-agenda">
+  
+  <!-- ===== HERO CLINICO ===== -->
+  <header class="hero-clinico no-imprimir">
+    <div class="hero-contenido">
+      <div class="bloque-titulos">
+        <h1 class="titulo-hero">Tienda y Mostrador</h1>
+        <div style="display: flex; gap: 20px; margin-top: 8px; color: rgba(255, 255, 255, 0.85); font-size: 0.9rem; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <span class="material-symbols-rounded" style="font-size: 18px;">storefront</span>
+                <span>Catálogo de alimentos, accesorios y juguetes</span>
+            </div>
+        </div>
+      </div>
+
+      <div class="hero-acciones">
+        <button class="boton-secundario" id="btn-abrir-reporte-tienda" aria-label="Abrir Panel Inteligente" style="border:1px solid rgba(255,255,255,0.3); background:transparent; color:white; padding:10px 16px; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:6px;">
+          <span class="material-symbols-rounded" aria-hidden="true">table_view</span>
+          <span>Reporte Avanzado</span>
+        </button>
+        <button class="boton-primario" id="btn-abrir-modal-tienda">
+          <span class="material-symbols-rounded" aria-hidden="true">add_circle</span>
+          <span>Nuevo Artículo</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== BENTO PRINCIPAL ===== -->
+  <div class="contenedor-bento">
+    <div class="layout" style="grid-template-columns: 1fr;"> <!-- Tienda suele ocupar el 100% o tener sidebar de filtros -->
+      
+      <!-- Panel de Tabla -->
+      <div class="panel">
+        <div class="cal-head" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+          <div style="display:flex; align-items:center; gap: 15px; flex: 1;">
+            <div class="buscador-universal-bento oscuro" style="max-width: 400px; flex: 1;">
+                <span class="material-symbols-rounded">search</span>
+                <input type="text" id="input-busqueda-tienda" placeholder="Buscar por nombre, marca o SKU..." style="width: 100%; background: transparent; border: none; outline: none; font-size: 13px;">
+            </div>
+            
+            <div class="filtros-tabla" style="display:flex; align-items:center; gap:10px;">
+                <span class="material-symbols-rounded" style="color:var(--texto-mut); font-size: 18px;">filter_list</span>
+                <select id="select-filtro-tienda" class="select-premium" aria-label="Filtrar por categoría" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--borde); background: #f8fafc; color: var(--cobalto); font-weight: 600; font-size: 13px; cursor: pointer; outline: none; transition: border-color 0.2s;">
+                    <option value="todos">Todas las categorías</option>
+                    <option value="alimento">Alimento</option>
+                    <option value="accesorios">Accesorios</option>
+                    <option value="juguetes">Juguetes</option>
+                </select>
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <select id="filtro-color-tienda" class="select-premium" aria-label="Filtrar por color" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--borde); background: #f8fafc; color: var(--cobalto); font-weight: 600; font-size: 13px; cursor: pointer; outline: none; transition: border-color 0.2s;">
+                        <option value="todos">Todos los colores</option>
+                    </select>
+                    <div id="indicador-color-filtro" style="width:24px; height:24px; border-radius:6px; border:1px solid var(--borde); background-color:transparent; display:none;" title="Color seleccionado"></div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="envoltorio-tabla">
+            <table class="tabla-saas" id="tabla-productos-tienda" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--borde); text-align: left; color: var(--texto-mut); font-size: 12px; text-transform: uppercase;">
+                        <th style="padding: 12px 10px;">Producto / Marca</th>
+                        <th style="padding: 12px 10px;">Atributos</th>
+                        <th style="padding: 12px 10px;">SKU / Código</th>
+                        <th style="padding: 12px 10px; text-align: right;">Precio Público</th>
+                        <th style="padding: 12px 10px; text-align: right;">Stock Actual</th>
+                        <th style="padding: 12px 10px; text-align: center;">Autonomía</th>
+                        <th style="padding: 12px 10px; text-align: center;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-tabla-tienda">
+                    <!-- Se llena dinámicamente desde Supabase -->
+                </tbody>
+            </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

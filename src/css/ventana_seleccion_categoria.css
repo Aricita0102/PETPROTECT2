@@ -1,0 +1,323 @@
+/* ==========================================================================
+   MÓDULO INVENTARIO · PANTALLA DE SELECCIÓN (PET PROTECT)
+   ========================================================================== */
+
+.modulo-seleccion-inventario {
+  width: 100%;
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+/* --- Contenedor Principal (Efecto Glassmorphism sutil) --- */
+.contenedor-modal-seleccion {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  width: 100%;
+  max-width: 1100px; /* Ligeramente más ancho para acomodar 5 tarjetas cómodamente */
+  border-radius: 32px;
+  padding: 48px;
+  box-shadow: 0 25px 50px -12px rgba(3, 47, 64, 0.08);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* --- Encabezado --- */
+.encabezado-seleccion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 48px;
+  gap: 24px;
+}
+
+.titulos-seleccion {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.titulos-seleccion h2 {
+  font-family: var(--fuente-titulos, 'Segoe UI', sans-serif);
+  font-size: 24px;
+  color: var(--cobalto, #032F40);
+  margin-bottom: 6px;
+}
+
+.titulos-seleccion .texto-ayuda {
+  color: var(--texto-gris, #64748b);
+  font-size: 14px;
+}
+
+.boton-icono-circular {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color, #e2e8f0);
+  background: transparent;
+  color: var(--cobalto, #032F40);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: var(--transicion, all 0.3s ease);
+}
+
+.boton-icono-circular:hover,
+.boton-icono-circular:focus-visible {
+  background: var(--cielo-claro, #f0f8fa);
+  border-color: var(--cielo, #0ea5e9);
+  color: var(--cielo, #0ea5e9);
+  outline: none;
+}
+
+.boton-solido.secundario {
+  background: #F8FAFC;
+  color: var(--cobalto, #032F40);
+  border: 1px solid var(--border-color, #e2e8f0);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transicion, all 0.3s ease);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.boton-solido.secundario:hover {
+  background: var(--cielo-claro, #f0f8fa);
+  color: var(--cielo, #0ea5e9);
+}
+
+/* --- Cuadrícula de Tarjetas (Bento Grid · 5 columnas) --- */
+.cuadricula-categorias-inventario {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.tarjeta-categoria {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 24px;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  aspect-ratio: 4 / 5;
+  justify-content: center;
+  text-decoration: none;
+}
+
+/* 🚨 ARQUITECTURA JS: Previene que los iconos o textos bloqueen el clic del botón en la SPA */
+.tarjeta-categoria * {
+  pointer-events: none;
+}
+
+/* Contenedor del Icono con Posicionamiento Relativo (Para la Alerta) */
+.contenedor-icono-categoria {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #F8FAFC;
+  border: 1px solid var(--border-color, #e2e8f0);
+  display: grid;
+  place-items: center;
+  margin-bottom: 20px;
+  color: var(--cobalto, #032F40);
+  transition: var(--transicion, all 0.3s ease);
+  position: relative;
+}
+
+.contenedor-icono-categoria .material-symbols-rounded {
+  font-size: 28px;
+}
+
+.nombre-categoria {
+  font-family: var(--fuente-titulos, sans-serif);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--cobalto, #032F40);
+  margin-bottom: 8px;
+  transition: var(--transicion, all 0.3s ease);
+}
+
+.descripcion-categoria {
+  font-family: var(--fuente-cuerpo, sans-serif);
+  font-size: 11px;
+  color: var(--texto-gris, #64748b);
+  line-height: 1.4;
+  transition: var(--transicion, all 0.3s ease);
+}
+
+/* --- 🚨 LÓGICA DE NEGOCIO: Insignia de Alerta de Stock Clínico --- */
+.insignia-alerta-stock {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  background-color: #EF4444;
+  border-radius: 50%;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.4);
+  animation: latido-urgencia 2s infinite;
+}
+
+.insignia-alerta-stock.oculto {
+  display: none !important;
+}
+
+@keyframes latido-urgencia {
+  0%   { transform: scale(1);   box-shadow: 0 0 0 0   rgba(239, 68, 68, 0.7); }
+  70%  { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);   }
+  100% { transform: scale(1);   box-shadow: 0 0 0 0   rgba(239, 68, 68, 0);   }
+}
+
+/* --- Estados Hover y Activo (tarjetas de inventario) --- */
+.tarjeta-categoria:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 20px -3px rgba(3, 47, 64, 0.08);
+  border-color: var(--naranja, #F27405);
+}
+
+.tarjeta-categoria.activa,
+.tarjeta-categoria:focus-visible {
+  background: var(--naranja, #F27405);
+  border-color: var(--naranja, #F27405);
+  outline: none;
+  transform: translateY(-6px);
+  box-shadow: 0 20px 25px -5px rgba(242, 116, 5, 0.25);
+}
+
+.tarjeta-categoria.activa .contenedor-icono-categoria,
+.tarjeta-categoria:focus-visible .contenedor-icono-categoria {
+  background: #FFFFFF;
+  border-color: #FFFFFF;
+  color: var(--naranja, #F27405);
+}
+
+.tarjeta-categoria.activa .nombre-categoria,
+.tarjeta-categoria.activa .descripcion-categoria,
+.tarjeta-categoria:focus-visible .nombre-categoria,
+.tarjeta-categoria:focus-visible .descripcion-categoria {
+  color: #FFFFFF;
+}
+
+.tarjeta-categoria.activa .insignia-alerta-stock {
+  border-color: var(--naranja, #F27405);
+}
+
+/* ── Tarjeta Herramienta (tema cobalto) ── */
+.tarjeta-herramienta {
+  background: var(--cobalto, #032F40);
+  border-color: var(--cobalto, #032F40);
+  box-shadow: 0 4px 16px -4px rgba(3, 47, 64, 0.18);
+}
+
+.tarjeta-herramienta .contenedor-icono-categoria {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+}
+
+.tarjeta-herramienta .nombre-categoria,
+.tarjeta-herramienta .descripcion-categoria {
+  color: #FFFFFF;
+}
+
+.tarjeta-herramienta .descripcion-categoria {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Hover cobalto: aclara ligeramente el fondo */
+.tarjeta-herramienta:hover {
+  background: #054060;
+  border-color: #054060;
+  box-shadow: 0 12px 24px -4px rgba(3, 47, 64, 0.28);
+}
+
+.tarjeta-herramienta:hover .contenedor-icono-categoria {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Estado activo cobalto: mantiene el color pero resalta el icono con naranja */
+.tarjeta-herramienta.activa,
+.tarjeta-herramienta:focus-visible {
+  background: #054060;
+  border-color: var(--naranja, #F27405);
+  outline: none;
+  box-shadow: 0 20px 28px -5px rgba(3, 47, 64, 0.32);
+}
+
+.tarjeta-herramienta.activa .contenedor-icono-categoria,
+.tarjeta-herramienta:focus-visible .contenedor-icono-categoria {
+  background: var(--naranja, #F27405);
+  border-color: var(--naranja, #F27405);
+  color: #FFFFFF;
+}
+
+.tarjeta-herramienta.activa .nombre-categoria,
+.tarjeta-herramienta.activa .descripcion-categoria,
+.tarjeta-herramienta:focus-visible .nombre-categoria,
+.tarjeta-herramienta:focus-visible .descripcion-categoria {
+  color: #FFFFFF;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1100px) {
+  .cuadricula-categorias-inventario {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .cuadricula-categorias-inventario {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .modulo-seleccion-inventario {
+    padding: 12px;
+  }
+  .contenedor-modal-seleccion {
+    padding: 24px;
+    border-radius: 20px;
+  }
+  .encabezado-seleccion {
+    flex-direction: column;
+    text-align: center;
+  }
+  .cuadricula-categorias-inventario {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .tarjeta-categoria {
+    aspect-ratio: auto;
+    padding: 20px 24px;
+    flex-direction: row;
+    text-align: left;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+  .contenedor-icono-categoria {
+    margin-bottom: 0;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+  }
+  .titulos-tarjeta-movil {
+    display: flex;
+    flex-direction: column;
+  }
+  .nombre-categoria {
+    margin-bottom: 4px;
+  }
+}

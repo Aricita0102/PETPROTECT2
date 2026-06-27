@@ -1,0 +1,817 @@
+<div class="container" id="modulo-expediente-maestro">
+
+
+    <div class="submenu-superior">
+      <div class="submenu-left" id="acciones-contextuales">
+        <a href="#" id="btn-imprimir-expediente">Imprimir</a>
+        <span class="separador">·</span>
+        <a href="#" id="btn-exportar-pdf">Exportar PDF</a>
+        <span class="separador">·</span>
+        <a href="#" id="btn-compartir-whatsapp">Compartir con Tutor</a>
+      </div>
+      <div class="submenu-tabs" id="navegacion-pestanas">
+        <a href="#" class="tab" data-target="seccion-resumen">Resumen</a>
+        <a href="#" class="tab active" data-target="seccion-historial">Historial Clínico</a>
+        <a href="#" class="tab" data-target="seccion-estudios">Estudios e Imágenes</a>
+        <a href="#" class="tab" data-target="seccion-documentos">Documentos</a>
+      </div>
+    </div>
+
+    <section id="seccion-resumen" class="vista-dinamica" style="display: none;">
+      
+      <div class="dashboard-header-card">
+        <div class="patient-avatar">
+          <img id="res-avatar" src="" alt="Foto" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: none;">
+          <span id="res-avatar-icon" class="material-symbols-rounded" style="font-size: 32px; color: #94a3b8;">pets</span>
+        </div>
+        
+        <div class="patient-main-info">
+          <div class="patient-name-row">
+            <h1 id="res-nombre">Cargando...</h1>
+            <div class="patient-tags" id="res-tags">
+              <!-- Tags injected via JS -->
+            </div>
+          </div>
+          
+          <div class="patient-metrics">
+            <div class="metric-item">
+              <span class="metric-label">Edad</span>
+              <span class="metric-value" id="res-edad">-</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">Sexo</span>
+              <span class="metric-value" id="res-sexo">-</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">Tutor</span>
+              <span class="metric-value" id="res-tutor">-</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">ID / Microchip</span>
+              <span class="metric-value" id="res-microchip">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn-secundario" id="btn-guia-historial" style="border:1px solid #cbd5e1; background:transparent; color:#475569; padding:10px 16px; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:6px; font-weight:700; font-family:'Montserrat',sans-serif;">
+            <span class="material-symbols-rounded">help</span> Guía de uso
+          </button>
+          <button class="btn-orange" id="btn-agendar-cita-resumen">Agendar Cita</button>
+          <button class="btn-outline" id="btn-editar-perfil-resumen">Editar Perfil</button>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+          <div class="card-header-flex">
+            <h2>Medicina Preventiva</h2>
+          </div>
+          
+          <div id="res-preventiva-container" style="display: flex; flex-direction: column; gap: 8px; padding: 15px;">
+            <!-- Inyectado por JS -->
+            <div style="text-align: center; color: var(--gris-texto-mutado); padding: 20px;">Sin registros preventivos</div>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="card-header-flex">
+            <h2>Condiciones y Alertas</h2>
+            <a href="#" class="link-view-all" onclick="document.querySelector('[data-target=\'seccion-historial\']').click(); return false;">Ver Historial</a>
+          </div>
+          
+          <div id="res-condiciones-container">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="card-header-flex">
+            <h2>Última Visita</h2>
+            <a href="#" class="link-view-all" onclick="document.querySelector('[data-target=\'seccion-historial\']').click(); return false;">Ir al Historial</a>
+          </div>
+          
+          <div class="last-visit-box" id="res-ultima-visita-box">
+            <!-- Injected via JS -->
+            <div style="text-align: center; color: var(--gris-texto-mutado); padding: 20px;">Sin visitas registradas</div>
+          </div>
+        </div>
+
+        <div class="dashboard-card span-2">
+          <div class="card-header-flex">
+            <h2>Evolución de Peso y Constantes</h2>
+          </div>
+          
+          <div class="chart-container" style="position: relative; height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <div class="chart-overlay-value" id="res-peso-actual" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+              - <span>kg (Actual)</span>
+            </div>
+            <canvas id="grafica-peso-resumen" style="width: 100%; height: 100%;"></canvas>
+            <div id="res-peso-vacio" style="display: none; color: var(--gris-texto-mutado); font-size: 13px; margin-top: 20px;">
+              No hay suficientes registros de peso.
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="card-header-flex">
+            <h2>Dieta y Nutrición</h2>
+            <a href="#" class="link-view-all" onclick="document.getElementById('btn-editar-identidad').click(); return false;">Editar</a>
+          </div>
+          
+          <div id="res-dieta-container">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section id="seccion-historial" class="vista-dinamica">
+      <div class="expediente-layout">
+        
+        <aside class="panel-identidad">
+          
+          <div class="card">
+            <div class="card-header-flex">
+              <h2>Identidad del Paciente</h2>
+              <a href="#" class="link-edit" id="btn-editar-identidad" onclick="if(window.abrirModalGlobal) window.abrirModalGlobal('identidad'); else console.log('window.abrirModalGlobal no existe'); return false;">Editar</a>
+            </div>
+            
+            <div class="profile-photo-container" id="btn-cambiar-foto" style="cursor: pointer; position: relative; overflow: hidden; border-radius: 6px;">
+              <img id="ui-foto-paciente" src="https://placehold.co/400x400/f1f5f9/94a3b8?text=Subir+Foto" alt="Foto Paciente" style="width: 100%; height: 100%; object-fit: cover;">
+              <div style="position: absolute; bottom: 0; background: rgba(3, 47, 64, 0.75); width: 100%; text-align: center; color: white; padding: 6px 0; font-size: 11px; font-weight: 600;">
+                <span class="material-symbols-rounded" style="font-size: 14px; vertical-align: middle;">photo_camera</span> Cambiar Foto
+              </div>
+              <input type="file" id="input-foto-paciente" accept="image/png, image/jpeg, image/jpg" style="display: none;">
+            </div>
+
+            <div class="data-grid">
+              <div class="info-block"><label>Nombre</label><p id="ui-nombre-paciente">Cargando...</p></div>
+              <div class="info-block"><label>Alias</label><p id="ui-alias-paciente">-</p></div>
+              <div class="info-block"><label>Especie</label><p id="ui-especie-paciente">-</p></div>
+              <div class="info-block"><label>Raza</label><p id="ui-raza-paciente">-</p></div>
+              <div class="info-block"><label>Sexo</label><p id="ui-sexo-paciente">-</p></div>
+              <div class="info-block"><label>Reproductivo</label><p id="ui-reproductivo-paciente">-</p></div>
+              <div class="info-block"><label>Fecha Nacimiento</label><p id="ui-nacimiento-paciente">-</p></div>
+              <div class="info-block"><label>Edad</label><p id="ui-edad-paciente">-</p></div>
+              <div class="info-block"><label>Color</label><p id="ui-color-paciente">-</p></div>
+              <div class="info-block"><label>Señas Particulares</label><p id="ui-senas-paciente">-</p></div>
+            </div>
+
+            <div class="sub-section-title">Identificadores Oficiales</div>
+            <div class="data-grid single-col">
+              <div class="info-block"><label>Microchip</label><p id="ui-microchip-paciente">-</p></div>
+              <div class="info-block"><label>SINIIGA / Tatuaje</label><p id="ui-siniiga-paciente">-</p></div>
+              <div class="info-block"><label>Pedigrí (FCM)</label><p id="ui-pedigri-paciente">-</p></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header-flex">
+              <h2>Datos del Tutor</h2>
+              <a href="#" class="link-edit" id="btn-editar-tutor">Editar</a>
+            </div>
+            <div class="data-grid single-col">
+              <div class="info-block"><label>Nombre Completo</label><p id="ui-tutor-nombre">Cargando...</p></div>
+              <div class="info-block"><label>Teléfono Principal / WhatsApp</label><p id="ui-tutor-telefono">-</p></div>
+              <div class="info-block"><label>Correo Electrónico</label><p id="ui-tutor-correo">-</p></div>
+              <div class="info-block"><label>Dirección</label><p id="ui-tutor-direccion">-</p></div>
+              <div class="info-block"><label>Contacto de Emergencia</label><p id="ui-tutor-emergencia">-</p></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header-flex">
+              <h2>Alertas Médicas</h2>
+              <a href="#" class="link-edit" id="btn-editar-alertas">Editar</a>
+            </div>
+            <div class="data-grid single-col">
+              <div class="info-block"><label>Alergias Conocidas</label><p id="ui-alergias-paciente" class="alert-text">Cargando...</p></div>
+              <div class="info-block"><label>Enfermedades Crónicas</label><p id="ui-enfermedades-paciente">Cargando...</p></div>
+              <div class="info-block"><label>Medicación Actual</label><p id="ui-medicacion-paciente">Cargando...</p></div>
+              <div class="info-block"><label>Cirugías Previas / Hospitalizaciones</label><p id="ui-cirugias-paciente">Cargando...</p></div>
+              <div class="info-block"><label>Discapacidades</label><p id="ui-discapacidades-paciente">Cargando...</p></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header-flex">
+              <h2>Manejo Integral</h2>
+              <a href="#" class="link-edit" id="btn-editar-manejo">Editar</a>
+            </div>
+            
+            <div class="sub-section-title">Comportamiento y Manejo</div>
+            <div class="data-grid">
+              <div class="info-block"><label>Temperamento</label><p id="ui-temperamento-paciente">Cargando...</p></div>
+              <div class="info-block"><label>Ansiedad / Miedo</label><p id="ui-ansiedad-paciente">Cargando...</p></div>
+              <div class="info-block"><label>Agresividad</label><p id="ui-agresividad-paciente">Cargando...</p></div>
+            </div>
+
+            <div class="data-grid single-col" style="margin-top: 12px;">
+              <div class="info-block"><label>Obs. de Manejo</label><p id="ui-manejo-paciente">Cargando...</p></div>
+            </div>
+
+            <div class="sub-section-title">Nutrición y Salud Reproductiva</div>
+            <div class="data-grid">
+              <div class="info-block"><label>Dieta y Marca</label><p id="ui-dieta-paciente">Cargando...</p></div>
+              <div class="info-block"><label>Frecuencia y Restricciones</label><p id="ui-frecuencia-dieta">Cargando...</p></div>
+              <div class="info-block"><label>Esterilización</label><p id="ui-esterilizacion-paciente">Cargando...</p></div>
+              <div class="info-block"><label>Cruzas / Partos</label><p id="ui-cruzas-paciente">Cargando...</p></div>
+            </div>
+          </div>
+
+        </aside>
+
+        <main class="contenedor-timeline">
+          
+          <div class="history-top-bar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; width: 100%; box-sizing: border-box; overflow: hidden;">
+            <h1 style="margin: 0;">Registro Clínico</h1>
+            <div class="filter-buttons" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+             <button type="button" id="btn-nueva-consulta-expediente" class="btn-orange">Añadir Consulta</button>
+              <button class="btn-orange" id="btn-anadir-estudio-hist">Añadir Estudio</button>
+              <button class="btn-orange" id="btn-nueva-vacuna-hist">Registrar Vacuna</button>
+            </div>
+          </div>
+
+          <div class="timeline-wrapper" id="timeline-historial-container">
+
+            <div class="timeline-row">
+              <div class="timeline-date-label">2024</div>
+              <div class="timeline-node" style="width: 18px; height: 18px; background: #cbd5e1; border: 4px solid var(--blanco-puro); box-shadow: 0 0 0 2px var(--gris-lineas);"></div>
+              <div class="timeline-banner">Registros del año en curso</div>
+            </div>
+
+            <div class="timeline-row">
+              <div class="timeline-date-label">12 Jun</div>
+              <div class="timeline-node"></div>
+              <div class="timeline-card">
+                <h3>Estudio de Imagenología <span class="tag tag-estudio">Estudio</span></h3>
+                <p class="card-meta">Atendido por: <strong>MVZ. Carlos Rivera</strong> | Tipo: <strong>Radiografía Digital</strong></p>
+                <div class="card-notes">
+                  <strong>Observaciones del estudio:</strong> Se realizan 2 vistas (LL y VD) de articulación coxofemoral. Se observa leve esclerosis subcondral en acetábulo derecho, compatible con inicio de enfermedad articular degenerativa (Osteoartritis). Resto de estructuras óseas sin alteraciones evidentes.
+                </div>
+                <div class="attachments-area">
+                  <a href="#" class="file-badge"><span class="file-type dicom">DICOM</span> RX_Pelvis_VD.dcm</a>
+                  <a href="#" class="file-badge"><span class="file-type jpg">JPG</span> RX_Pelvis_LL.jpg</a>
+                  <a href="#" class="file-badge"><span class="file-type pdf">PDF</span> Reporte_Radiologico.pdf</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="timeline-row">
+              <div class="timeline-date-label">10 Jun</div>
+              <div class="timeline-node"></div>
+              <div class="timeline-card">
+                <h3>Consulta por Claudicación <span class="tag tag-consulta">Consulta</span></h3>
+                <p class="card-meta">Atendido por: <strong>MVZ. Ana Sofia G.</strong> | Motivo: <strong>Dolor en miembro pélvico derecho</strong></p>
+                <div class="card-notes">
+                  <strong>Anamnesis y Exploración:</strong> Tutor reporta cojera intermitente después de paseos largos. A la palpación, hay crepitación leve en cadera derecha y respuesta al dolor al extender la extremidad. Constantes vitales normales. <br><br>
+                  <strong>Diagnóstico presuntivo:</strong> Osteoartritis coxofemoral. Se indica estudio radiográfico.<br>
+                  <strong>Tratamiento Médico (Receta):</strong> Meloxicam susp. oral 1.5mg, dar 1 ml cada 24h por 5 días. Reposo moderado.
+                </div>
+                <div class="attachments-area">
+                  <a href="#" class="file-badge"><span class="file-type pdf">PDF</span> Receta_Medica_10Jun.pdf</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="timeline-row">
+              <div class="timeline-date-label">05 Ene</div>
+              <div class="timeline-node"></div>
+              <div class="timeline-card">
+                <h3>Perfil Pre-Quirúrgico (Laboratorio) <span class="tag tag-estudio">Estudio</span></h3>
+                <p class="card-meta">Atendido por: <strong>Laboratorio Central Vet</strong> | Tipo: <strong>Hemograma y Química Sanguínea (6 elem)</strong></p>
+                <div class="card-notes">
+                  <strong>Observaciones:</strong> Resultados dentro de los rangos de referencia normales. Paciente apto para procedimiento anestésico. Función hepática y renal óptimas. Citología de placa dental revela bacterias mixtas.
+                </div>
+                <div class="attachments-area">
+                  <a href="#" class="file-badge"><span class="file-type pdf">PDF</span> Resultados_Sangre.pdf</a>
+                  <a href="#" class="file-badge"><span class="file-type docx">DOCX</span> Notas_Citologia.docx</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="timeline-row">
+              <div class="timeline-date-label">15 Nov<br><span style="font-size:10px; font-weight:normal">2023</span></div>
+              <div class="timeline-node"></div>
+              <div class="timeline-card">
+                <h3>Profilaxis y Medicina Preventiva <span class="tag tag-vacuna">Preventiva</span></h3>
+                <p class="card-meta">Atendido por: <strong>MVZ. Ana Sofia G.</strong> | Procedimientos Múltiples</p>
+                <div class="card-notes">
+                  <strong>Vacunación:</strong> Refuerzo Anual Sextuple (Parvovirus, Moquillo, Hepatitis, Leptospira, Parainfluenza, Adenovirus). Lote: Vax-8812.<br>
+                  <strong>Vacunación:</strong> Rabia 1 año. Lote: RB-992.<br>
+                  <strong>Desparasitación Interna:</strong> Praziquantel + Pirantel + Febantel (1 pastilla x 10kg).<br>
+                  <strong>Control Ectoparásitos:</strong> Bravecto (Fluralaner) masticable administrado en clínica.
+                </div>
+                <div class="attachments-area">
+                  <a href="#" class="file-badge"><span class="file-type png">PNG</span> Cartilla_Actualizada_Foto.png</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </main>
+
+      </div>
+    </section>
+
+    <section id="seccion-estudios" class="vista-dinamica" style="display: none;">
+      <div class="expediente-layout">
+
+        <aside class="panel-filtros">
+          <div class="card">
+            <div class="card-header-flex">
+              <h2>Filtros de Búsqueda</h2>
+            </div>
+            
+            <div class="filter-group">
+              <div class="filter-title">Rango de Fechas</div>
+              <input type="date" id="filtro-estudio-inicio" class="date-input" style="width: 100%; padding: 8px; border: 1px solid var(--gris-lineas); border-radius: 4px; margin-bottom: 10px;" placeholder="Fecha inicio">
+              <input type="date" id="filtro-estudio-fin" class="date-input" style="width: 100%; padding: 8px; border: 1px solid var(--gris-lineas); border-radius: 4px; margin-bottom: 10px;" placeholder="Fecha fin">
+            </div>
+
+            <div class="filter-group">
+              <div class="filter-title">Modalidad de Imagen</div>
+              <div class="checkbox-item"><input type="checkbox" class="filtro-estudio-cb" value="Radiografía" checked><label>Radiografías</label></div>
+              <div class="checkbox-item"><input type="checkbox" class="filtro-estudio-cb" value="Ultrasonido" checked><label>Ultrasonidos</label></div>
+              <div class="checkbox-item"><input type="checkbox" class="filtro-estudio-cb" value="Resonancia Magnética" checked><label>Resonancias Magnéticas</label></div>
+              <div class="checkbox-item"><input type="checkbox" class="filtro-estudio-cb" value="Tomografía (TAC)" checked><label>Tomografías (TAC)</label></div>
+            </div>
+
+            <div class="filter-group">
+              <div class="filter-title">Patología Clínica</div>
+              <div class="checkbox-item"><input type="checkbox" class="filtro-estudio-cb" value="Laboratorio" checked><label>Laboratorio (Sangre/Orina)</label></div>
+              <div class="checkbox-item"><input type="checkbox" class="filtro-estudio-cb" value="Citología" checked><label>Citologías</label></div>
+              <div class="checkbox-item"><input type="checkbox" class="filtro-estudio-cb" value="Histopatología" checked><label>Histopatología</label></div>
+            </div>
+          </div>
+        </aside>
+
+        <main class="contenedor-galeria">
+          
+          <div class="history-top-bar">
+            <h1>Registro de Estudios Clínicos</h1>
+            <button id="btn-registrar-nuevo-estudio" class="btn-orange">
+              <span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle; margin-right:6px;">add_circle</span>
+              Registrar Nueva Orden
+            </button>
+          </div>
+
+          <!-- TABLA DE ESTUDIOS (poblada dinámicamente) -->
+          <div id="contenedor-tabla-estudios" style="width:100%;">
+            <!-- JS inyecta la tabla aquí -->
+          </div>
+
+          <!-- AREA LEGACY eliminada - solo se mantiene el div de cierre -->
+          <div style="display:none;" class="studies-grid">
+
+            <div class="study-card" style="background-color: var(--blanco-puro); border: 1px solid var(--gris-lineas); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column;">
+              <div class="study-preview x-ray" style="height: 160px; background-color: #1e293b; color: var(--blanco-puro); display: flex; align-items: center; justify-content: center; position: relative;">
+                <span class="study-type-tag" style="position: absolute; top: 10px; right: 10px; background-color: var(--cobalto); padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">Radiografía</span>
+                [Vista Previa Placa]
+              </div>
+              <div class="study-content" style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column;">
+                <div class="study-header-flex" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                  <h3 class="study-title" style="font-size: 15px; font-weight: 700; color: var(--cobalto);">Radiografía Coxofemoral (VD y LL)</h3>
+                  <span class="study-date" style="font-size: 12px; color: var(--gris-texto-mutado); font-weight: 600; white-space: nowrap; margin-left: 10px;">12 Jun 2024</span>
+                </div>
+                <p class="study-meta" style="font-size: 12px; color: var(--gris-texto-mutado); margin-bottom: 12px;">Solicitado por: <strong style="color: var(--cobalto);">MVZ. Carlos Rivera</strong></p>
+                <div class="study-obs" style="background-color: var(--gris-fondo-sutil); padding: 10px; border-radius: 4px; font-size: 12px; margin-bottom: 15px; flex-grow: 1;">
+                  Esclerosis subcondral leve en acetábulo derecho, congruencia articular conservada. Compatible con inicio de enfermedad articular degenerativa.
+                </div>
+                <div class="attachments-area" style="border-top: 1px solid var(--gris-lineas); padding-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                  <a href="#" class="file-badge"><span class="file-type dicom">DICOM</span> RX_Pelvis_VD.dcm</a>
+                  <a href="#" class="file-badge"><span class="file-type jpg">JPG</span> RX_Pelvis.jpg</a>
+                  <a href="#" class="file-badge"><span class="file-type pdf">PDF</span> Reporte.pdf</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="study-card" style="background-color: var(--blanco-puro); border: 1px solid var(--gris-lineas); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column;">
+              <div class="study-preview x-ray" style="height: 160px; background-color: #1e293b; color: var(--blanco-puro); display: flex; align-items: center; justify-content: center; position: relative;">
+                <span class="study-type-tag" style="position: absolute; top: 10px; right: 10px; background-color: var(--cobalto); padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">Ultrasonido</span>
+                [Vista Previa Eco]
+              </div>
+              <div class="study-content" style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column;">
+                <div class="study-header-flex" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                  <h3 class="study-title" style="font-size: 15px; font-weight: 700; color: var(--cobalto);">Eco Abdominal Completo</h3>
+                  <span class="study-date" style="font-size: 12px; color: var(--gris-texto-mutado); font-weight: 600; white-space: nowrap; margin-left: 10px;">03 Mar 2024</span>
+                </div>
+                <p class="study-meta" style="font-size: 12px; color: var(--gris-texto-mutado); margin-bottom: 12px;">Realizado por: <strong style="color: var(--cobalto);">Dra. Elena Gómez</strong></p>
+                <div class="study-obs" style="background-color: var(--gris-fondo-sutil); padding: 10px; border-radius: 4px; font-size: 12px; margin-bottom: 15px; flex-grow: 1;">
+                  Órganos abdominales sin alteraciones estructurales evidentes. Vejiga con moderado sedimento hiperecoico en suspensión. Resto s/a.
+                </div>
+                <div class="attachments-area" style="border-top: 1px solid var(--gris-lineas); padding-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                  <a href="#" class="file-badge"><span class="file-type png">PNG</span> Eco_Vejiga.png</a>
+                  <a href="#" class="file-badge"><span class="file-type pdf">PDF</span> USG_Abdomen.pdf</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="study-card" style="background-color: var(--blanco-puro); border: 1px solid var(--gris-lineas); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column;">
+              <div class="study-preview lab" style="height: 160px; background-color: #f1f5f9; color: var(--gris-texto-mutado); display: flex; align-items: center; justify-content: center; position: relative;">
+                <span class="study-type-tag" style="position: absolute; top: 10px; right: 10px; background-color: var(--cobalto); color: var(--blanco-puro); padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">Laboratorio</span>
+                [Documentos Analíticos]
+              </div>
+              <div class="study-content" style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column;">
+                <div class="study-header-flex" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                  <h3 class="study-title" style="font-size: 15px; font-weight: 700; color: var(--cobalto);">Perfil Integral + EGO</h3>
+                  <span class="study-date" style="font-size: 12px; color: var(--gris-texto-mutado); font-weight: 600; white-space: nowrap; margin-left: 10px;">05 Ene 2024</span>
+                </div>
+                <p class="study-meta" style="font-size: 12px; color: var(--gris-texto-mutado); margin-bottom: 12px;">Laboratorio: <strong style="color: var(--cobalto);">VetLab Central</strong></p>
+                <div class="study-obs" style="background-color: var(--gris-fondo-sutil); padding: 10px; border-radius: 4px; font-size: 12px; margin-bottom: 15px; flex-grow: 1;">
+                  Hemograma s/a. Bioquímica muestra elevación leve de ALT (120 U/L). Examen general de orina indica cristales de estruvita (+).
+                </div>
+                <div class="attachments-area" style="border-top: 1px solid var(--gris-lineas); padding-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                  <a href="#" class="file-badge"><span class="file-type pdf">PDF</span> Resultados_Sangre.pdf</a>
+                  <a href="#" class="file-badge"><span class="file-type docx">DOCX</span> Interpretacion.docx</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="study-card" style="background-color: var(--blanco-puro); border: 1px solid var(--gris-lineas); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column;">
+              <div class="study-preview lab" style="height: 160px; background-color: #f1f5f9; color: var(--gris-texto-mutado); display: flex; align-items: center; justify-content: center; position: relative;">
+                <span class="study-type-tag" style="position: absolute; top: 10px; right: 10px; background-color: var(--cobalto); color: var(--blanco-puro); padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">Citología</span>
+                [Microscopía]
+              </div>
+              <div class="study-content" style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column;">
+                <div class="study-header-flex" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                  <h3 class="study-title" style="font-size: 15px; font-weight: 700; color: var(--cobalto);">BAAF Masa Cutánea Lomo</h3>
+                  <span class="study-date" style="font-size: 12px; color: var(--gris-texto-mutado); font-weight: 600; white-space: nowrap; margin-left: 10px;">10 Sep 2023</span>
+                </div>
+                <p class="study-meta" style="font-size: 12px; color: var(--gris-texto-mutado); margin-bottom: 12px;">Solicitado por: <strong style="color: var(--cobalto);">MVZ. Ana Sofia G.</strong></p>
+                <div class="study-obs" style="background-color: var(--gris-fondo-sutil); padding: 10px; border-radius: 4px; font-size: 12px; margin-bottom: 15px; flex-grow: 1;">
+                  Abundantes adipocitos maduros en sabana, sin criterios de malignidad. Diagnóstico: Lipoma benigno.
+                </div>
+                <div class="attachments-area" style="border-top: 1px solid var(--gris-lineas); padding-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                  <a href="#" class="file-badge"><span class="file-type jpg">JPG</span> Frotis_40x.jpg</a>
+                  <a href="#" class="file-badge"><span class="file-type pdf">PDF</span> Patologia_Rep.pdf</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="study-card" style="background-color: var(--blanco-puro); border: 1px solid var(--gris-lineas); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column;">
+              <div class="study-preview x-ray" style="height: 160px; background-color: #1e293b; color: var(--blanco-puro); display: flex; align-items: center; justify-content: center; position: relative;">
+                <span class="study-type-tag" style="position: absolute; top: 10px; right: 10px; background-color: var(--cobalto); padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">Tomografía (TAC)</span>
+                [Visor 3D]
+              </div>
+              <div class="study-content" style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column;">
+                <div class="study-header-flex" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                  <h3 class="study-title" style="font-size: 15px; font-weight: 700; color: var(--cobalto);">TAC Cráneo Simple y Contraste</h3>
+                  <span class="study-date" style="font-size: 12px; color: var(--gris-texto-mutado); font-weight: 600; white-space: nowrap; margin-left: 10px;">15 Ago 2022</span>
+                </div>
+                <p class="study-meta" style="font-size: 12px; color: var(--gris-texto-mutado); margin-bottom: 12px;">Centro: <strong style="color: var(--cobalto);">NeuroVet Imaging</strong></p>
+                <div class="study-obs" style="background-color: var(--gris-fondo-sutil); padding: 10px; border-radius: 4px; font-size: 12px; margin-bottom: 15px; flex-grow: 1;">
+                  Estudio realizado por episodios convulsivos. No se observan masas ocupantes de espacio, desviación de línea media, ni realce anómalo.
+                </div>
+                <div class="attachments-area" style="border-top: 1px solid var(--gris-lineas); padding-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                  <a href="#" class="file-badge"><span class="file-type dicom">DICOM</span> Volume_Cranium.dcm</a>
+                  <a href="#" class="file-badge"><span class="file-type pdf">PDF</span> TAC_Report.pdf</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="study-card" style="background-color: var(--blanco-puro); border: 1px solid var(--gris-lineas); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column;">
+              <div class="study-preview lab" style="height: 160px; background-color: #f1f5f9; color: var(--gris-texto-mutado); display: flex; align-items: center; justify-content: center; position: relative;">
+                <span class="study-type-tag" style="position: absolute; top: 10px; right: 10px; background-color: var(--cobalto); color: var(--blanco-puro); padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">Histopatología</span>
+                [Biopsia]
+              </div>
+              <div class="study-content" style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column;">
+                <div class="study-header-flex" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                  <h3 class="study-title" style="font-size: 15px; font-weight: 700; color: var(--cobalto);">Biopsia Escisional - Nódulo</h3>
+                  <span class="study-date" style="font-size: 12px; color: var(--gris-texto-mutado); font-weight: 600; white-space: nowrap; margin-left: 10px;">20 Oct 2021</span>
+                </div>
+                <p class="study-meta" style="font-size: 12px; color: var(--gris-texto-mutado); margin-bottom: 12px;">Patólogo: <strong style="color: var(--cobalto);">Dr. F. Ruiz</strong></p>
+                <div class="study-obs" style="background-color: var(--gris-fondo-sutil); padding: 10px; border-radius: 4px; font-size: 12px; margin-bottom: 15px; flex-grow: 1;">
+                  Mastocitoma cutáneo grado I (Patnaik) / Bajo grado (Kiupel). Márgenes quirúrgicos limpios (>10mm). Pronóstico favorable.
+                </div>
+                <div class="attachments-area" style="border-top: 1px solid var(--gris-lineas); padding-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                  <a href="#" class="file-badge"><span class="file-type pdf">PDF</span> Histopat_Completo.pdf</a>
+                  <a href="#" class="file-badge"><span class="file-type docx">DOCX</span> Resumen_Tutor.docx</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </main>
+
+      </div>
+    </section>
+
+    <section id="seccion-documentos" class="vista-dinamica" style="display: none;">
+      <div class="expediente-layout">
+
+        <aside class="panel-filtros">
+          <div class="card" style="position: sticky; top: 20px;">
+            <div class="card-header-flex">
+              <h2>Filtros</h2>
+            </div>
+            
+            <div class="filter-group">
+              <div class="filter-title">Buscador</div>
+              <input type="text" id="filtroBuscarDoc" placeholder="Buscar documento..." style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; font-family:'Inter', sans-serif;">
+            </div>
+
+            <div class="filter-group">
+              <div class="filter-title">Categorías</div>
+              <div class="checkbox-item"><input type="checkbox" name="filtroCatDoc" value="Documentación Clínica" checked><label>Documentación Clínica</label></div>
+              <div class="checkbox-item"><input type="checkbox" name="filtroCatDoc" value="Consentimientos" checked><label>Consentimientos</label></div>
+              <div class="checkbox-item"><input type="checkbox" name="filtroCatDoc" value="Certificados" checked><label>Certificados</label></div>
+              <div class="checkbox-item"><input type="checkbox" name="filtroCatDoc" value="Identificación y Legal" checked><label>Identificación y Legal</label></div>
+              <div class="checkbox-item"><input type="checkbox" name="filtroCatDoc" value="Administrativos" checked><label>Administrativos</label></div>
+            </div>
+
+            <div class="filter-group">
+              <div class="filter-title">Periodo</div>
+              <select id="filtroFechaDoc" style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; font-family:'Inter', sans-serif; color:#334155;">
+                <option value="todos">Cualquier fecha</option>
+                <option value="mes">Último mes</option>
+                <option value="seis">Últimos 6 meses</option>
+                <option value="anio">Último año</option>
+              </select>
+            </div>
+          </div>
+        </aside>
+
+        <main style="display:flex; flex-direction:column; gap:20px;">
+          
+          <div class="history-top-bar">
+            <h1>Gestor Documental</h1>
+            <div style="display:flex; gap:10px;">
+              <button class="btn-outline" id="btnDescargarZipDocs" style="display:none;"><span class="material-symbols-rounded">download</span> Descargar ZIP</button>
+              <button class="btn-orange" id="btnAbrirModalNuevoDoc"><span class="material-symbols-rounded">add_circle</span> Nuevo Documento</button>
+            </div>
+          </div>
+
+          <!-- Contadores Bento Grid -->
+          <div class="documentos-bento-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:15px; margin-bottom:10px;">
+            <div class="doc-counter-card" style="background:#fff; padding:15px; border-radius:12px; border:1px solid #e2e8f0; display:flex; flex-direction:column; gap:5px;">
+              <span style="font-size:12px; color:#64748b; font-weight:600;">Documentación Clínica</span>
+              <span style="font-size:24px; color:#032F40; font-weight:700;" id="contadorCat-clinica">0</span>
+            </div>
+            <div class="doc-counter-card" style="background:#fff; padding:15px; border-radius:12px; border:1px solid #e2e8f0; display:flex; flex-direction:column; gap:5px;">
+              <span style="font-size:12px; color:#64748b; font-weight:600;">Consentimientos</span>
+              <span style="font-size:24px; color:#032F40; font-weight:700;" id="contadorCat-consentimientos">0</span>
+            </div>
+            <div class="doc-counter-card" style="background:#fff; padding:15px; border-radius:12px; border:1px solid #e2e8f0; display:flex; flex-direction:column; gap:5px;">
+              <span style="font-size:12px; color:#64748b; font-weight:600;">Certificados</span>
+              <span style="font-size:24px; color:#032F40; font-weight:700;" id="contadorCat-certificados">0</span>
+            </div>
+            <div class="doc-counter-card" style="background:#fff; padding:15px; border-radius:12px; border:1px solid #e2e8f0; display:flex; flex-direction:column; gap:5px;">
+              <span style="font-size:12px; color:#64748b; font-weight:600;">Identidad y Legal</span>
+              <span style="font-size:24px; color:#032F40; font-weight:700;" id="contadorCat-legales">0</span>
+            </div>
+          </div>
+
+          <div class="document-list-container" id="listaDocumentosExpediente" style="min-height: 400px; position:relative;">
+            <div class="loader-spinner" id="loaderDocumentos" style="display:none; margin: 40px auto;"></div>
+            <!-- Los documentos se inyectan dinámicamente aquí -->
+          </div>
+
+        </main>
+      </div>
+    </section>
+
+    <!-- Modal: Nuevo Documento (Subir o Generar) -->
+    <div class="modal-overlay" id="modalNuevoDocumento" style="display: none; position:fixed; inset:0; z-index:99999; background:rgba(3,47,64,0.4); align-items:center; justify-content:center;">
+      <div class="modal-content" style="width:min(900px, 95vw); height:85vh; display:flex; flex-direction:column; background:#fff; border-radius:16px; box-shadow:0 20px 60px rgba(3,47,64,0.2); overflow:hidden; font-family:'Montserrat',sans-serif;">
+        
+        <div class="modal-header" style="padding:18px 24px; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:36px; height:36px; background:#f0f7fa; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                <span class="material-symbols-rounded" style="font-size:20px; color:#032F40;">description</span>
+            </div>
+            <div>
+                <h3 style="margin:0; font-size:15px; font-weight:800; color:#032F40;">Gestor de Documentos</h3>
+                <p style="margin:0; font-size:11px; color:#89C2D9; font-weight:600;">Expediente Clínico</p>
+            </div>
+          </div>
+          <button class="modal-close" id="btnCerrarModalNuevoDoc" style="background:#f1f5f9; border:none; border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#64748b;">
+            <span class="material-symbols-rounded" style="font-size:18px;">close</span>
+          </button>
+        </div>
+
+        <!-- Pestañas internas del Modal -->
+        <div class="modal-tabs" style="display:flex; border-bottom:1px solid #e2e8f0; background:#f8fafc; padding:0 20px;">
+          <button class="doc-tab-btn active" data-doctab="subir" style="padding:15px 20px; border:none; background:none; font-family:'Inter'; font-weight:600; color:#032F40; border-bottom:3px solid #F27405; cursor:pointer;">Subir Archivo</button>
+          <button class="doc-tab-btn" data-doctab="generar" style="padding:15px 20px; border:none; background:none; font-family:'Inter'; font-weight:600; color:#64748b; border-bottom:3px solid transparent; cursor:pointer;">Generar Automático</button>
+        </div>
+
+        <div class="modal-body" style="flex:1; overflow-y:auto; padding:20px;">
+          
+          <!-- TAB: SUBIR ARCHIVO -->
+          <div id="docTab-subir" class="doc-tab-content" style="display:flex; gap:20px; height:100%;">
+            <!-- Formulario (Izq) -->
+            <div style="flex:1; display:flex; flex-direction:column; gap:15px; border-right:1px solid #e2e8f0; padding-right:20px;">
+              <div class="form-group" style="display:flex; flex-direction:column; gap:5px;">
+                <label style="font-weight:600; font-size:13px; color:#334155;">Nombre del Documento *</label>
+                <input type="text" id="nuevoDocNombre" placeholder="Ej: Consentimiento Extracción" style="padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-family:'Inter';">
+              </div>
+              <div class="form-group" style="display:flex; flex-direction:column; gap:5px;">
+                <label style="font-weight:600; font-size:13px; color:#334155;">Categoría *</label>
+                <select id="nuevoDocCategoria" style="padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-family:'Inter';">
+                  <option value="Documentación Clínica">Documentación Clínica</option>
+                  <option value="Consentimientos">Consentimientos</option>
+                  <option value="Certificados">Certificados</option>
+                  <option value="Identificación y Legal">Identificación y Legal</option>
+                  <option value="Administrativos">Administrativos</option>
+                </select>
+              </div>
+              <div class="form-group" style="display:flex; flex-direction:column; gap:5px;">
+                <label style="font-weight:600; font-size:13px; color:#334155;">Fecha del Documento *</label>
+                <input type="date" id="nuevoDocFecha" style="padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-family:'Inter';">
+              </div>
+              <div class="form-group" style="display:flex; flex-direction:column; gap:5px;">
+                <label style="font-weight:600; font-size:13px; color:#334155;">Etiquetas (separadas por coma)</label>
+                <input type="text" id="nuevoDocEtiquetas" placeholder="Ej: Vacunación, Cirugía, Urgencia" style="padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-family:'Inter';">
+              </div>
+              <div class="form-group" style="display:flex; flex-direction:column; gap:5px;">
+                <label style="font-weight:600; font-size:13px; color:#334155;">Observaciones</label>
+                <textarea id="nuevoDocObservaciones" rows="3" placeholder="Notas internas..." style="padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-family:'Inter';"></textarea>
+              </div>
+            </div>
+            
+            <!-- Dropzone (Der) -->
+            <div style="flex:1; display:flex; flex-direction:column; gap:15px;">
+              <div id="dropzoneDocumento" style="flex:1; border:2px dashed #cbd5e1; border-radius:12px; background:#f8fafc; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center; transition:0.2s;">
+                <span class="material-symbols-rounded" style="font-size:48px; color:#94a3b8; margin-bottom:10px;">upload_file</span>
+                <p style="color:#334155; font-weight:600; margin-bottom:5px;">Arrastra tu documento aquí</p>
+                <p style="color:#64748b; font-size:13px; margin-bottom:15px;">PDF, JPG, PNG, DOCX</p>
+                <button class="btn-outline" type="button" onclick="document.getElementById('inputNuevoDocFile').click()" style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; cursor:pointer;">Explorar Archivos</button>
+                <input type="file" id="inputNuevoDocFile" style="display:none;" accept=".pdf,.jpg,.jpeg,.png,.docx">
+              </div>
+              
+              <div id="previewNuevoDoc" style="display:none; padding:15px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; align-items:center; gap:10px;">
+                <span class="material-symbols-rounded" style="color:#16a34a;">check_circle</span>
+                <span id="previewNuevoDocNombre" style="flex:1; font-weight:600; color:#166534; font-size:14px; word-break:break-all;">archivo.pdf</span>
+                <button type="button" id="btnQuitarNuevoDoc" style="background:none; border:none; color:#dc2626; cursor:pointer;"><span class="material-symbols-rounded">delete</span></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: GENERAR AUTOMÁTICO -->
+          <div id="docTab-generar" class="doc-tab-content" style="display:none; height:100%; flex-direction:column; gap:15px;">
+            <div style="display:flex; gap:15px;">
+              <div class="form-group" style="flex:1; display:flex; flex-direction:column; gap:5px;">
+                <label style="font-weight:600; font-size:13px; color:#334155;">Plantilla del Documento</label>
+                <select id="selectPlantillaGenerar" style="padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-family:'Inter';">
+                  <option value="" disabled selected>Selecciona una plantilla...</option>
+                  <option value="receta">Receta Médica</option>
+                  <option value="certificado_antirrabico">Certificado Antirrábico</option>
+                  <option value="certificado_salud">Certificado de Salud</option>
+                  <option value="consentimiento_quirurgico">Consentimiento Quirúrgico</option>
+                  <option value="alta_medica">Alta Médica</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Editor Textarea u Opciones -->
+            <div id="panelGeneradorContenido" style="flex:1; display:flex; flex-direction:column; gap:10px; border:1px solid #e2e8f0; border-radius:8px; background:#f8fafc; padding:15px;">
+              <p style="color:#64748b; text-align:center; margin-top:20px;">Selecciona una plantilla para comenzar a generar.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer" style="padding:15px 20px; border-top:1px solid #e2e8f0; display:flex; justify-content:flex-end; gap:10px; background:#fff; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
+          <button class="btn-outline" id="btnCancelarNuevoDoc" style="padding:10px 20px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; cursor:pointer; font-weight:600;">Cancelar</button>
+          <button class="btn-orange" id="btnGuardarNuevoDoc" style="padding:10px 20px; border:none; border-radius:6px; background:#F27405; color:#fff; cursor:pointer; font-weight:600;">Guardar Documento</button>
+        </div>
+      </div>
+    </div>
+
+    <style>
+        /* Variables heredadas de informacion_producto */
+        :root {
+            --bg-main: #F4F7FE; /* Fondo del sistema de diseño */
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #9ca3af;
+            --cobalto: #032F40;
+            --naranja: #F27405;
+            --cielo: #89C2D9;
+        }
+  
+        /* Estructura del Panel Lateral (Drawer) */
+        .modal-backdrop-premium.modal-lateral-backdrop {
+            position: fixed; inset: 0;
+            background-color: rgba(3, 47, 64, 0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            z-index: 999999; display: none; justify-content: flex-end; align-items: stretch;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-lateral-backdrop.visible { display: flex !important; opacity: 1 !important; visibility: visible !important; }
+        .modal-lateral-panel {
+            width: 500px; max-width: 100vw; height: 100vh; background: #f4f7fe;
+            border-radius: 20px 0 0 20px;
+            transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.12);
+        }
+        .modal-lateral-backdrop.visible .modal-lateral-panel { transform: translateX(0); }
+
+        .modal-header-sticky {
+            background-color: #ffffff;
+            flex-shrink: 0; position: relative;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(3, 47, 64, 0.05);
+            border-radius: 20px 0 0 0;
+        }
+        .boton-cerrar-modal-bento.btn-cerrar-lateral {
+            position: absolute; top: 16px; right: 20px; background: transparent; border: none;
+            border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: #6b7a80; z-index: 1000000; transition: all 0.2s ease;
+        }
+        .boton-cerrar-modal-bento.btn-cerrar-lateral:hover { background: rgba(3, 47, 64, 0.05); color: var(--naranja); transform: rotate(90deg); }
+
+        .breadcrumbs { font-size: 11px; color: rgba(3, 47, 64, 0.6); padding: 20px 24px 0 24px; font-weight: 600; letter-spacing: 0.3px; font-family: var(--fuente-cuerpo); text-transform: uppercase; }
+        .breadcrumbs span { margin: 0 5px; color: var(--naranja); }
+        .product-header { margin: 0; display: flex; align-items: center; padding: 12px 24px 0 24px; }
+
+        /* Área de contenido: ocupa el espacio disponible y permite scroll */
+        .contenido-interno-modal.contenido-scrollable {
+            flex: 1; overflow-y: auto; padding: 20px;
+        }
+        .contenido-interno-modal.contenido-scrollable::-webkit-scrollbar { width: 4px; }
+        .contenido-interno-modal.contenido-scrollable::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+  
+        /* Formulario (Estilo Bento) */
+        .card-formulario { 
+            background-color: var(--bg-card); border: none; border-radius: 20px; padding: 20px; 
+            box-shadow: 0 4px 20px rgba(3, 47, 64, 0.05); /* Sombra suave tipo tarjeta */
+        }
+        /* Convertimos la grid a 1 columna para que quepa bien en los 420px */
+        .info-grid-2col { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        
+        .grupo-campo-edicion { display: flex; flex-direction: column; }
+        .grupo-campo-edicion label { font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; font-family: 'Montserrat', sans-serif; letter-spacing: 0.6px;}
+        .grupo-campo-edicion input, .grupo-campo-edicion select, .grupo-campo-edicion textarea {
+            width: 100%; padding: 11px 14px; border: 1.5px solid var(--border-color); border-radius: 10px; font-family: 'Montserrat', sans-serif; font-size: 14px; color: var(--text-primary);
+            background-color: #ffffff; transition: all 0.2s; box-sizing: border-box; outline: none;
+        }
+        .grupo-campo-edicion input:focus, .grupo-campo-edicion select:focus, .grupo-campo-edicion textarea:focus {
+            border-color: var(--cobalto); box-shadow: 0 0 0 3px rgba(3, 47, 64, 0.1);
+        }
+  
+        /* FOOTER FIJO PARA BOTONES */
+        .modal-footer-sticky {
+            padding: 20px 24px; background-color: var(--bg-card); border-top: 1px solid var(--border-color);
+            display: flex; justify-content: flex-end; gap: 12px; flex-shrink: 0; box-shadow: 0 -4px 10px rgba(0,0,0,0.02);
+            border-radius: 0 0 20px 0; /* Coincidir con la tarjeta contenedora */
+        }
+        .btn { font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; padding: 10px 20px; border-radius: 10px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.2px; }
+        .btn-outline { background-color: rgba(255,255,255,0.1); border: 1px solid var(--border-color); color: var(--text-primary); }
+        .btn-outline:hover { background-color: #f1f5f9; }
+        .btn-primary { background-color: var(--naranja); border: none; color: white; }
+        .btn-primary:hover { background-color: #d96800; }
+        
+        @media (max-width: 768px) {
+            .ventana-modal-bento.grande.modal-lateral-panel {
+                border-radius: 0;
+                width: 100vw;
+            }
+            .modal-footer-sticky {
+                border-radius: 0;
+            }
+        }
+      </style>
+
+    <div class="modal-backdrop-premium modal-lateral-backdrop" id="modal-edicion-expediente" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="ventana-modal-bento grande modal-lateral-panel">
+            
+            <div class="modal-header-sticky">
+                <button class="boton-cerrar-modal-bento btn-cerrar-lateral" id="btn-cerrar-edicion-arriba" aria-label="Cerrar edición">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+                <div class="breadcrumbs">
+                    Expediente Clínico <span>&gt;</span> Edición <span>&gt;</span> <span id="breadcrumb-seccion" style="color: var(--text-primary); font-weight: 600;">Sección</span>
+                </div>
+                <header class="product-header">
+                    <div class="header-title-area">
+                        <h1 id="titulo-modal-edicion">Editar Información</h1>
+                    </div>
+                </header>
+            </div>
+            
+            <div class="contenido-interno-modal contenido-scrollable">
+                <div class="card-formulario">
+                    <div id="contenedor-campos-dinamicos" class="info-grid-2col">
+                      </div>
+                </div>
+            </div>
+
+              <div class="modal-footer-sticky" style="padding: 16px 24px; border-top: 1px solid rgba(3, 47, 64, 0.1); display: flex; justify-content: flex-end; gap: 12px; background: #ffffff; border-radius: 0 0 20px 20px;">
+                  <button type="button" class="btn-outline" id="btn-cancelar-edicion" style="padding: 12px 24px; border: 2px solid rgba(3, 47, 64, 0.2); border-radius: 12px; background: transparent; color: var(--cobalto); font-weight: 600; font-family: var(--fuente-titulos); cursor: pointer; transition: all 0.2s ease;">Cancelar</button>
+                  <button type="button" class="boton-primario" id="btn-guardar-edicion" style="margin-top: 0 !important;">Guardar Cambios</button>
+              </div>
+            
+        </div>
+    </div>
+
+</div>
+
+<!-- Los modales se han movido a MODAL_NUEVA_ORDEN.html y se inyectan dinámicamente -->
+
