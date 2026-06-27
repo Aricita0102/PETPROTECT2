@@ -327,8 +327,8 @@ async function cargarModulo(nombreModulo) {
     contenedorPrincipal.classList.add('modulo-saliendo');
 
     try {
-        const rutaFetch = `./${moduloSeguro}.html`;
-        const respuesta = await fetch(rutaFetch);
+        const rutaFetch = `./${moduloSeguro}.html?v=${Date.now()}`;
+        const respuesta = await fetch(rutaFetch, { cache: "no-cache" });
         if (!respuesta.ok) throw new Error(`El módulo [${moduloSeguro}] no existe en el servidor (Error 404).`);
 
         const htmlOriginal = await respuesta.text();

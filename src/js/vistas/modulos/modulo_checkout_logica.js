@@ -166,17 +166,20 @@ const moduloCheckout = {
             const catId = `srv-cat-${index}`;
             
             // Generar las filas interiores
-            const itemsHtml = grupos[cat].map(item => `
+            const itemsHtml = grupos[cat].map(item => {
+                const aplicaIva = item.aplica_iva !== false;
+                return `
                 <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 20px; border-bottom:1px solid var(--checkout-border);">
                     <div>
                         <span style="font-size:14px; font-weight:bold; display:block; color:var(--checkout-cobalto);">${item.nombre_servicio}</span>
+                        ${!aplicaIva ? '<span style="font-size:10px; color:#ef4444; font-weight:bold;">Sin IVA</span>' : ''}
                     </div>
                     <div style="display:flex; gap:12px; align-items:center;">
                         <span style="color:var(--checkout-texto); font-weight:bold;">$${parseFloat(item.precio).toFixed(2)}</span>
-                        <button onclick="window.moduloCheckout.agregarCargo('${item.id}', '${item.nombre_servicio.replace(/'/g, "\\'")}', ${item.precio}, 'servicio')" style="background:var(--checkout-naranja); color:white; border:none; border-radius:8px; width:30px; height:30px; cursor:pointer; font-weight:bold; font-size:16px;">+</button>
+                        <button onclick="window.moduloCheckout.agregarCargo('${item.id}', '${item.nombre_servicio.replace(/'/g, "\\'")}', ${item.precio}, 'servicio', null, ${aplicaIva})" style="background:var(--checkout-naranja); color:white; border:none; border-radius:8px; width:30px; height:30px; cursor:pointer; font-weight:bold; font-size:16px;">+</button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
 
             // Estructura del acordeón
             html += `
@@ -220,6 +223,7 @@ const moduloCheckout = {
             const itemsHtml = grupos[cat].map(producto => {
                 const stockVal = producto.stock_total;
                 const btnDisabled = stockVal <= 0 ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : '';
+                const aplicaIva = producto.metadata?.aplica_iva !== false;
 
                 return `
                 <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 20px; border-bottom:1px solid var(--checkout-border);">
@@ -229,7 +233,7 @@ const moduloCheckout = {
                     </div>
                     <div style="display:flex; gap:12px; align-items:center;">
                         <span style="color:var(--checkout-texto); font-weight:bold;">$${parseFloat(producto.precio_venta || 0).toFixed(2)}</span>
-                        <button id="btn-add-${producto.id}" ${btnDisabled} onclick="window.moduloCheckout.agregarCargo('${producto.id}', '${producto.nombre_comercial.replace(/'/g, "\\'")}', ${producto.precio_venta || 0}, 'producto', ${producto.stock_total})" style="background:var(--checkout-naranja); color:white; border:none; border-radius:8px; width:30px; height:30px; cursor:pointer; font-weight:bold; font-size:16px;">+</button>
+                        <button id="btn-add-${producto.id}" ${btnDisabled} onclick="window.moduloCheckout.agregarCargo('${producto.id}', '${producto.nombre_comercial.replace(/'/g, "\\'")}', ${producto.precio_venta || 0}, 'producto', ${producto.stock_total}, ${aplicaIva})" style="background:var(--checkout-naranja); color:white; border:none; border-radius:8px; width:30px; height:30px; cursor:pointer; font-weight:bold; font-size:16px;">+</button>
                     </div>
                 </div>
                 `;
@@ -271,7 +275,7 @@ const moduloCheckout = {
     // ==========================================================================
     // 3. CARRITO DE COMPRAS (TICKET LATERAL)
     // ==========================================================================
-    agregarCargo: function(id, nombre, precio, tipo = 'servicio', stockMax = null) {
+    agregarCargo: function(id, nombre, precio, tipo = 'servicio', stockMax = null, aplicaIva = true) {
         if (tipo === 'producto') {
             if (stockMax <= 0) {
                 alertaCustom("Stock agotado para este producto.");
@@ -284,7 +288,7 @@ const moduloCheckout = {
             }
         }
         
-        this.estado.cargos.push({ id, nombre, precio: parseFloat(precio), tipo });
+        this.estado.cargos.push({ id, nombre, precio: parseFloat(precio), tipo, aplicaIva });
         this.actualizarSidebar();
         this.calcularCambio();
     },
@@ -363,10 +367,25 @@ const moduloCheckout = {
     },
 
     obtenerTotales: function() {
-        const subtotal = this.estado.cargos.reduce((acc, cur) => acc + cur.precio, 0);
-        const iva = subtotal * 0.16;
-        const total = subtotal + iva;
-        return { subtotal, iva, total };
+        let subtotalReal = 0;
+        let ivaReal = 0;
+        let totalGeneral = 0;
+
+        this.estado.cargos.forEach(cargo => {
+            const precioTotalItem = cargo.precio;
+            totalGeneral += precioTotalItem;
+
+            if (cargo.aplicaIva !== false) {
+                const baseSinIva = precioTotalItem / 1.16;
+                const ivaDelItem = precioTotalItem - baseSinIva;
+                subtotalReal += baseSinIva;
+                ivaReal += ivaDelItem;
+            } else {
+                subtotalReal += precioTotalItem;
+            }
+        });
+
+        return { subtotal: subtotalReal, iva: ivaReal, total: totalGeneral };
     },
 
     // ==========================================================================
@@ -576,7 +595,8 @@ const moduloCheckout = {
                     nombre_item: item.nombre,
                     cantidad: item.cantidad,
                     precio_unitario: item.precio,
-                    subtotal: item.precio * item.cantidad
+                    subtotal: item.precio * item.cantidad,
+                    tasa_iva: item.aplicaIva !== false ? 16.00 : 0.00
                 }));
 
                 const { error: errItems } = await conexionSupabase

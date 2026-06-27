@@ -1089,7 +1089,7 @@ window.reimprimirTicket = async (txId, btnElement) => {
             descripcion: item.nombre_item,
             cantidad: item.cantidad,
             precioUnitario: item.precio_unitario || (item.subtotal / item.cantidad),
-            tasaIVA: 16
+            tasaIVA: item.tasa_iva !== undefined ? item.tasa_iva : 16
         }));
 
         const clienteNom = tx.clientes ? tx.clientes.nombre_completo : (tx.tipo === 'egreso' ? 'Gasto Operativo' : 'Venta Mostrador');

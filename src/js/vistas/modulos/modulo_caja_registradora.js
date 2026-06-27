@@ -65,7 +65,8 @@ function manejarEscanerRemoto(e) {
     const codigo = e.detail;
     const producto = todosLosProductos.find(p => p.codigo_barras == codigo || p.codigo_barras === String(codigo));
     if (producto) {
-        agregarAlCarrito(producto.id, producto.nombre_comercial, producto.precio_venta);
+        const aplicaIva = producto.metadata?.aplica_iva !== false;
+        agregarAlCarrito(producto.id, producto.nombre_comercial, producto.precio_venta, aplicaIva);
     } else {
         alert(`Producto no encontrado con el código: ${codigo}`);
     }
@@ -86,7 +87,7 @@ async function cargarProductos(categoria = 'todo') {
         // Campos exactos según el esquema real de la BD
         let query = conexionSupabase
             .from('inventario_productos')
-            .select('id, nombre_comercial, precio_venta, imagen_url, categoria, stock_total, stock_minimo, unidad_medida, codigo_barras, presentacion')
+            .select('id, nombre_comercial, precio_venta, imagen_url, categoria, stock_total, stock_minimo, unidad_medida, codigo_barras, presentacion, metadata')
             .eq('organizacion_id', perfilCaja.organizacion_id)
             .in('categoria', ['tienda', 'farmacia', 'dietas'])
             .order('nombre_comercial', { ascending: true });
@@ -256,7 +257,7 @@ function configurarCategorias() {
 }
 
 // ─── Carrito / Ticket ─────────────────────────────────────────────────────────
-export function agregarAlCarrito(id, nombre, precio) {
+export function agregarAlCarrito(id, nombre, precio, aplicaIva = true) {
     // Buscar el stock disponible del producto en el catálogo cargado
     const productoRef = todosLosProductos.find(p => p.id === id);
     const stockDisponible = productoRef ? (parseFloat(productoRef.stock_total) || 0) : Infinity;
@@ -276,7 +277,7 @@ export function agregarAlCarrito(id, nombre, precio) {
             return;
         }
         // Guardar stockDisponible en el item para validarlo desde cambiarCantidad()
-        carrito.push({ id, nombre, precio: parseFloat(precio), cantidad: 1, stockMax: stockDisponible });
+        carrito.push({ id, nombre, precio: parseFloat(precio), cantidad: 1, stockMax: stockDisponible, aplicaIva });
     }
 
     renderizarCarrito();
@@ -354,24 +355,42 @@ function renderizarCarrito() {
             </div>`).join('');
     }
 
-    // Cálculo de totales
-    const subtotal = carrito.reduce((acc, i) => acc + i.precio * i.cantidad, 0);
-    const iva      = subtotal * 0.16;
-    const total    = subtotal + iva;
+    // Cálculo de totales (Ingeniería Inversa del Precio Final)
+    // El precio de venta guardado es el Precio Final (ticket).
+    let subtotalReal = 0;
+    let ivaReal = 0;
+    let totalGeneral = 0;
     const totalItems = carrito.reduce((a, i) => a + i.cantidad, 0);
+
+    carrito.forEach(item => {
+        const precioTotalItem = item.precio * item.cantidad;
+        totalGeneral += precioTotalItem;
+
+        if (item.aplicaIva) {
+            // El precio ya incluye IVA, extraemos la base
+            const baseSinIva = precioTotalItem / 1.16;
+            const ivaDelItem = precioTotalItem - baseSinIva;
+            
+            subtotalReal += baseSinIva;
+            ivaReal += ivaDelItem;
+        } else {
+            // No aplica IVA, el subtotal suma directo
+            subtotalReal += precioTotalItem;
+        }
+    });
 
     if (resumenEl) {
         resumenEl.innerHTML = `
-            <span>Subtotal: <b class="num">$${subtotal.toFixed(2)}</b></span>
-            <span>IVA 16%: <b class="num">$${iva.toFixed(2)}</b></span>
-            <span>Total: <b class="num">$${total.toFixed(2)}</b></span>
+            <span>Subtotal: <b class="num">$${subtotalReal.toFixed(2)}</b></span>
+            <span>IVA 16%: <b class="num">$${ivaReal.toFixed(2)}</b></span>
+            <span>Total: <b class="num">$${totalGeneral.toFixed(2)}</b></span>
             <span>Artículos: <b class="num">${totalItems}</b></span>`;
     }
 
     if (btnCobrar) {
         btnCobrar.innerHTML = `
             <span>Cobrar</span>
-            <span class="num">$${total.toFixed(2)}</span>`;
+            <span class="num">$${totalGeneral.toFixed(2)}</span>`;
         btnCobrar.disabled = carrito.length === 0;
     }
     
@@ -398,7 +417,8 @@ function sincronizarGridStock() {
                 card.setAttribute('aria-label', `${nombre} — ${precio} (Sin stock)`);
             } else {
                 card.classList.remove('sin-stock');
-                card.setAttribute('onclick', `window.cajaMod.agregarAlCarrito('${prod.id}', \`${nombre.replace(/`/g, '\\`')}\`, ${prod.precio_venta || 0})`);
+                const aplicaIva = prod.metadata?.aplica_iva !== false;
+                card.setAttribute('onclick', `window.cajaMod.agregarAlCarrito('${prod.id}', \`${nombre.replace(/`/g, '\\`')}\`, ${prod.precio_venta || 0}, ${aplicaIva})`);
                 card.setAttribute('tabindex', '0');
                 card.setAttribute('title', 'Agregar: ' + nombre);
                 card.setAttribute('aria-label', `${nombre} — ${precio}`);
@@ -652,9 +672,22 @@ export async function procesarPagoCheckout() {
     btnCobrar.disabled = true;
     btnCobrar.innerHTML = '<span class="material-symbols-rounded spin">sync</span> Registrando...';
 
-    const subtotal = carrito.reduce((acc, i) => acc + i.precio * i.cantidad, 0);
-    const iva      = subtotal * 0.16;
-    const total    = subtotal + iva;
+    // Volver a calcular para la transacción a insertar
+    let subtotalTrans = 0;
+    let ivaTrans = 0;
+    let totalTrans = 0;
+
+    carrito.forEach(item => {
+        const pTotal = item.precio * item.cantidad;
+        totalTrans += pTotal;
+        if (item.aplicaIva) {
+            const base = pTotal / 1.16;
+            subtotalTrans += base;
+            ivaTrans += (pTotal - base);
+        } else {
+            subtotalTrans += pTotal;
+        }
+    });
 
     try {
         // 1. Insertar Transacción Principal
@@ -666,10 +699,10 @@ export async function procesarPagoCheckout() {
                 cajero_id: perfilCaja.id,
                 tipo: 'ingreso',
                 metodo_pago: checkoutMetodoPago, // Tomamos de la variable
-                subtotal: subtotal,
+                subtotal: subtotalTrans,
                 descuento: 0,
-                impuestos: iva,
-                total: total,
+                impuestos: ivaTrans,
+                total: totalTrans,
                 estatus: 'completada',
                 notas: 'Cobro desde POS (Caja Registradora)'
             }])
@@ -686,7 +719,8 @@ export async function procesarPagoCheckout() {
             nombre_item: item.nombre,
             cantidad: item.cantidad,
             precio_unitario: item.precio,
-            subtotal: item.cantidad * item.precio
+            subtotal: item.cantidad * item.precio,
+            tasa_iva: item.aplicaIva ? 16.00 : 0.00
         }));
 
         const { error: errItems } = await conexionSupabase
@@ -755,7 +789,7 @@ function generarDataTicketJSON(transaccionId, total, subtotal, iva) {
         descripcion: item.nombre,
         cantidad: item.cantidad,
         precioUnitario: item.precio,
-        tasaIVA: 16 // O el IVA real del producto
+        tasaIVA: item.aplicaIva ? 16 : 0 // IVA real del producto según config
     }));
 
     const ticketData = {

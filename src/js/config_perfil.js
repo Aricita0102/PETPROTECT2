@@ -525,6 +525,8 @@ const inicializarEventosDelegados = () => {
         const nombre = document.getElementById('inNombreServicio').value.trim();
         const precio = parseFloat(document.getElementById('inPrecioServicio').value);
         const cat = document.getElementById('inCatServicio').value;
+        const chkIva = document.getElementById('chkAplicaIvaServicio');
+        const aplicaIva = chkIva ? chkIva.checked : true; // Default to true if not found (cached HTML)
         const btn = document.getElementById('btnGuardarServicio');
         
         animarBoton(btn, "Guardando...");
@@ -532,7 +534,7 @@ const inicializarEventosDelegados = () => {
         if (idServicioEnEdicion) {
             // UPDATE
             const { error } = await conexionSupabase.from('catalogo_servicios')
-                .update({ nombre_servicio: nombre, precio: precio, categoria: cat })
+                .update({ nombre_servicio: nombre, precio: precio, categoria: cat, aplica_iva: aplicaIva })
                 .eq('id', idServicioEnEdicion);
             if (!error) {
                 idServicioEnEdicion = null;
@@ -543,7 +545,7 @@ const inicializarEventosDelegados = () => {
         } else {
             // INSERT
             await conexionSupabase.from('catalogo_servicios')
-                .insert([{ organizacion_id: organizacionIdActual, nombre_servicio: nombre, precio: precio, categoria: cat }]);
+                .insert([{ organizacion_id: organizacionIdActual, nombre_servicio: nombre, precio: precio, categoria: cat, aplica_iva: aplicaIva }]);
         }
 
         document.getElementById('formCatalogoServicios').reset();
@@ -565,6 +567,11 @@ const inicializarEventosDelegados = () => {
         document.getElementById('inPrecioServicio').value = btn.getAttribute('data-precio');
         document.getElementById('inCatServicio').value = btn.getAttribute('data-cat');
         
+        const chkIva = document.getElementById('chkAplicaIvaServicio');
+        if (chkIva) {
+            chkIva.checked = btn.getAttribute('data-iva') !== 'false';
+        }
+        
         document.getElementById('btnGuardarServicio').innerHTML = "Guardar Cambios";
         document.getElementById('btnCancelarEdicionServicio').style.display = 'block';
         document.getElementById('tituloFormServicio').innerText = "Editar Servicio";
@@ -573,6 +580,10 @@ const inicializarEventosDelegados = () => {
     registrarEventoDelegado('click', '#btnCancelarEdicionServicio', () => {
         idServicioEnEdicion = null;
         document.getElementById('formCatalogoServicios').reset();
+        
+        const chkIva = document.getElementById('chkAplicaIvaServicio');
+        if (chkIva) chkIva.checked = true; // Reset default
+        
         document.getElementById('btnGuardarServicio').innerHTML = "+ Agregar Servicio";
         document.getElementById('btnCancelarEdicionServicio').style.display = 'none';
         document.getElementById('tituloFormServicio').innerText = "Agregar al Catálogo";
@@ -685,12 +696,12 @@ const cargarCatalogoServicios = async () => {
         <div style="display: flex; justify-content: space-between; align-items: center; background: var(--fondo-tarjeta); padding: 12px; border-radius: 8px; border: 1px solid var(--borde-suave); margin-bottom: 8px;">
             <div>
                 <strong style="color: var(--texto-oscuro);">${escaparHTML(serv.nombre_servicio)}</strong><br>
-                <span style="font-size:0.75rem; color:var(--texto-secundario);">${escaparHTML(serv.categoria)}</span>
+                <span style="font-size:0.75rem; color:var(--texto-secundario);">${escaparHTML(serv.categoria)} ${serv.aplica_iva === false ? '<span style="color:#ef4444; font-weight:bold; margin-left:5px;">(Sin IVA)</span>' : ''}</span>
             </div>
             <div style="display: flex; align-items: center; gap: 15px;">
                 <div style="color: var(--naranja); font-weight: bold; font-size: 1.1rem;">$${parseFloat(serv.precio).toFixed(2)}</div>
                 <div class="acciones-servicio">
-                    <button type="button" class="btn-icono-accion editar btn-editar-servicio" data-id="${serv.id}" data-nombre="${escaparHTML(serv.nombre_servicio)}" data-precio="${serv.precio}" data-cat="${serv.categoria}"><span class="material-symbols-rounded" style="font-size: 1.1rem;">edit</span></button>
+                    <button type="button" class="btn-icono-accion editar btn-editar-servicio" data-id="${serv.id}" data-nombre="${escaparHTML(serv.nombre_servicio)}" data-precio="${serv.precio}" data-cat="${serv.categoria}" data-iva="${serv.aplica_iva !== false}"><span class="material-symbols-rounded" style="font-size: 1.1rem;">edit</span></button>
                     <button type="button" class="btn-icono-accion eliminar btn-eliminar-servicio" data-id="${serv.id}"><span class="material-symbols-rounded" style="font-size: 1.1rem;">delete</span></button>
                 </div>
             </div>

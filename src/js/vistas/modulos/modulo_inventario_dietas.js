@@ -288,15 +288,47 @@ function configurarModalNuevoProductoDietas() {
         const precioInput = document.getElementById('dieta-precio-bento');
         const precioBaseInput = document.getElementById('dieta-precio-base-bento');
 
-        // Sincronización Base <-> Final
-        if(precioBaseInput && precioInput) {
-            precioBaseInput.addEventListener('input', () => {
+        // Sincronización Base <-> Final con IVA dinámico
+        const ivaToggle = document.getElementById('dieta-aplica-iva-bento');
+        const ivaLabel = document.getElementById('dieta-label-iva-bento');
+
+        const recalcularPrecios = (origen) => {
+            const aplica = ivaToggle ? ivaToggle.checked : true;
+            const factor = aplica ? 1.16 : 1.0;
+            
+            if (ivaLabel) {
+                ivaLabel.innerHTML = aplica ? 'P. Final (16% IVA inc.) <span style="color:#F27405;">*</span>' : 'P. Final (Sin IVA) <span style="color:#F27405;">*</span>';
+            }
+
+            if (origen === 'base') {
                 const base = parseFloat(precioBaseInput.value) || 0;
-                precioInput.value = (base * 1.16).toFixed(2);
-            });
-            precioInput.addEventListener('input', () => {
+                precioInput.value = (base * factor).toFixed(2);
+            } else if (origen === 'final') {
                 const final = parseFloat(precioInput.value) || 0;
-                precioBaseInput.value = (final / 1.16).toFixed(2);
+                precioBaseInput.value = (final / factor).toFixed(2);
+            } else if (origen === 'toggle') {
+                const base = parseFloat(precioBaseInput.value) || 0;
+                if(precioInput.dataset.modificado === 'true' && precioBaseInput.dataset.modificado !== 'true') {
+                     const final = parseFloat(precioInput.value) || 0;
+                     precioBaseInput.value = (final / factor).toFixed(2);
+                } else {
+                     precioInput.value = (base * factor).toFixed(2);
+                }
+            }
+        };
+
+        if (ivaToggle) {
+            ivaToggle.addEventListener('change', () => recalcularPrecios('toggle'));
+        }
+
+        if(precioBaseInput && precioInput) {
+            precioBaseInput.addEventListener('input', (e) => {
+                if (e.isTrusted) precioBaseInput.dataset.modificado = 'true';
+                recalcularPrecios('base');
+            });
+            precioInput.addEventListener('input', (e) => {
+                if (e.isTrusted) precioInput.dataset.modificado = 'true';
+                recalcularPrecios('final');
             });
         }
 
@@ -539,6 +571,13 @@ function generarHTMLPanelNuevaDieta() {
                 <!-- Financiero & Stock -->
                 <div style="border-top:1px solid #f1f5f9; margin:4px 0;"></div>
 
+                <div style="display:flex; justify-content:flex-end; margin-bottom: 10px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                        <span style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Aplica IVA (16%)</span>
+                        <input type="checkbox" id="dieta-aplica-iva-bento" checked style="accent-color: #032F40; width: 16px; height: 16px;">
+                    </label>
+                </div>
+
                 <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;">
                     <div>
                         <label style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">Costo Proveedor ($) <span style="color:#F27405;">*</span></label>
@@ -555,7 +594,7 @@ function generarHTMLPanelNuevaDieta() {
                         </div>
                     </div>
                     <div>
-                        <label style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">P. Final (IVA inc.) <span style="color:#F27405;">*</span></label>
+                        <label id="dieta-label-iva-bento" style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">P. Final (16% IVA inc.) <span style="color:#F27405;">*</span></label>
                         <div style="position:relative;">
                             <span style="position:absolute; left:12px; top:11px; color:#64748b; font-weight:600;">$</span>
                             <input id="dieta-precio-bento" type="number" step="0.01" min="0" required placeholder="0.00" style="width:100%; padding:11px 14px 11px 26px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:14px; font-family:'Montserrat',sans-serif; outline:none; color:#10B981; font-weight:bold;">
@@ -790,7 +829,7 @@ async function configurarModalEditarDieta(productoId) {
                             etapa: document.getElementById('dieta-etapa-bento-edit').value,
                             costoProveedor: parseFloat(document.getElementById('dieta-costo-bento-edit').value) || 0,
                             precioBase: parseFloat(document.getElementById('dieta-precio-base-bento-edit').value) || 0,
-                            aplica_iva: true
+                            aplica_iva: document.getElementById('dieta-aplica-iva-bento-edit')?.checked || false
                         }
                     };
 
@@ -945,6 +984,13 @@ function generarHTMLPanelEditarDieta(prod) {
                 <!-- Financiero & Stock -->
                 <div style="border-top:1px solid #f1f5f9; margin:4px 0;"></div>
 
+                <div style="display:flex; justify-content:flex-end; margin-bottom: 10px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                        <span style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Aplica IVA (16%)</span>
+                        <input type="checkbox" id="dieta-aplica-iva-bento-edit" ${prod.metadata?.aplica_iva !== false ? 'checked' : ''} style="accent-color: #032F40; width: 16px; height: 16px;">
+                    </label>
+                </div>
+
                 <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;">
                     <div>
                         <label style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">Costo Proveedor ($) <span style="color:#F27405;">*</span></label>
@@ -961,7 +1007,7 @@ function generarHTMLPanelEditarDieta(prod) {
                         </div>
                     </div>
                     <div>
-                        <label style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">P. Final (IVA inc.) <span style="color:#F27405;">*</span></label>
+                        <label id="dieta-label-iva-bento-edit" style="display:block; font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px;">${prod.metadata?.aplica_iva !== false ? 'P. Final (16% IVA inc.)' : 'P. Final (Sin IVA)'} <span style="color:#F27405;">*</span></label>
                         <div style="position:relative;">
                             <span style="position:absolute; left:12px; top:11px; color:#64748b; font-weight:600;">$</span>
                             <input id="dieta-precio-bento-edit" type="number" step="0.01" min="0" value="${prod.precio_venta}" required placeholder="0.00" style="width:100%; padding:11px 14px 11px 26px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:14px; font-family:'Montserrat',sans-serif; outline:none; color:#10B981; font-weight:bold;">
