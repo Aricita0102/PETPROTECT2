@@ -368,9 +368,8 @@ const VistaFinanzas = {
     renderizar(procesado) {
         this.inicializarHistorialReportes();
         this.renderizarResumen(procesado);
-        this.renderizarGraficaPrincipal(procesado);
-        this.renderizarDona(procesado);
-        this.renderizarUltimosMovimientos(procesado);
+        this.inicializarGraficas(procesado);
+        this.renderizarMovimientos(procesado.movimientos, procesado.mapaClientes);
         this.actualizarAnalisis(procesado.analisis);
     },
 
