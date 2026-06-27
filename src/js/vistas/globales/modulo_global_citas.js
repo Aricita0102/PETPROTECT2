@@ -1,11 +1,12 @@
 import { conexionSupabase } from '../../infraestructura/conexion.js';
 import { obtenerSesionActiva } from '../../infraestructura/sesion_store.js';
-import { alertaCustom, confirmacionCustomPeligro, promptCustomPeligro } from '../../utilidades/ui_alertas.js?v=1782238072306';
+import { alertaCustom, confirmacionCustomPeligro, promptCustomPeligro, confirmacionCustom } from '../../utilidades/ui_alertas.js';
 
 let sucursalId = null;
 let organizacionId = null;
 let medicoId = null;
 let mensajeCancelacionMasiva = "";
+let modalGlobalConfigurado = false;
 
 export async function inicializarModuloCitasGlobal() {
     try {
@@ -23,6 +24,9 @@ export async function inicializarModuloCitasGlobal() {
 }
 
 function configurarModalGlobal() {
+    if (modalGlobalConfigurado) return;
+    modalGlobalConfigurado = true;
+
     const btnCerrar   = document.getElementById('btn-cerrar-modal-cita');
     const btnCancelar = document.getElementById('btn-cancelar-modal-cita-alt');
     const overlay     = document.getElementById('citaOverlay');
@@ -79,11 +83,34 @@ function configurarModalGlobal() {
         });
     }
 
+    let isSubmittingCita = false;
+
     // Submit del formulario
     const form = document.getElementById('form-nueva-cita');
     if (form) {
         form.addEventListener('submit', async e => {
             e.preventDefault();
+            
+            if (isSubmittingCita) return;
+            
+            const btnSubmit = form.querySelector('button[type="submit"]');
+            const originalBtnText = btnSubmit ? btnSubmit.innerHTML : 'Guardar Cita';
+            
+            if (btnSubmit) {
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = '<span class="material-symbols-rounded spin">sync</span> Guardando...';
+            }
+
+            const liberarBoton = () => {
+                isSubmittingCita = false;
+                if (btnSubmit) {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = originalBtnText;
+                }
+            };
+
+            isSubmittingCita = true;
+
             const pacienteId = document.getElementById('cita-paciente-id').value;
             const fecha    = document.getElementById('cita-fecha').value;
             const horaIni  = document.getElementById('cita-hora').value;
@@ -92,7 +119,7 @@ function configurarModalGlobal() {
 
             if (!pacienteId && !esTodoElDia) {
                 if (typeof alertaCustom === 'function') alertaCustom('Falta paciente', 'Selecciona un paciente de la lista.', 'warning');
-                return;
+                return liberarBoton();
             }
 
             const tipo     = document.getElementById('cita-tipo').value;
@@ -126,24 +153,34 @@ function configurarModalGlobal() {
                     const mapDias = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
                     diaLargo = mapDias[fechaHoraLocal.getDay()];
                     
+                    const norm = (s) => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+                    
                     if (Array.isArray(horarioData)) {
-                        diaConfig = horarioData.find(d => d.dia.toLowerCase() === diaLargo.toLowerCase());
+                        diaConfig = horarioData.find(d => norm(d.dia) === norm(diaLargo));
                     } else if (horarioData.dias) {
                         const mapAntiguo = { 'Domingo':'dom', 'Lunes':'lun', 'Martes':'mar', 'Miercoles':'mie', 'Jueves':'jue', 'Viernes':'vie', 'Sabado':'sab', 'dom':'dom', 'lun':'lun', 'mar':'mar', 'mie':'mie', 'jue':'jue', 'vie':'vie', 'sab':'sab' };
                         const diaCorto = mapAntiguo[diaLargo];
-                        if (horarioData.dias.includes(diaCorto) || horarioData.dias.includes(diaLargo.substring(0,3).toLowerCase())) {
+                        if (horarioData.dias.includes(diaCorto) || horarioData.dias.includes(norm(diaLargo).substring(0,3))) {
                             diaConfig = { abierto: true, apertura: horarioData.apertura, cierre: horarioData.cierre };
                         } else {
                             diaConfig = { abierto: false };
                         }
-                    } else if (horarioData[diaLargo.toLowerCase()]) {
-                        const dConf = horarioData[diaLargo.toLowerCase()];
+                    } else if (horarioData[norm(diaLargo)]) {
+                        const dConf = horarioData[norm(diaLargo)];
                         diaConfig = { abierto: dConf.abierto, apertura: dConf.inicio, cierre: dConf.fin };
                     }
 
-                    if (!diaConfig || !diaConfig.abierto) {
-                        if (typeof alertaCustom === 'function') alertaCustom('Clínica cerrada', `El médico no atiende los días ${diaLargo}.`, 'warning');
-                        return;
+                    let estaAbiertoDia = false;
+                    if (diaConfig && (diaConfig.abierto === true || diaConfig.abierto === 'true' || diaConfig.abierto === 1)) {
+                        estaAbiertoDia = true;
+                    }
+
+                    if (!diaConfig || !estaAbiertoDia) {
+                        const confirmar = await confirmacionCustom('Clínica Cerrada', `El médico no atiende los días ${diaLargo}.\n¿Deseas registrar esta cita como un CASO ESPECIAL?`, 'warning');
+                        if (!confirmar) return liberarBoton();
+                        
+                        // Permitimos continuar asumiendo un horario completo
+                        diaConfig = { abierto: true, apertura: "00:00", cierre: "23:59" };
                     }
                     
                     if (diaConfig.cierre) {
@@ -157,7 +194,7 @@ function configurarModalGlobal() {
                     const respuesta = await promptCustomPeligro("Bloquear agenda", "Esta opción cancelará tus citas desde la hora seleccionada hasta el final del día. Por favor escribe el mensaje que se enviará a los dueños afectados:", msgDefault);
                     
                     if (!respuesta.confirmado) {
-                        return; // Abortar guardado
+                        return liberarBoton(); // Abortar guardado
                     }
                     mensajeCancelacionMasiva = respuesta.texto;
                     
@@ -183,8 +220,8 @@ function configurarModalGlobal() {
                     const minFin = minInicio + duracion;
 
                     if (minInicio < minApertura || minFin > minCierre) {
-                        if (typeof alertaCustom === 'function') alertaCustom('Fuera de horario', `El horario para el ${diaLargo} es de ${diaConfig.apertura} a ${diaConfig.cierre}.`, 'warning');
-                        return;
+                        const confirmar = await confirmacionCustom('Fuera de Horario', `El horario para el ${diaLargo} es de ${diaConfig.apertura} a ${diaConfig.cierre}.\n¿Deseas registrar esta cita como un CASO ESPECIAL?`, 'warning');
+                        if (!confirmar) return liberarBoton();
                     }
                 }
 
@@ -229,7 +266,7 @@ function configurarModalGlobal() {
                     if (errCol) throw errCol;
                     if (colisiones && colisiones.length > 0) {
                         if (typeof alertaCustom === 'function') alertaCustom('Horario ocupado', 'Este horario ya está ocupado por otra cita.', 'warning');
-                        return;
+                        return liberarBoton();
                     }
                 }
 
@@ -258,12 +295,16 @@ function configurarModalGlobal() {
                 // Refrescar calendarios
                 if (typeof window.cargarCitasEnRango === 'function') window.cargarCitasEnRango();
                 if (typeof window.cargarCitasPorConfirmar === 'function') window.cargarCitasPorConfirmar();
-                if (typeof window.cargarConsultasHoyDashboard === 'function') window.cargarConsultasHoyDashboard();
+                if (typeof window.cargarModulo === 'function') {
+                    window.cargarModulo('MODULO_AGENDA');
+                }
                 
-            } catch (e) {
-                console.error(e);
-                const msg = e.message || e.details || e.hint || '';
-                if (typeof alertaCustom === 'function') alertaCustom('Error', `No se pudo guardar la cita. ${msg}`, 'error');
+                liberarBoton();
+
+            } catch (err) {
+                console.error("Error al agendar cita:", err);
+                if (typeof alertaCustom === 'function') alertaCustom('Error', 'Hubo un problema al agendar la cita. ' + err.message, 'error');
+                liberarBoton();
             }
         });
     }

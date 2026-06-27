@@ -605,15 +605,38 @@ function _renderizarVistaDiaAbsoluto(citas, inicioDia, horariosClinica) {
     
     let HORA_INICIO = 8;
     let HORA_FIN = 20;
+    let estaCerrado = false;
 
-    if (horariosClinica && horariosClinica[diaClave]) {
+    const norm = (s) => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+    if (Array.isArray(horariosClinica)) {
+        const diaConfig = horariosClinica.find(d => norm(d.dia) === norm(diaClave));
+        if (diaConfig) {
+            if (!diaConfig.abierto) {
+                estaCerrado = true;
+            } else if (diaConfig.apertura && diaConfig.cierre) {
+                HORA_INICIO = parseInt(diaConfig.apertura.split(':')[0], 10);
+                HORA_FIN = parseInt(diaConfig.cierre.split(':')[0], 10);
+                if (HORA_FIN < HORA_INICIO) HORA_FIN = HORA_INICIO + 1;
+            }
+        }
+    } else if (horariosClinica && horariosClinica[diaClave]) {
         const hData = horariosClinica[diaClave];
-        if (hData.abierto && hData.inicio && hData.fin) {
+        if (!hData.abierto) {
+            estaCerrado = true;
+        } else if (hData.inicio && hData.fin) {
             HORA_INICIO = parseInt(hData.inicio.split(':')[0], 10);
             HORA_FIN = parseInt(hData.fin.split(':')[0], 10);
-            if (HORA_FIN < HORA_INICIO) HORA_FIN = HORA_INICIO + 1; // Sanity check
+            if (HORA_FIN < HORA_INICIO) HORA_FIN = HORA_INICIO + 1;
         }
     }
+
+    // Expandir cuadrícula dinámicamente si hay citas fuera del horario (ej. casos especiales)
+    citas.forEach(cita => {
+        const h = new Date(cita.fecha_hora).getHours();
+        if (h < HORA_INICIO) HORA_INICIO = h;
+        if (h > HORA_FIN) HORA_FIN = h;
+    });
 
     const TOTAL_HORAS = HORA_FIN - HORA_INICIO + 1;
     const PIXELS_POR_HORA = 90; // Suficiente espacio para las tarjetas
@@ -627,6 +650,12 @@ function _renderizarVistaDiaAbsoluto(citas, inicioDia, horariosClinica) {
     
     // Eje vertical principal (timeline line)
     html += `<div style="position: absolute; left: 60px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; z-index: 1;"></div>`;
+
+    if (estaCerrado) {
+        html += `<div style="position: absolute; left: 60px; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; z-index: 0; pointer-events: none; overflow: hidden;">
+            <div style="transform: rotate(-30deg); font-size: 64px; font-weight: 900; color: rgba(242, 116, 5, 0.08); text-transform: uppercase; letter-spacing: 4px; user-select: none;">Día Cerrado</div>
+        </div>`;
+    }
 
     // Renderizar Cuadrícula Horaria
     for (let h = HORA_INICIO; h <= HORA_FIN; h++) {
@@ -644,9 +673,6 @@ function _renderizarVistaDiaAbsoluto(citas, inicioDia, horariosClinica) {
         const hCita = new Date(cita.fecha_hora);
         const hour = hCita.getHours();
         const min = hCita.getMinutes();
-        
-        // Ignorar si está fuera de horario
-        if (hour < HORA_INICIO || hour > HORA_FIN) return;
 
         const duracionMin = cita.duracion_minutos || 30;
         
@@ -936,6 +962,7 @@ window.cambiarVista = function(vista) {
     _actualizarTituloFecha();
     _cargarCitasEnRango();
     const dd = document.getElementById('dropdownVistas');
+    if (dd) dd.style.position = 'relative'; // Asegurar el posicionamiento
     if (dd) dd.style.display = 'none';
 };
 
@@ -1115,7 +1142,7 @@ window.cambiarEstadoDesdeDetalle = async function(nuevoEstado) {
     if (!_citaSeleccionadaId) return;
     try {
         const { error } = await conexionSupabase.from('citas').update({ estado: nuevoEstado }).eq('id', _citaSeleccionadaId);
-        if (!error) { _cargarCitasEnRango(); cargarSalaEspera(); }
+        if (!error) { _cargarCitasEnRango(); cargarSalaEspera(); cargarCitasPorConfirmar(); }
     } catch(e) { console.error('[AGENDA] Error al cambiar estado:', e); }
 };
 
@@ -1202,11 +1229,11 @@ window.abrirModalNuevaCita = function() {
         </div>
 
         <div style="display:flex;flex-direction:column;gap:14px;">
-            <div>
+            <div style="position: relative;">
                 <label style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;">Nombre de la mascota *</label>
                 <input id="nc-paciente-busqueda" type="text" placeholder="Escribe el nombre del paciente..." autocomplete="off"
                     style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;font-family:'Montserrat',sans-serif;outline:none;box-sizing:border-box;">
-                <div id="nc-resultados-pacientes" style="display:none;position:absolute;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.1);z-index:9999;max-height:160px;overflow-y:auto;min-width:300px;"></div>
+                <div id="nc-resultados-pacientes" style="display:none;position:absolute;top:100%;left:0;right:0;margin-top:4px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.1);z-index:9999;max-height:160px;overflow-y:auto;min-width:300px;"></div>
                 <input id="nc-paciente-id" type="hidden">
                 <input id="nc-cliente-id" type="hidden">
             </div>
@@ -1255,7 +1282,7 @@ window.abrirModalNuevaCita = function() {
                 style="flex:1;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;color:#64748b;font-weight:700;font-size:13px;cursor:pointer;font-family:'Montserrat',sans-serif;">
                 Cancelar
             </button>
-            <button onclick="window.guardarNuevaCita()"
+            <button onclick="window.guardarNuevaCita(this)"
                 style="flex:2;padding:12px;border:none;border-radius:10px;background:#032F40;color:#fff;font-weight:800;font-size:13px;cursor:pointer;font-family:'Montserrat',sans-serif;">
                 Agendar Cita
             </button>
@@ -1287,10 +1314,6 @@ window.abrirModalNuevaCita = function() {
                 .eq('organizacion_id', organizacionId)
                 .limit(8);
             if (!data || data.length === 0) { resDiv.style.display = 'none'; return; }
-            const rect = inputBusq.getBoundingClientRect();
-            resDiv.style.top = `${rect.bottom + window.scrollY}px`;
-            resDiv.style.left = `${rect.left}px`;
-            resDiv.style.width = `${rect.width}px`;
             resDiv.style.display = 'block';
             resDiv.innerHTML = data.map(p => {
                 const tutor = Array.isArray(p.clientes) ? p.clientes[0]?.nombre_completo : p.clientes?.nombre_completo;
@@ -1312,7 +1335,9 @@ window._seleccionarPacienteNuevaCita = function(pacienteId, clienteId, nombre, c
     if (container) container.style.display = 'none';
 };
 
-window.guardarNuevaCita = async function() {
+let isGuardandoCitaAgenda = false;
+window.guardarNuevaCita = async function(btn) {
+    if (isGuardandoCitaAgenda) return;
     const pacienteId = document.getElementById('nc-paciente-id')?.value;
     const clienteId  = document.getElementById('nc-cliente-id')?.value;
     const fechaHora  = document.getElementById('nc-fecha-hora')?.value;
@@ -1325,9 +1350,48 @@ window.guardarNuevaCita = async function() {
     if (!fechaHora)  { errDiv.textContent = 'Elige una fecha y hora.'; errDiv.style.display = 'block'; return; }
     errDiv.style.display = 'none';
 
-    const sesion = await obtenerSesionActiva();
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Guardando...";
+    }
+    isGuardandoCitaAgenda = true;
 
-    const nuevaCita = {
+    try {
+        const sesion = await obtenerSesionActiva();
+        
+        // Validación de Horario (Caso Especial)
+        const horariosClinica = sesion?.perfil?.horario_atencion || null;
+        if (horariosClinica && fechaHora) {
+            const fhLocal = new Date(fechaHora);
+            const diasSemana = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+            const diaClave = diasSemana[fhLocal.getDay()];
+            
+            const norm = (s) => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            let estaCerrado = false;
+            
+            if (Array.isArray(horariosClinica)) {
+                const diaConfig = horariosClinica.find(d => norm(d.dia) === norm(diaClave));
+                if (!diaConfig || (diaConfig.abierto !== true && diaConfig.abierto !== 'true' && diaConfig.abierto !== 1)) {
+                    estaCerrado = true;
+                }
+            } else if (horariosClinica[diaClave]) {
+                const hData = horariosClinica[diaClave];
+                if (hData.abierto !== true && hData.abierto !== 'true' && hData.abierto !== 1) {
+                    estaCerrado = true;
+                }
+            }
+
+            if (estaCerrado) {
+                const confirmar = await confirmacionCustom('Clínica Cerrada', `El médico no atiende los días ${diaClave}.\n¿Deseas registrar esta cita como un CASO ESPECIAL?`, 'warning');
+                if (!confirmar) {
+                    isGuardandoCitaAgenda = false;
+                    if (btn) { btn.disabled = false; btn.textContent = "Agendar Cita"; }
+                    return;
+                }
+            }
+        }
+
+        const nuevaCita = {
         organizacion_id: organizacionId,
         sucursal_id:     sucursalId,
         paciente_id:     pacienteId,
@@ -1341,17 +1405,25 @@ window.guardarNuevaCita = async function() {
         estado:         'programada',
     };
 
-    const { error } = await conexionSupabase.from('citas').insert([nuevaCita]);
-    if (error) {
-        errDiv.textContent = `Error: ${error.message}`;
-        errDiv.style.display = 'block';
-        return;
-    }
+        const { error } = await conexionSupabase.from('citas').insert([nuevaCita]);
+        if (error) {
+            errDiv.textContent = `Error: ${error.message}`;
+            errDiv.style.display = 'block';
+            return;
+        }
 
-    document.getElementById('modal-nueva-cita-dinamico')?.remove();
-    _cargarCitasEnRango();
-    cargarCitasPorConfirmar();
-    cargarSalaEspera();
-    actualizarMetricas();
-    if (typeof alertaCustom === 'function') alertaCustom('Cita agendada', 'La cita fue registrada exitosamente.', 'success');
+        document.getElementById('modal-nueva-cita-dinamico')?.remove();
+        _cargarCitasEnRango();
+        cargarCitasPorConfirmar();
+        cargarSalaEspera();
+        actualizarMetricas();
+        if (typeof alertaCustom === 'function') alertaCustom('Cita agendada', 'La cita fue registrada exitosamente.', 'success');
+    } catch (err) {
+        console.error(err);
+        errDiv.textContent = 'Hubo un error al guardar la cita. Intenta de nuevo.';
+        errDiv.style.display = 'block';
+    } finally {
+        isGuardandoCitaAgenda = false;
+        if (btn) { btn.disabled = false; btn.textContent = "Agendar Cita"; }
+    }
 };
