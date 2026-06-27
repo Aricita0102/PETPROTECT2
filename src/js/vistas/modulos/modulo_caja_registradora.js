@@ -123,7 +123,11 @@ function renderizarGrid(productos) {
     grid.innerHTML = productos.map(prod => {
         const nombre = prod.nombre_comercial || 'Sin nombre';
         const precio = prod.precio_venta ? `$${parseFloat(prod.precio_venta).toFixed(2)}` : '$0.00';
-        const sinStock = (parseFloat(prod.stock_total) || 0) <= 0;
+        
+        const cantEnCarrito = carrito.find(item => item.id === prod.id)?.cantidad || 0;
+        const stockRestante = (parseFloat(prod.stock_total) || 0) - cantEnCarrito;
+        const sinStock = stockRestante <= 0;
+        
         const icono = obtenerIconoCategoria(prod.categoria, nombre);
 
         // Si tiene imagen real, mostrarla; si no, ícono temático
@@ -135,6 +139,10 @@ function renderizarGrid(productos) {
             ? ''
             : `window.cajaMod.agregarAlCarrito('${prod.id}', \`${nombre.replace(/`/g, '\\`')}\`, ${prod.precio_venta || 0})`;
 
+        const badgeHtml = sinStock 
+            ? '<div class="caja-sin-stock-badge"><span class="material-symbols-rounded" style="font-size:12px;">block</span> Sin stock</div>'
+            : `<div class="caja-stock-badge" style="position:absolute; top:8px; right:8px; background:var(--cobalto, #032F40); color:white; padding:4px 8px; border-radius:12px; font-size:11px; font-weight:700; box-shadow:0 2px 4px rgba(0,0,0,0.2); pointer-events:none;">${stockRestante} disp.</div>`;
+
         return `
             <div class="caja-producto${sinStock ? ' sin-stock' : ''}"
                  onclick="${accionClick}"
@@ -142,9 +150,11 @@ function renderizarGrid(productos) {
                  data-id="${prod.id}"
                  role="button" tabindex="${sinStock ? -1 : 0}"
                  aria-label="${nombre} — ${precio}${sinStock ? ' (Sin stock)' : ''}">
-                <div class="caja-producto-img">
+                <div class="caja-producto-img" style="position:relative;">
                     ${contenidoImg}
-                    ${sinStock ? '<div class="caja-sin-stock-badge"><span class="material-symbols-rounded" style="font-size:12px;">block</span> Sin stock</div>' : ''}
+                    <div class="badge-container-stock">
+                        ${badgeHtml}
+                    </div>
                 </div>
                 <div class="caja-producto-nombre">${nombre}</div>
                 <div class="caja-producto-precio">${precio}</div>
@@ -361,6 +371,47 @@ function renderizarCarrito() {
             <span class="num">$${total.toFixed(2)}</span>`;
         btnCobrar.disabled = carrito.length === 0;
     }
+    
+    sincronizarGridStock();
+}
+
+function sincronizarGridStock() {
+    todosLosProductos.forEach(prod => {
+        const cant = carrito.find(item => item.id === prod.id)?.cantidad || 0;
+        const stockRestante = (parseFloat(prod.stock_total) || 0) - cant;
+        const sinStock = stockRestante <= 0;
+        
+        const card = document.querySelector(`.caja-producto[data-id="${prod.id}"]`);
+        if (card) {
+            const nombre = prod.nombre_comercial || 'Sin nombre';
+            const precio = prod.precio_venta ? `$${parseFloat(prod.precio_venta).toFixed(2)}` : '$0.00';
+            
+            // Actualizar clases y atributos
+            if (sinStock) {
+                card.classList.add('sin-stock');
+                card.setAttribute('onclick', '');
+                card.setAttribute('tabindex', '-1');
+                card.setAttribute('title', 'Sin existencias');
+                card.setAttribute('aria-label', `${nombre} — ${precio} (Sin stock)`);
+            } else {
+                card.classList.remove('sin-stock');
+                card.setAttribute('onclick', `window.cajaMod.agregarAlCarrito('${prod.id}', \`${nombre.replace(/`/g, '\\`')}\`, ${prod.precio_venta || 0})`);
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('title', 'Agregar: ' + nombre);
+                card.setAttribute('aria-label', `${nombre} — ${precio}`);
+            }
+            
+            // Actualizar el badge visual
+            const badgeCont = card.querySelector('.badge-container-stock');
+            if (badgeCont) {
+                if (sinStock) {
+                    badgeCont.innerHTML = '<div class="caja-sin-stock-badge"><span class="material-symbols-rounded" style="font-size:12px;">block</span> Sin stock</div>';
+                } else {
+                    badgeCont.innerHTML = `<div class="caja-stock-badge" style="position:absolute; top:8px; right:8px; background:var(--cobalto, #032F40); color:white; padding:4px 8px; border-radius:12px; font-size:11px; font-weight:700; box-shadow:0 2px 4px rgba(0,0,0,0.2); pointer-events:none;">${stockRestante} disp.</div>`;
+                }
+            }
+        }
+    });
 }
 
 export function cambiarCantidad(idx, delta) {
@@ -534,7 +585,13 @@ export function calcularCambioCaja() {
 }
 
 export function toggleCheckoutOpcion(opcion) {
-    checkoutOpciones[opcion] = !checkoutOpciones[opcion];
+    if (opcion === 'whatsapp') {
+        checkoutOpciones.whatsapp = true;
+        checkoutOpciones.imprimir = false;
+    } else if (opcion === 'imprimir') {
+        checkoutOpciones.whatsapp = false;
+        checkoutOpciones.imprimir = true;
+    }
     actualizarUiOpciones();
 }
 
@@ -639,6 +696,14 @@ export async function procesarPagoCheckout() {
             const linkWa = `https://api.whatsapp.com/send?phone=52${telefono}&text=${encodeURIComponent(mensajeWa)}`;
             window.open(linkWa, '_blank');
         }
+
+        // 5. Descontar stock de la memoria local
+        carrito.forEach(item => {
+            const idx = todosLosProductos.findIndex(p => p.id === item.id);
+            if (idx > -1) {
+                todosLosProductos[idx].stock_total = Math.max(0, (parseFloat(todosLosProductos[idx].stock_total) || 0) - item.cantidad);
+            }
+        });
 
         // 6. Si pide Imprimir, usar impresión local
         if (checkoutOpciones.imprimir) {
