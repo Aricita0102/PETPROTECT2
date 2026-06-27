@@ -145,7 +145,7 @@ async function cargarProductosTienda() {
                 <td><span class="code-chip">${sku}</span></td>
                 <td class="texto-derecha"><strong>${precio}</strong></td>
                 <td class="texto-derecha">
-                    <span class="${stock <= stockMin ? 'badge-estado critico' : 'badge-estado optimo'}" style="font-weight:bold; padding:4px 8px; border-radius:4px; ${stock <= stockMin ? 'background:#FEE2E2; color:#EF4444;' : 'background:#D1FAE5; color:#10B981;'}">
+                    <span class="${stock <= stockMin ? 'badge-stock critico' : 'badge-stock optimo'}" style="font-weight:bold; padding:4px 8px; border-radius:4px; ${stock <= stockMin ? 'background:#FEE2E2; color:#EF4444;' : 'background:#D1FAE5; color:#10B981;'}">
                         ${stock} <small>Unids.</small>
                     </span>
                 </td>

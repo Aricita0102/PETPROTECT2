@@ -1,0 +1,351 @@
+/* PALETA OFICIAL PROTECT PET: 
+    Azul Cobalto #032F40 | Azul Cielo #89C2D9 | Naranja #F27405 | Fondo #F5F5F5 
+*/
+
+@font-face {
+    font-family: 'Century Gothic';
+    src: local('Century Gothic');
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body {
+    font-family: 'Century Gothic', sans-serif;
+    background-color: #F5F5F5;
+    color: #032F40;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* Visor bloqueado para scrolls independientes */
+}
+
+.interfazVeterinario {
+    display: flex;
+    flex-direction: row-reverse; /* Sidebar a la derecha */
+    height: 100vh;
+    width: 100%;
+}
+
+/* --- SIDEBAR DERECHA CON SCROLL INDEPENDIENTE --- */
+.navegacionLateral {
+    width: 300px;
+    background-color: #032F40;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.bloqueSuperior {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2.5rem 1.5rem 1rem 1.5rem;
+    scrollbar-width: none;
+}
+
+.bloqueSuperior::-webkit-scrollbar { display: none; }
+
+.marca { 
+    font-weight: bold; 
+    font-size: 1.3rem; 
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 3rem; 
+}
+
+.puntoNaranja { 
+    width: 10px; 
+    height: 10px; 
+    background-color: #F27405; 
+    border-radius: 50%; 
+    margin-right: 12px; 
+}
+
+.menuInterno a {
+    display: block; 
+    color: #89C2D9; 
+    text-decoration: none; 
+    padding: 1.2rem;
+    margin-bottom: 0.8rem; 
+    border-radius: 15px; 
+    transition: 0.3s;
+}
+
+.menuInterno a.itemActivo, .menuInterno a:hover { 
+    background-color: rgba(255, 255, 255, 0.08); 
+    color: white; 
+    font-weight: bold;
+}
+
+.perfilMedico {
+    display: flex; 
+    align-items: center; 
+    gap: 12px;
+    border-top: 1px solid rgba(137, 194, 217, 0.2); 
+    padding: 1.5rem;
+    background-color: #032F40;
+}
+
+.fotoMini { 
+    width: 50px; height: 50px; 
+    background-color: #89C2D9; 
+    border-radius: 50%; 
+    background-position: center;
+    background-size: cover;
+    flex-shrink: 0;
+}
+
+.datosMedico .nombre { font-weight: bold; font-size: 0.9rem; color: white; margin: 0; }
+.datosMedico .cedula { font-size: 0.8rem; color: #F29F05; font-weight: bold; margin-bottom: 5px; }
+
+.linkCerrarSesion {
+    color: #89C2D9; 
+    text-decoration: none; 
+    font-size: 0.75rem;
+    font-weight: bold; 
+    transition: 0.3s;
+}
+.linkCerrarSesion:hover { color: #F27405; }
+
+/* --- ÁREA DE TRABAJO (CENTRAL) --- */
+.areaTrabajo {
+    flex: 1; 
+    padding: 3rem 4rem; 
+    overflow-y: auto; 
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+.areaTrabajo::-webkit-scrollbar { display: none; }
+
+.tarjetaContenedora {
+    background: white; 
+    border-radius: 35px; 
+    padding: 3rem;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.03); 
+    margin-bottom: 2.5rem;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- COMPONENTES DE FORMULARIO --- */
+.contenedor-perfil-horizontal {
+    display: grid; grid-template-columns: 220px 1fr; gap: 3rem; align-items: start;
+}
+
+.marco-foto-ajustada {
+    width: 220px; height: 220px; background: #F9FAFB;
+    border: 3px dashed #89C2D9; border-radius: 25px;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+
+.campo label { display: block; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; color: #032F40; }
+.input-moderno-f {
+    width: 100%; padding: 1rem; border: 2px solid #F5F5F5;
+    border-radius: 15px; outline: none; background: #FBFCFD; transition: 0.3s;
+}
+.input-moderno-f:focus { border-color: #89C2D9; background: white; }
+
+.grid-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1rem; }
+.grid-terciario { display: grid; grid-template-columns: 1fr 1fr 120px; gap: 1.5rem; }
+
+/* --- BOTONERÍA --- */
+.btn-naranja-chico, .btn-azul-fuerte, .btn-secundario-naranja-outline {
+    font-family: inherit; font-weight: bold; cursor: pointer; transition: 0.3s; border: none;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.btn-naranja-chico { background: #F27405; color: white; padding: 12px 20px; border-radius: 12px; margin-top: 10px; }
+.btn-naranja-chico:hover { background: #d66504; transform: translateY(-2px); }
+
+.btn-azul-fuerte { background-color: #032F40; color: white; padding: 1.2rem 2rem; border-radius: 15px; width: 100%; }
+.btn-azul-fuerte:hover { background-color: #F27405; transform: translateY(-2px); }
+
+.btn-secundario-naranja-outline {
+    background: transparent; color: #F27405; border: 2px solid #F27405;
+    padding: 14px; border-radius: 15px; width: 100%;
+}
+.btn-secundario-naranja-outline:hover { background: #F27405; color: white; }
+
+/* --- MÓDULO DE HORARIOS CREATIVO --- */
+.cabecera-flexible {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.etiqueta-pro { display: block; font-weight: bold; margin-bottom: 12px; color: #032F40; }
+
+.contenedor-chips-dias {
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; padding-bottom: 34px;
+}
+.chip-dia { cursor: pointer; }
+.chip-dia input { display: none; }
+.chip-dia span {
+    display: flex; align-items: center; justify-content: center;
+    width: 60px; height: 45px; background: #FBFCFD; border: 2px solid #F5F5F5;
+    border-radius: 15px; font-weight: bold; color: #89C2D9; transition: 0.3s;
+}
+.chip-dia input:checked + span {
+    background: #F27405; border-color: #F27405; color: white;
+    box-shadow: 0 4px 10px rgba(242, 116, 5, 0.2); transform: scale(1.05);
+}
+
+/* Tarjetas de Turnos */
+.grid-turnos-relojes {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 25px;
+}
+.tarjeta-turno {
+    background: #FBFCFD; border: 2px solid #F5F5F5; border-radius: 20px;
+    padding: 20px; transition: 0.3s; opacity: 0.6;
+}
+.tarjeta-turno.activo {
+    opacity: 1; border-color: #89C2D9; background: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+.header-turno {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 15px;
+    font-weight: bold; font-size: 0.85rem; color: #032F40;
+}
+.switch-turno { accent-color: #F27405; transform: scale(1.2); cursor: pointer; }
+
+.cuerpo-relojes {
+    display: flex; flex-direction: column; gap: 12px;
+}
+
+.reloj-input { display: flex; justify-content: space-between; align-items: center; }
+.reloj-input small { color: #F27405; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
+.reloj-input input {
+    border: 1px solid #F5F5F5; border-radius: 10px; padding: 6px;
+    font-family: inherit; color: #032F40; font-weight: bold; outline: none; background: #FBFCFD;
+}
+/* Al deshabilitar relojes pierden opacidad */
+.reloj-input input:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* --- DISEÑO MEJORADO DE DESCANSOS Y FESTIVOS --- */
+.contenedor-badges-descanso { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 10px; 
+    padding: 1.5rem;
+    background: #FBFCFD;
+    border: 2px solid #F5F5F5;
+    border-radius: 20px;
+    min-height: 80px;
+    align-items: center;
+}
+
+.badge-descanso {
+    background: #FFF5F5; 
+    color: #E53E3E; 
+    padding: 8px 16px;
+    border-radius: 12px; 
+    font-size: 0.8rem; 
+    font-weight: bold; 
+    border: 1px solid #FED7D7;
+    box-shadow: 0 2px 5px rgba(229, 62, 62, 0.1);
+    animation: fadeIn 0.3s ease;
+}
+
+.lista-festivos-check {
+    background: white; 
+    border: 2px solid #89C2D9; 
+    border-radius: 20px;
+    height: 200px; 
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.festivo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 12px;
+    transition: 0.3s;
+    margin-bottom: 5px;
+}
+
+.festivo-item:hover {
+    background-color: #F9FAFB;
+}
+
+.festivo-item span {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #032F40;
+}
+
+.festivo-item input[type="checkbox"] {
+    accent-color: #F27405;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Estilos de Scrollbar para la lista de festivos */
+.lista-festivos-check::-webkit-scrollbar { width: 6px; }
+.lista-festivos-check::-webkit-scrollbar-track { background: transparent; }
+.lista-festivos-check::-webkit-scrollbar-thumb { background: #89C2D9; border-radius: 10px; }
+
+/* --- GESTIÓN DE PERSONAL (TABLA) --- */
+.tabla-admin-header {
+    display: grid; grid-template-columns: 1.5fr 0.8fr 1.2fr 1.5fr auto;
+    gap: 15px; padding: 10px 1.2rem; color: #89C2D9; font-size: 0.75rem; font-weight: bold;
+}
+
+.lista-apilada-admin {
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- OTROS --- */
+.switch-ui { position: relative; display: inline-block; width: 45px; height: 24px; }
+.switch-ui input { opacity: 0; width: 0; height: 0; }
+.slider-round {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #89C2D9; transition: .4s; border-radius: 34px;
+}
+.slider-round:before {
+    position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+    background-color: white; transition: .4s; border-radius: 50%;
+}
+.switch-ui input:checked + .slider-round { background-color: #F27405; }
+.switch-ui input:checked + .slider-round:before { transform: translateX(21px); }
+
+.instruccion-naranja { color: #F27405; font-size: 0.8rem; font-weight: bold; margin-top: 5px; margin-bottom: 10px; display: block; }
+.subtitulo { margin-bottom: 5px !important; color: #89C2D9; font-size: 0.9rem; }
+
+.caja-codigo-mini {
+    background: #F9FAFB; border: 2px solid #89C2D9; padding: 0.8rem 1.5rem;
+    border-radius: 12px; text-align: center; font-weight: bold;
+    color: #032F40; font-size: 1.2rem; letter-spacing: 2px;
+}
+
+#btnEliminarCuenta {
+    background-color: #ff4d4d !important; border: none; color: white; transition: 0.3s;
+}
+
+#btnEliminarCuenta:hover {
+    background-color: #cc0000 !important; box-shadow: 0 4px 15px rgba(204, 0, 0, 0.3); transform: scale(0.98);
+}
+
+@media (max-width: 1300px) {
+    .contenedor-perfil-horizontal { grid-template-columns: 180px 1fr; gap: 2rem; }
+    .marco-foto-ajustada { width: 180px; height: 180px; }
+    .navegacionLateral { width: 260px; }
+    .areaTrabajo { padding: 2rem 3rem; }
+    .grid-turnos-relojes { grid-template-columns: 1fr; }
+}
+
+.enlace-volver-panel {
+    text-decoration: none; color: #89C2D9; font-weight: bold; font-size: 1rem;
+    display: flex; align-items: center; gap: 8px; transition: 0.3s; margin-bottom: 30px; margin-top: 30px;
+}

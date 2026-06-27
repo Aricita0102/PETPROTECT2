@@ -23,7 +23,7 @@ import{i as e,n as t}from"./conexion-DiH-JvMT.js";var n=null,r=!1;async function
                 <td><span class="code-chip">${c}</span></td>
                 <td class="texto-derecha"><strong>${i}</strong></td>
                 <td class="texto-derecha">
-                    <span class="${o<=s?`badge-estado critico`:`badge-estado optimo`}" style="font-weight:bold; padding:4px 8px; border-radius:4px; ${o<=s?`background:#FEE2E2; color:#EF4444;`:`background:#D1FAE5; color:#10B981;`}">
+                    <span class="${o<=s?`badge-stock critico`:`badge-stock optimo`}" style="font-weight:bold; padding:4px 8px; border-radius:4px; ${o<=s?`background:#FEE2E2; color:#EF4444;`:`background:#D1FAE5; color:#10B981;`}">
                         ${o} <small>Unids.</small>
                     </span>
                 </td>

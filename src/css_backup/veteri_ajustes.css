@@ -1,0 +1,470 @@
+/* ============================================================
+   CONFIGURACIÓN MAESTRA - PROTECT PET (ESTILO "CLEVER" DASHBOARD)
+   Paleta: Azul Cobalto: #032F40 | Azul Cielo: #89C2D9 | Naranja: #F27405
+   Fuente: Century Gothic
+   ============================================================ */
+
+:root {
+    /* Brand Colors */
+    --cobalto: #032F40;
+    --cielo: #89C2D9;
+    --naranja: #F27405;
+    
+    /* Variables Estructurales Estilo "Clever" (Clean & Flat) */
+    --fondo-main: #F4F7FB;       /* Fondo gris-azulado muy claro del área de trabajo */
+    --fondo-tarjeta: #FFFFFF;    /* Tarjetas y sidebar en blanco puro */
+    --borde-suave: #E2E8F0;      /* Gris muy sutil para delimitadores e inputs */
+    --texto-oscuro: #0F172A;     /* Texto principal y títulos (Casi negro) */
+    --texto-secundario: #64748B; /* Texto de soporte (Gris pizarra) */
+    
+    --sidebar-width: 260px;
+    --transition: all 0.2s ease-in-out;
+    --radio-tarjeta: 16px;       /* Bordes más curvos tipo app moderna */
+    --radio-elementos: 8px;      /* Para botones e inputs */
+    --sombra-focus: 0 0 0 3px rgba(137, 194, 217, 0.2); /* Halo de focus estilo SaaS */
+}
+
+@font-face {
+    font-family: 'Century Gothic';
+    src: local('Century Gothic');
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Century Gothic', sans-serif;
+    background-color: var(--fondo-main);
+    color: var(--texto-oscuro);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+/* --- ESTRUCTURA MACRO --- */
+.interfazVeterinario {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100%;
+}
+
+/* ============================================================
+   BARRA LATERAL PRINCIPAL (ESTILO CLARO Y LIMPIO)
+   ============================================================ */
+.navegacionLateral {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background-color: var(--fondo-tarjeta); /* Ahora es blanca */
+    border-right: 1px solid var(--borde-suave); /* Borde delimitador sutil */
+    padding: 2rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    z-index: 1500;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--borde-suave) transparent;
+}
+.navegacionLateral::-webkit-scrollbar { width: 4px; }
+.navegacionLateral::-webkit-scrollbar-thumb { background: var(--borde-suave); border-radius: 10px; }
+
+.grupo-menu { margin-bottom: 2rem; }
+.titulo-grupo {
+    font-size: 0.75rem; color: var(--texto-secundario); font-weight: 600;
+    letter-spacing: 0.5px; margin-bottom: 0.8rem; padding-left: 12px;
+}
+
+/* Enlaces Sidebar + Microinteracciones */
+.menuInterno a, .btn-acordeon-menu {
+    display: flex !important; align-items: center; gap: 12px;
+    color: var(--texto-secundario); /* Texto gris por defecto */
+    text-decoration: none; padding: 0.7rem 12px; margin-bottom: 0.25rem;
+    border-radius: var(--radio-elementos); transition: var(--transition);
+    font-size: 0.9rem; font-family: 'Century Gothic', sans-serif; font-weight: 600;
+    border: none; background: transparent; cursor: pointer; width: 100%;
+}
+.menuInterno a:hover, .btn-acordeon-menu:hover { 
+    background-color: var(--fondo-main); 
+    color: var(--texto-oscuro); 
+}
+
+/* Elemento Activo (El toque Cobalto) */
+.menuInterno a.itemActivo { 
+    background-color: rgba(3, 47, 64, 0.05); /* Cobalto súper transparente */
+    color: var(--cobalto); 
+}
+.menuInterno a.itemActivo .material-symbols-rounded { color: var(--cobalto); }
+
+/* Acordeón */
+.btn-acordeon-izq { display: flex; align-items: center; gap: 12px; }
+.icono-flecha { transition: transform 0.3s ease; }
+.icono-flecha.rotada { transform: rotate(180deg); }
+.submenu-acordeon {
+    display: none; flex-direction: column; padding-left: 1.5rem;
+    margin-top: 0.25rem; animation: slideDown 0.2s ease-out;
+}
+.submenu-acordeon a { font-size: 0.85rem !important; padding: 0.6rem 1rem !important; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Perfil Inferior (Sidebar) */
+.perfilMedico {
+    margin-top: auto; padding-top: 1.5rem; display: flex; align-items: center; gap: 12px;
+    border-top: 1px solid var(--borde-suave); flex-shrink: 0;
+}
+.fotoMini { width: 40px; height: 40px; border-radius: 50%; background-color: var(--naranja); background-size: cover;  }
+.datosMedico .nombre { font-weight: bold; font-size: 0.85rem; color: var(--texto-oscuro); margin: 0; }
+.linkCerrarSesion { color: var(--naranja); text-decoration: none; font-size: 0.75rem; font-weight: bold; transition: var(--transition); }
+.linkCerrarSesion:hover { color: var(--cobalto); }
+
+/* ============================================================
+   ÁREA DE TRABAJO Y ENCABEZADO 
+   ============================================================ */
+.areaTrabajo {
+    flex: 1; height: 100vh; overflow-y: auto;
+    background-color: var(--fondo-main); 
+    padding: 0; 
+}
+
+/* Header Limpio */
+.encabezadoDashboard {
+    background-color: var(--fondo-tarjeta);
+    padding: 1.5rem 3rem;
+    border-bottom: 1px solid var(--borde-suave);
+    display: flex; justify-content: space-between; align-items: center; 
+    margin-bottom: 2rem;
+    position: sticky; top: 0; z-index: 10;
+}
+
+.contenedor-titulo-logo { display: flex; align-items: center; gap: 1rem; }
+.titulos-seccion h1 { font-size: 1.5rem; color: var(--texto-oscuro); margin: 0; font-weight: bold; }
+
+.datos-clinica-header { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.textos-clinica h2 { font-size: 0.85rem; color: var(--texto-secundario); font-weight: normal; }
+
+.enlace-volver-panel {
+    display: flex; align-items: center; gap: 8px; color: var(--texto-oscuro); 
+    text-decoration: none; font-weight: bold; font-size: 0.9rem;
+    padding: 0.5rem 1rem; border-radius: var(--radio-elementos); transition: var(--transition);
+    border: 1px solid transparent; background-color: transparent;
+}
+.enlace-volver-panel:hover { background-color: var(--fondo-main); border-color: var(--borde-suave); }
+.enlace-volver-panel:hover .flecha-volver { transform: translateX(-4px); }
+
+/* ============================================================
+   TARJETAS DE CONTENIDO (PANELES PLANOS ESTILO CLEVER)
+   ============================================================ */
+.seccion-spa { display: none; }
+.seccion-spa.activa { display: block; animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Contenedor Grid Principal (Para usar la estructura 2fr 1fr si lo deseas) */
+.grid-layout-principal {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    align-items: start;
+    padding: 0 3rem; /* Margen general del contenido */
+}
+
+/* Tarjetas Planas sin sombra gruesa */
+.tarjetaContenedora {
+    background: var(--fondo-tarjeta);
+    border: 1px solid var(--borde-suave);
+    border-radius: var(--radio-tarjeta);
+    padding: 2rem;
+    /* Se elimina el margen lateral para que el CSS Grid (o el padding del padre) haga el trabajo */
+    margin-bottom: 1.5rem; 
+    box-shadow: none; /* Look plano */
+    transition: var(--transition);
+}
+
+.tarjetaContenedora h3 { font-size: 1.15rem; color: var(--texto-oscuro); margin-bottom: 5px; font-weight: bold; }
+.subtitulo { color: var(--texto-secundario); font-size: 0.85rem; margin-bottom: 1.5rem; display: block; }
+
+/* ============================================================
+   LAYOUT DEL FORMULARIO Y LA FOTO
+   ============================================================ */
+.contenedor-perfil-horizontal { display: flex; flex-direction: column; gap: 2rem; }
+.columna-foto { display: flex; flex-direction: row; align-items: center; gap: 1.5rem; }
+
+.marco-foto-ajustada {
+    width: 80px; height: 80px; border-radius: 50%;
+    background-color: var(--fondo-main); position: relative; display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--borde-suave); color: var(--texto-secundario); font-weight: bold; overflow: hidden; 
+}
+.marco-foto-ajustada::after {
+    content: '\e412'; font-family: 'Material Symbols Rounded'; position: absolute; bottom: 0; right: 0;
+    background-color: var(--fondo-tarjeta); color: var(--cobalto); width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; border: 1px solid var(--borde-suave); font-size: 12px;
+}
+
+.btn-naranja-chico {
+    background-color: var(--fondo-tarjeta); color: var(--texto-oscuro); border: 1px solid var(--borde-suave); 
+    border-radius: var(--radio-elementos); padding: 0 1rem; height: 36px; font-weight: bold;
+    font-family: 'Century Gothic', sans-serif; cursor: pointer; transition: var(--transition);
+}
+.btn-naranja-chico:hover { background-color: var(--fondo-main); }
+
+.pie-foto {
+    margin: 0 !important; background-color: transparent !important; color: #EF4444 !important;
+    padding: 0 1rem; height: 36px; display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radio-elementos); font-weight: bold; font-size: 0.85rem !important; cursor: pointer; transition: var(--transition); border: none;
+}
+.pie-foto:hover { background-color: #FEF2F2 !important; }
+
+/* ============================================================
+   GRID DE INPUTS Y MICROINTERACCIONES
+   ============================================================ */
+.columna-datos-form { width: 100%; }
+.grid-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+.grid-terciario { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+
+.campo label { display: block; font-weight: 600; font-size: 0.8rem; margin-bottom: 6px; color: var(--texto-secundario); }
+
+/* Inputs Estilo Limpio (Halo de color al hacer focus) */
+.input-moderno-f, .select-trigger {
+    width: 100%; height: 40px; 
+    padding: 0 14px; 
+    border: 1px solid var(--borde-suave);
+    border-radius: var(--radio-elementos);
+    outline: none; background: var(--fondo-tarjeta);
+    transition: var(--transition); 
+    font-family: 'Century Gothic', sans-serif;
+    font-size: 0.9rem; color: var(--texto-oscuro); display: flex; align-items: center;
+}
+.input-moderno-f::placeholder { color: #94A3B8; }
+
+.input-moderno-f:focus, .input-moderno-f:focus-within, .select-trigger:hover { 
+    border-color: var(--cielo); 
+    box-shadow: var(--sombra-focus); 
+}
+.field-readonly { background: var(--fondo-main); color: var(--texto-secundario); cursor: not-allowed; border-color: transparent; }
+
+/* Checkboxes */
+.contenedor-checkbox-finpay {
+    display: flex; align-items: flex-start; gap: 12px; padding: 1rem; border: 1px solid var(--borde-suave);
+    border-radius: var(--radio-elementos); cursor: pointer; transition: var(--transition);
+}
+.contenedor-checkbox-finpay:hover { background-color: var(--fondo-main); }
+.contenedor-checkbox-finpay:has(input:checked) { border-color: var(--cobalto); background: rgba(137, 194, 217, 0.05); }
+
+/* ============================================================
+   BOTONES DE ACCIÓN PRINCIPALES
+   ============================================================ */
+.btn-azul-fuerte {
+    background-color: var(--cobalto); color: white; border: none;
+    height: 40px; padding: 0 1.5rem; border-radius: var(--radio-elementos); 
+    font-weight: bold; font-size: 0.9rem; font-family: 'Century Gothic', sans-serif;
+    cursor: pointer; transition: var(--transition); width: max-content; min-width: 150px; 
+}
+.btn-azul-fuerte:hover { background-color: #021f2b; }
+.btn-azul-fuerte:active { transform: translateY(1px); }
+
+.btn-separado-top { margin-top: 1rem; }
+
+.btn-secundario-naranja-outline {
+    background: transparent; color: var(--texto-oscuro); border: 1px solid var(--borde-suave); 
+    height: 40px; padding: 0 1.5rem; border-radius: var(--radio-elementos); font-weight: bold; font-family: 'Century Gothic', sans-serif;
+    cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center;
+}
+.btn-secundario-naranja-outline:hover { background: var(--fondo-main); border-color: #CBD5E1; }
+
+/* ============================================================
+   OTROS COMPONENTES (Dropdowns, Tablas)
+   ============================================================ */
+.dropdown-especialidades { position: relative; width: 100%; }
+.select-trigger { justify-content: space-between; cursor: pointer; }
+.select-trigger .flecha-v { color: var(--texto-secundario); font-size: 0.8rem; }
+.opciones-especialidad {
+    display: none; position: absolute; top: 105%; left: 0; width: 100%;
+    background: white; border: 1px solid var(--borde-suave); border-radius: var(--radio-elementos);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); max-height: 250px; overflow-y: auto; z-index: 100; padding: 0.5rem; 
+}
+.opciones-especialidad::-webkit-scrollbar { width: 4px; }
+.opciones-especialidad::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 10px; }
+
+.categoria-esp { font-size: 0.75rem; color: var(--texto-secundario); font-weight: bold; text-transform: uppercase; margin: 10px 0 5px 5px; }
+.opciones-especialidad label { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+.opciones-especialidad label:hover { background-color: var(--fondo-main); }
+
+.caja-codigo-mini {
+    background-color: var(--fondo-main); border: 1px dashed var(--borde-suave);
+    height: 40px; border-radius: var(--radio-elementos); display: flex; align-items: center; justify-content: center;
+    letter-spacing: 1.5px; color: var(--texto-oscuro); font-weight: bold; font-size: 1.05rem; cursor: copy; transition: var(--transition);
+}
+.caja-codigo-mini:hover { border-color: var(--cobalto); color: var(--cobalto); background-color: white; }
+
+.cabeceraTarjeta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.conteoCitas { background: var(--fondo-main); color: var(--texto-oscuro); padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
+.tabla-admin-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 1rem; padding: 0.8rem 1rem; background: var(--fondo-main); border-radius: var(--radio-elementos); font-weight: bold; font-size: 0.75rem; color: var(--texto-secundario); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ============================================================
+   ESTILOS PARA FIRMA DIGITAL
+   ============================================================ */
+.contenedor-firma-upload { display: flex; align-items: center; gap: 1.5rem; margin-top: 0.5rem; background: transparent; padding: 0; }
+.marco-firma-ajustada {
+    width: 200px; height: 80px; background-color: var(--fondo-main);
+    border: 1px dashed var(--borde-suave); border-radius: var(--radio-elementos);
+    display: flex; align-items: center; justify-content: center; overflow: hidden; transition: var(--transition);
+}
+.marco-firma-ajustada:hover { border-color: var(--texto-secundario); }
+.acciones-firma { display: flex; gap: 10px; align-items: center; }
+
+/* ============================================================
+   🌟 SECCIONES SAAS PREMIUM: SUSCRIPCIÓN Y FACTURACIÓN
+   ============================================================ */
+.bento-grid-suscripcion .tarjeta-bento-sub {
+    background: var(--fondo-tarjeta); border: 1px solid var(--borde-suave); border-radius: var(--radio-tarjeta);
+    padding: 1.5rem; box-shadow: none; /* Look plano */
+}
+
+.tarjeta-upgrade-saas { background: var(--cobalto); padding: 2rem; border-radius: var(--radio-tarjeta); color: white; margin-top: 1.5rem; }
+
+/* Historial de Facturas */
+.historial-pagos-saas { margin-top: 30px; border-top: 1px solid var(--borde-suave); padding-top: 20px; }
+.historial-pagos-saas table th { border-bottom: 1px solid var(--borde-suave); padding-bottom: 10px; font-weight: 600; color: var(--texto-secundario); text-transform: uppercase; font-size: 0.8rem;}
+.historial-pagos-saas table td { border-bottom: 1px solid var(--borde-suave); padding: 14px 8px; color: var(--texto-oscuro); font-size: 0.9rem; }
+
+/* Layout de Facturación */
+.grid-SaaS-facturacion { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem; }
+
+/* Horarios (Adaptación plana) */
+.configurador-horarios-simple { border: 1px solid var(--borde-suave); border-radius: var(--radio-tarjeta); overflow: hidden; }
+.encabezado-dias-grid { display: grid; grid-template-columns: 1fr 1fr 2fr; padding: 12px 1rem; background: var(--fondo-main); border-bottom: 1px solid var(--borde-suave); font-weight: bold; font-size: 0.8rem; color: var(--texto-secundario); text-transform: uppercase; }
+.fila-dia-horario { display: grid; grid-template-columns: 1fr 1fr 2fr; padding: 1rem; border-bottom: 1px solid var(--borde-suave); align-items: center; }
+.fila-dia-horario:last-child { border-bottom: none; }
+.dia-nombre { color: var(--texto-oscuro); font-size: 0.9rem; }
+.dia-relojes { display: flex; align-items: center; gap: 10px; }
+
+/* ============================================================
+   RESPONSIVO (MÓVILES Y TABLETS)
+   ============================================================ */
+.btn-hamburguesa { display: none; }
+
+@media (max-width: 1100px) {
+    :root { --sidebar-width: 240px; }
+    .grid-layout-principal { grid-template-columns: 1fr; padding: 0 1.5rem; }
+    .grid-dual { grid-template-columns: 1fr; }
+    .grid-SaaS-facturacion { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    .btn-hamburguesa { display: flex; position: fixed; top: 12px; left: 12px; z-index: 2000; background: white; color: var(--texto-oscuro); border: 1px solid var(--borde-suave); width: 40px; height: 40px; border-radius: 8px; cursor: pointer; align-items: center; justify-content: center; }
+
+    .navegacionLateral { position: fixed; left: -110%; top: 0; transition: var(--transition); border-right: none; }
+    .sidebar-abierto .navegacionLateral { left: 0; }
+    .sidebar-abierto::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1400; }
+
+    .areaTrabajo { padding-top: 4rem; } /* Espacio para el header en móvil */
+    .encabezadoDashboard { padding: 1rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1rem; position: relative; }
+    .grid-layout-principal { padding: 0 1rem; }
+    .tarjetaContenedora { padding: 1.5rem; margin-bottom: 1rem; }
+    
+    .columna-foto { flex-direction: column; align-items: flex-start; }
+    .contenedor-firma-upload { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .btn-azul-fuerte { width: 100%; }
+    
+    .encabezado-dias-grid { display: none; }
+    .fila-dia-horario { grid-template-columns: 1fr; gap: 10px; }
+}
+
+/* ============================================================
+   🌟 NUEVAS ADICIONES: MODALES, CATÁLOGO CRUD
+   ============================================================ */
+
+/* Modal de Seguridad (Color sólido, libre de Glashmorphism) */
+.overlay-modal-seguro {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(15, 23, 42, 0.7); /* Oscuro sólido sin blur */
+    display: none; justify-content: center; align-items: center; z-index: 9999;
+    opacity: 0; transition: opacity 0.3s ease;
+}
+.overlay-modal-seguro.activo { display: flex; opacity: 1; }
+
+.modal-glass {
+    background: var(--fondo-tarjeta); /* Blanco sólido */
+    border: 1px solid var(--borde-suave);
+    border-radius: var(--radio-tarjeta); padding: 2.5rem; width: 90%; max-width: 450px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: translateY(20px); transition: transform 0.3s ease;
+}
+.overlay-modal-seguro.activo .modal-glass { transform: translateY(0); }
+
+/* Acciones Catálogo (Editar/Eliminar) */
+.acciones-servicio { display: flex; gap: 8px; }
+.btn-icono-accion {
+    background: var(--fondo-main); border: 1px solid var(--borde-suave);
+    color: var(--texto-secundario); width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition);
+}
+.btn-icono-accion.editar:hover { background: rgba(137, 194, 217, 0.1); color: var(--cobalto); border-color: var(--cielo); }
+.btn-icono-accion.eliminar:hover { background: #FEF2F2; color: #DC2626; border-color: #FECACA; }
+/* ==========================================
+   SUBMENÚ ESTILO CORPORATIVO (NO TRANSLÚCIDO)
+   ========================================== */
+.submenu-flotante {
+    position: absolute;
+    top: 100%;
+    left: 0;
+
+    min-width: 220px;
+
+    background: #FFFFFF;
+    border: 1px solid #dcdcdc;
+
+    border-radius: 0; /* SIN REDONDEADO */
+
+    padding: 0;
+    gap: 0;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,.12);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translateY(8px);
+
+    transition: all .2s ease;
+
+    z-index: 2000;
+}
+.item-submenu {
+    display: flex !important;
+
+    align-items: center;
+
+    width: 100%;
+
+    padding: 12px 16px;
+
+    border-radius: 0; /* SIN REDONDEADO */
+
+    background: #FFFFFF;
+
+    color: #666;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    text-decoration: none;
+
+    border-bottom: 1px solid #ececec;
+
+    transition: background .15s ease;
+}
+.item-submenu:hover {
+    background: #F27405; /* naranja PET PROTECT */
+    color: #FFFFFF;
+
+    transform: none;
+    box-shadow: none;
+}
+.item-submenu .material-symbols-rounded {
+    font-size: 18px;
+    color: #999;
+    transition: inherit;
+}
+
+.item-submenu:hover .material-symbols-rounded {
+    color: #FFFFFF;
+}

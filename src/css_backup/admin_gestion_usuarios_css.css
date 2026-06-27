@@ -1,0 +1,258 @@
+/* ============================================================
+   GESTIÓN DE PERSONAL - PROTECT PET (ADMIN)
+   Fuente: Century Gothic
+   ============================================================ */
+
+@font-face {
+    font-family: 'Century Gothic';
+    src: local('Century Gothic');
+}
+
+/* --- REINICIO GLOBAL DE BOTONES (CRUCIAL) --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+button {
+    font-family: 'Century Gothic', sans-serif;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+body {
+    font-family: 'Century Gothic', sans-serif;
+    background-color: #F5F5F5;
+    color: #032F40;
+    padding: 2.5rem;
+}
+
+/* --- NAVEGACIÓN --- */
+.botonVolver {
+    text-decoration: none;
+    color: #89C2D9;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 20px;
+    transition: color 0.3s;
+}
+.botonVolver:hover { color: #032F40; }
+
+.contenedorGestion {
+    max-width: 1000px; /* Un poco más ancho para que quepan las fechas */
+    margin: 0 auto;
+}
+
+.barraAcciones {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+}
+
+.textoCabecera h1 { font-size: 2.2rem; }
+.textoCabecera p { color: #89C2D9; font-weight: bold; margin-top: 5px; }
+
+.etiqueta {
+    background: white;
+    padding: 8px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    color: #032F40;
+    font-size: 0.9rem;
+}
+
+/* --- PESTAÑAS --- */
+.pestanasNavegacion {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #E0E0E0;
+}
+
+.pestana {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #89C2D9;
+    transition: all 0.3s;
+}
+
+.pestana.activa {
+    color: #032F40;
+    border-bottom: 4px solid #F29F05;
+}
+
+/* --- AVATAR --- */
+.avatarCircular {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    background-color: #89C2D9;
+    flex-shrink: 0;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.avatarCircular img { width: 100%; height: 100%; object-fit: cover; }
+.fondo-azul { background-color: #89C2D9; }
+.fondo-naranja { background-color: #F29F05; }
+.fondo-amarillo { background-color: #F2CB05; color: #032F40; }
+.fondo-rojo { background-color: #D32F2F; }
+
+/* =========================================================
+   DISEÑO TARJETAS (SOLICITUDES Y ACTIVOS)
+   ========================================================= */
+
+.lista-vertical-personal, .seccionSolicitudes {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.tarjeta-personal {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid #EFF1F3;
+    transition: transform 0.2s ease;
+}
+
+.tarjeta-personal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* --- ESTILO ADMIN (TÚ) - IMAGEN 1 --- */
+/* Fondo azul oscuro, borde naranja a la izquierda */
+.tarjeta-personal.estilo-admin {
+    background-color: #032F40;
+    color: white;
+    border: none;
+    border-left: 10px solid #F29F05; 
+    padding-left: 1.8rem;
+}
+
+/* Textos dentro de Admin */
+.tarjeta-personal.estilo-admin .nombre-usuario { color: white; }
+.tarjeta-personal.estilo-admin .email-usuario { color: #89C2D9; }
+.tarjeta-personal.estilo-admin .rol-usuario { color: #F29F05; } /* Naranja */
+
+
+/* --- ESTRUCTURA INTERNA --- */
+.bloque-izquierdo {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.info-usuario {
+    display: flex;
+    flex-direction: column;
+}
+
+.nombre-usuario {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #032F40;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.email-usuario {
+    font-size: 0.85rem;
+    color: #89C2D9; /* Azul cielo */
+}
+
+.fecha-info {
+    font-size: 0.75rem;
+    color: #999;
+    margin-top: 4px;
+}
+.tarjeta-personal.estilo-admin .fecha-info { color: #ccc; }
+
+/* --- BLOQUE DERECHO (ROL Y BOTONES) --- */
+.bloque-derecho {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-align: right;
+}
+
+.rol-usuario {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    color: #89C2D9;
+}
+
+/* --- BOTONES DE ACCIÓN --- */
+.contenedor-botones {
+    display: flex;
+    gap: 10px;
+}
+
+/* Botón Sólido (Como en la imagen Eliminar/Reactivar) */
+.btn-solido {
+    padding: 8px 20px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: white;
+    transition: 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-rojo {
+    background-color: #D32F2F; /* Rojo */
+}
+.btn-rojo:hover { background-color: #B71C1C; }
+
+.btn-azul {
+    background-color: #032F40; /* Azul Oscuro */
+}
+.btn-azul:hover { background-color: #054a63; }
+
+/* Botón Suspender (Estilo texto o borde, para activos normales) */
+.btn-suspender-borde {
+    color: #D32F2F;
+    border: 1px solid #D32F2F;
+    padding: 6px 15px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.btn-suspender-borde:hover {
+    background-color: #D32F2F;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tarjeta-personal {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    .bloque-izquierdo { flex-direction: column; }
+    .bloque-derecho { flex-direction: column; align-items: center; }
+    .tarjeta-personal.estilo-admin { border-left: none; border-top: 8px solid #F29F05; }
+}

@@ -1,0 +1,391 @@
+/* ==========================================================================
+   MÓDULO: CHECKOUT CLÍNICO VETERINARIO (CAJA)
+   SISTEMA: PET PROTECT (QUETZALIA)
+   UBICACIÓN: /src/css/modulo_checkout.css
+   ========================================================================== */
+
+/* 🌟 VARIABLES LOCALES (Aisladas para evitar conflictos con el resto de la SPA) */
+#vista-checkout-clinico {
+    --checkout-cobalto: #032F40;
+    --checkout-naranja: #F27405;
+    --checkout-naranja-claro: rgba(242, 116, 5, 0.1);
+    --checkout-naranja-hover: #d96804;
+    --checkout-blanco: #FFFFFF;
+    --checkout-fondo: #F8FAFC;
+    --checkout-texto: #64748B;
+    --checkout-border: #e2e8f0;
+    --checkout-verde: #38A169;
+    --checkout-rojo: #E53E3E;
+    
+    --radio-panel: 24px;
+    --radio-card: 16px;
+    --sombra-panel: 0 10px 30px rgba(3, 47, 64, 0.08);
+    
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    color: var(--checkout-texto);
+    background-color: var(--checkout-fondo);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#vista-checkout-clinico * {
+    box-sizing: border-box;
+}
+
+/* 🌟 TIPOGRAFÍA ESTRICTA */
+#vista-checkout-clinico h1, 
+#vista-checkout-clinico h2, 
+#vista-checkout-clinico h3, 
+#vista-checkout-clinico .font-titulos {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--checkout-cobalto);
+    margin: 0;
+}
+
+/* Requisito UX: Forzar Century Gothic en botones e inputs */
+#vista-checkout-clinico button, 
+#vista-checkout-clinico input,
+#vista-checkout-clinico select {
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif !important;
+}
+
+/* 🌟 ESTRUCTURA BENTO PRINCIPAL */
+.checkout-container {
+    width: 100%;
+    max-width: 1100px;
+    background: var(--checkout-blanco);
+    border-radius: var(--radio-panel);
+    box-shadow: var(--sombra-panel);
+    display: flex;
+    flex-direction: column;
+    height: 85vh;
+    max-height: 800px;
+    overflow: hidden;
+}
+
+.checkout-header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--checkout-border);
+    background: var(--checkout-blanco);
+    z-index: 10;
+}
+
+.checkout-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.checkout-content {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+    background: var(--checkout-fondo);
+    /* Scrollbar elegante webkit */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.checkout-content::-webkit-scrollbar { width: 6px; }
+.checkout-content::-webkit-scrollbar-track { background: transparent; }
+.checkout-content::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+
+.checkout-sidebar {
+    width: 350px;
+    background: var(--checkout-blanco);
+    border-left: 1px solid var(--checkout-border);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* 🌟 STEPPER (Navegación de Pasos Superiores) */
+.stepper-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    background-color: var(--checkout-border);
+    color: var(--checkout-texto);
+    transition: all 0.3s ease;
+}
+
+.step-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--checkout-texto);
+    transition: color 0.3s ease;
+}
+
+.step-line {
+    flex: 1;
+    height: 4px;
+    background-color: var(--checkout-border);
+    margin: 0 16px;
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+}
+
+/* Estados del Stepper */
+.step-item.active .step-circle {
+    background-color: var(--checkout-cobalto);
+    color: var(--checkout-blanco);
+}
+.step-item.active .step-text {
+    color: var(--checkout-cobalto);
+}
+.step-item.completed .step-circle {
+    background-color: var(--checkout-verde);
+    color: var(--checkout-blanco);
+}
+.step-item.completed .step-text {
+    color: var(--checkout-verde);
+}
+.step-line.completed {
+    background-color: var(--checkout-verde);
+}
+
+/* 🌟 ACORDEONES (Diseño Clínico Expandible para Categorías) */
+.acordeon-card {
+    border: 1px solid var(--checkout-border);
+    border-radius: 12px;
+    background: var(--checkout-blanco);
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.acordeon-header {
+    width: 100%; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 16px 20px; 
+    background: var(--checkout-fondo); 
+    border-bottom: 1px solid transparent;
+    cursor: pointer; 
+    transition: background 0.2s;
+}
+
+.acordeon-header:hover { 
+    background: #f1f5f9; 
+}
+
+.acordeon-header.abierto { 
+    border-bottom-color: var(--checkout-border); 
+    background: var(--checkout-blanco); 
+}
+
+.acordeon-icono-flecha { 
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    color: var(--checkout-cobalto); 
+}
+
+.acordeon-icono-flecha.rotado { 
+    transform: rotate(180deg); 
+}
+
+.acordeon-contenido { 
+    padding: 0; 
+    display: none; 
+}
+
+.acordeon-contenido.abierto { 
+    display: block; 
+    animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+@keyframes slideDown { 
+    from { opacity: 0; transform: translateY(-10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+/* 🌟 TARJETAS DE SELECCIÓN (Entregables y Metodos de Pago) */
+.option-card {
+    background: var(--checkout-blanco);
+    border: 2px solid var(--checkout-border);
+    border-radius: var(--radio-card);
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.option-card:hover { 
+    border-color: var(--checkout-cobalto); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.option-card.selected.whatsapp { 
+    border-color: #25D366; 
+    background-color: #f0fdf4; 
+}
+
+.option-card.selected.impresion { 
+    border-color: var(--checkout-cobalto); 
+    background-color: #e0f2fe; 
+}
+
+.option-card.metodo.selected { 
+    border-color: var(--checkout-naranja); 
+    background-color: var(--checkout-naranja-claro); 
+}
+
+/* 🌟 BOTONES DE ACCIÓN */
+.btn-checkout-primario {
+    background-color: var(--checkout-naranja);
+    color: var(--checkout-blanco);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 10px rgba(242, 116, 5, 0.2);
+}
+
+.btn-checkout-primario:hover { 
+    background-color: var(--checkout-naranja-hover); 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 15px rgba(242, 116, 5, 0.3);
+}
+
+.btn-checkout-secundario {
+    background-color: var(--checkout-blanco);
+    color: var(--checkout-texto);
+    border: 1px solid var(--checkout-border);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-checkout-secundario:hover { 
+    background-color: var(--checkout-fondo); 
+    color: var(--checkout-cobalto); 
+    border-color: var(--checkout-cobalto);
+}
+
+/* 🌟 UTILIDADES Y VISTAS */
+.view-step { 
+    display: none; 
+    animation: fadeIn 0.4s ease; 
+    flex-direction: column;
+    height: 100%;
+}
+
+.view-step.active { 
+    display: flex; 
+}
+
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+.flex-center { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+
+.w-full { 
+    width: 100%; 
+}
+
+/* ==========================================================================
+   🖨️ LÓGICA DE IMPRESIÓN TÉRMICA (MINIPRINTER 58mm/80mm)
+   ========================================================================== */
+@media print {
+    /* Oculta absolutamente toda la interfaz gráfica de la SPA */
+    body * { 
+        visibility: hidden; 
+    }
+    
+    .no-imprimir { 
+        display: none !important; 
+    }
+    
+    /* Solo hace visible el contenedor del ticket y sus hijos */
+    #zona-impresion-ticket, #zona-impresion-ticket * { 
+        visibility: visible; 
+    }
+    
+    /* Posiciona el ticket en la esquina superior izquierda para la impresora */
+    #zona-impresion-ticket {
+        position: absolute; 
+        left: 0; 
+        top: 0; 
+        width: 80mm; /* Adaptable a 58mm si tu impresora lo requiere */
+        padding: 0; 
+        margin: 0;
+        font-family: 'Courier New', Courier, monospace; 
+        font-size: 12px; 
+        color: #000;
+    }
+
+    /* Fuerza la eliminación de fondos, sombras y márgenes que interfieran */
+    @page { margin: 0; }
+    * { box-shadow: none !important; background: transparent !important; }
+}
+
+/* 🌟 RESPONSIVIDAD (Dispositivos Móviles) */
+@media (max-width: 768px) {
+    .checkout-container {
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    .checkout-body {
+        flex-direction: column;
+    }
+    .checkout-sidebar {
+        width: 100%;
+        height: auto;
+        border-left: none;
+        border-top: 1px solid var(--checkout-border);
+        padding: 20px;
+    }
+    .stepper-nav {
+        overflow-x: auto;
+        padding-bottom: 8px;
+    }
+    .step-text {
+        display: none; /* Ocultar texto del stepper en móvil para ganar espacio */
+    }
+}

@@ -1,0 +1,133 @@
+/* Configuración de Fuente Century Gothic */
+@font-face {
+    font-family: 'Century Gothic';
+    src: local('Century Gothic');
+}
+
+/* Colores Directos según Paleta Proporcionada */
+/* Azul Cobalto: #032F40 | Azul Cielo: #89C2D9 | Blanco Gris: #F5F5F5 | Naranja: #F29F05 */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Century Gothic', sans-serif;
+    background-color: #F5F5F5; /* colorFondo */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #032F40; /* colorTextoPrincipal */
+}
+
+.contenedorRecuperar {
+    background-color: white;
+    width: 90%;
+    max-width: 500px;
+    padding: 3.5rem;
+    border-radius: 40px;
+    box-shadow: 0 20px 50px rgba(3, 47, 64, 0.1);
+    text-align: center;
+}
+
+.contenedorLogo {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.logotipoImagen {
+    max-width: 160px;
+    height: auto;
+}
+
+.bloqueInformativo h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.bloqueInformativo p {
+    color: #89C2D9; /* colorAzulCielo */
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+}
+
+/* Formulario */
+.formularioRecuperar {
+    margin-bottom: 2rem;
+}
+
+.grupoEntrada {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.grupoEntrada label {
+    display: block;
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.grupoEntrada input {
+    width: 100%;
+    padding: 1.2rem;
+    border: 2px solid #F5F5F5;
+    border-radius: 15px;
+    font-family: 'Century Gothic';
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.grupoEntrada input:focus {
+    border-color: #89C2D9;
+}
+
+/* Botón con el acento Naranja solicitado */
+.botonEnviar {
+    width: 100%;
+    padding: 1.2rem;
+    background-color: #F27405; /* colorNaranjaVibrante */
+    color: #ffffff;
+    border: none;
+    border-radius: 15px;
+    font-family: 'Century Gothic';
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+.botonEnviar:hover {
+    background-color: #89C2D9; 
+     color: rgba(0, 20, 85, 0.667);
+    transform: translateY(-3px);
+}
+
+.pieRecuperar {
+    border-top: 1px solid #F5F5F5;
+    padding-top: 1.5rem;
+}
+
+.enlaceRegresar {
+    text-decoration: none;
+    color: #032F40;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.enlaceRegresar:hover {
+    color: #89C2D9;
+}
+
+/* Ajustes para tablet/móvil */
+@media (max-width: 600px) {
+    .contenedorRecuperar {
+        padding: 2rem;
+    }
+}

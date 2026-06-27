@@ -1,0 +1,111 @@
+/* ============================================================
+   SOBREESCRITURA MÓVIL SEGURA (BENTO UI)
+   ============================================================
+   Este archivo se carga al final para forzar la adaptabilidad 
+   en dispositivos móviles SIN alterar el CSS original de escritorio.
+*/
+
+/* 📱 DISPOSITIVOS MÓVILES (Teléfonos) */
+@media (max-width: 768px) {
+    /* 1. Cuadrículas y Bento Grids a 1 Columna */
+    .cuadricula-bento, 
+    .rejilla-bento, 
+    .caja-grid-productos,
+    .grid-resultados,
+    .dashboard-grid,
+    .expediente-grid,
+    .formulario-grid {
+        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    /* 2. Modales a Pantalla Completa (95%) */
+    .contenedor-modal-cuerpo,
+    .modal-bento,
+    .panel-flotante,
+    dialog {
+        width: 95% !important;
+        max-width: none !important;
+        margin: 0 auto !important;
+        left: 2.5% !important;
+        transform: none !important; /* Si usaba translate(-50%, -50%) habría que reajustar */
+    }
+
+    /* 3. Ajuste de Contenedores de Formularios */
+    .contenedor-formulario,
+    .fila-formulario {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+
+    /* 4. Tablas Responsivas (Scroll Horizontal) */
+    table, 
+    .tabla-datos,
+    .tabla-bento {
+        display: block !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        width: 100% !important;
+    }
+
+    /* 5. Ajustes de Caja Registradora (POS) */
+    .pos-wrapper {
+        flex-direction: column !important;
+        height: auto !important;
+    }
+    .caja-panel-izq,
+    .caja-panel-der {
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+
+    /* 6. Textos y Paddings Reducidos para Móvil */
+    body {
+        font-size: 14px !important;
+        padding-top: 80px !important; /* Espacio para la navbar flotante */
+    }
+
+    .tarjeta, .tarjeta-bento {
+        padding: 15px !important;
+    }
+
+    h1 { font-size: 24px !important; }
+    h2 { font-size: 20px !important; }
+    
+    /* 7. Navbar (Isla) Flotante */
+    .cabecera-navegacion {
+        top: 10px !important;
+        width: 95% !important;
+    }
+    .barra-isla {
+        padding: 10px !important;
+    }
+    
+    /* El menú principal de escritorio se oculta en móvil (controlado por JS) */
+    .enlaces-principales:not(.visible) {
+        display: none !important;
+    }
+}
+
+/* 💻 TABLETS (iPads, etc) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* Grids a 2 columnas máximo */
+    .cuadricula-bento, 
+    .rejilla-bento, 
+    .caja-grid-productos {
+        grid-template-columns: repeat(2, 1fr) !important;
+        display: grid !important;
+    }
+
+    .pos-wrapper {
+        flex-direction: column !important;
+    }
+    .caja-panel-izq,
+    .caja-panel-der {
+        width: 100% !important;
+    }
+}

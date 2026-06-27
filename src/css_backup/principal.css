@@ -1,0 +1,776 @@
+/* ============================================================
+   CONFIGURACIÓN GLOBAL Y VARIABLES
+   ============================================================ */
+:root {
+    /* Paleta de Colores Quetzalia */
+    --cobalto: #032F40;
+    --naranja: #F27405;
+    --blanco-puro: #FFFFFF;
+    --cielo: #89C2D9;
+    
+    /* Tonos de Apoyo y Estructura */
+    --fondo-sitio: #F4F7FE;
+    --texto-gris: #64748B;
+    --borde-vidrio: #E4EAF2;
+    
+    /* Efectos de Elevación y Cristal */
+    --glass-fondo: #FFFFFF;
+    --sombra-premium: none;
+    --sombra-boton: none;
+
+    /* Geometría */
+    --radio-bento: 32px;
+    --radio-isla: 50px;
+    --transicion: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--fondo-sitio);
+    color: var(--cobalto);
+    overflow-x: hidden;
+    overflow-y: auto !important; /* Forzar que el scroll vertical esté disponible */
+    height: auto;
+    min-height: 100vh;
+    line-height: 1.7;
+    font-size: 15px; /* Tamaño base sugerido 15-16px */
+    font-weight: 400;
+}
+
+/* ============================================================
+   JERARQUÍA TIPOGRÁFICA (Solo pesos, familias y tamaños)
+   ============================================================ */
+h1 {
+    font-weight: 600; 
+    font-size: 30px; /* 28-30px */
+    letter-spacing: -0.3px; 
+    margin-bottom: 0.5rem;
+}
+
+h2, h3 {
+    font-weight: 500; 
+    font-size: 17px; /* 16-17px */
+    margin-bottom: 1rem;
+}
+
+p {
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+/* ============================================================
+   BARRA DE NAVEGACIÓN (ISLA FLOTANTE)
+   ============================================================ */
+.cabecera-navegacion {
+    position: fixed;
+    top: 20px;
+    z-index: 1000;
+    width: 95%;
+    max-width: 1250px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.barra-isla {
+    background: var(--blanco-puro);
+    border: 1px solid var(--borde-vidrio);
+    padding: 15px 15px;
+    border-radius: var(--radio-isla);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--sombra-premium);
+}
+
+/* Logotipo */
+.seccion-logotipo {
+    display: flex;
+    align-items: center;
+    padding-right: 15px;
+    border-right: 1px solid #E4EAF2;
+}
+
+.imagen-logo {
+    height: 35px;
+    width: auto;
+    transition: var(--transicion);
+}
+
+.imagen-logo:hover {
+    transform: scale(1.05);
+}
+
+/* Enlaces del Menú */
+.enlaces-principales {
+    display: flex;
+    gap: 8px;
+}
+
+.enlace-nav {
+    text-decoration: none;
+    color: var(--texto-gris);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: var(--radio-isla);
+    transition: var(--transicion);
+}
+
+.enlace-nav.activo {
+    background: var(--cobalto);
+    color: var(--blanco-puro);
+    box-shadow: 0 8px 15px #E4EAF2;
+}
+
+.enlace-nav:hover:not(.activo) {
+    background: #F0F4FA;
+    color: var(--cobalto);
+}
+
+/* ============================================================
+   COMPONENTES DE USUARIO Y ACCIONES
+   ============================================================ */
+.acciones-usuario {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.boton-accion-circular {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--blanco-puro);
+    color: var(--cobalto);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: var(--transicion);
+    border: 1px solid #F4F7FE;
+    cursor: pointer;
+}
+
+/* Botón Administrador */
+.boton-accion-circular.admin {
+    background: var(--cobalto);
+    color: var(--blanco-puro);
+}
+
+.boton-accion-circular:hover {
+    background: var(--naranja);
+    color: var(--blanco-puro);
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: var(--sombra-boton);
+}
+
+/* --- NUEVO: ESTILOS DE NOTIFICACIONES --- */
+#btn-notificaciones {
+    position: relative;
+}
+
+.insignia-alerta {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background-color: #D90429; /* Rojo urgencia médica */
+    color: white;
+    font-size: 0.65rem;
+    font-weight: bold;
+    height: 18px;
+    min-width: 18px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 2px solid var(--blanco-puro);
+    /* shadow removed */
+}
+
+/* --- NUEVO: PANEL FLOTANTE DEL PERFIL --- */
+.contenedor-perfil-relativo {
+    position: relative;
+}
+
+.perfil-usuario-mini {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--cobalto);
+    color: var(--blanco-puro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: var(--transicion);
+    border: 2px solid var(--blanco-puro);
+    cursor: pointer;
+    outline: none;
+}
+
+.perfil-usuario-mini:hover {
+    transform: scale(1.1);
+    /* box-shadow removed for minimalism */
+}
+
+.panel-flotante-bento {
+    position: absolute;
+    top: 130%;
+    right: 0;
+    width: 260px;
+    background: var(--glass-fondo);
+    border: 1px solid var(--borde-vidrio);
+    border-radius: 20px;
+    box-shadow: var(--sombra-premium);
+    padding: 20px;
+    
+    /* Animación de entrada y estado oculto */
+    opacity: 0;
+    transform: translateY(-15px) scale(0.95);
+    pointer-events: none;
+    transition: var(--transicion);
+    z-index: 2000;
+}
+
+.panel-flotante-bento.activo {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+}
+
+.info-usuario-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.texto-nombre {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--cobalto);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.texto-correo {
+    font-size: 0.8rem;
+    color: var(--texto-gris);
+    margin: 0;
+    word-break: break-all;
+}
+
+.insignia-rol {
+    align-self: flex-start;
+    background-color: #E6F3F9; /* Usa el color cielo con opacidad */
+    color: var(--cobalto);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 5px;
+}
+
+.divisor-panel {
+    border: none;
+    border-top: 1px solid #E4EAF2;
+    margin: 15px 0;
+}
+
+.boton-peligro-bento {
+    width: 100%;
+    background-color: #fff0f0;
+    color: #D90429;
+    border: none;
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transicion);
+}
+
+.boton-peligro-bento:hover {
+    background-color: #D90429;
+    color: white;
+}
+
+/* ============================================================
+   CONTENEDOR DINÁMICO Y BENTO GRID
+   ============================================================ */
+.seccion-dinamica {
+    width: 100%;
+    max-width: 1225px;
+    margin: -10px auto 50px auto; 
+    min-height: 75vh;
+    animation: entradaSuave 0.6s ease-out;
+    margin-top: 90px; /* Ajuste para evitar solapamiento con la barra de navegación */
+}
+
+/* Cuadrícula Bento */
+.rejilla-bento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    padding-bottom: 50px;
+}
+
+.tarjeta-bento {
+    background: var(--blanco-puro);
+    border-radius: var(--radio-bento);
+    padding: 30px;
+    transition: var(--transicion);
+    box-shadow: var(--sombra-premium);
+    border: 1px solid #E4EAF2;
+    display: flex;
+    flex-direction: column;
+}
+
+.tarjeta-bento:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 40px #E4EAF2;
+}
+
+.tarjeta-presentacion {
+    grid-column: span 4;
+}
+
+/* Tipografía de Datos */
+.numero-kpi {
+    color: var(--cobalto);
+    font-size: 3rem;
+    font-weight: 800;
+    transition: var(--transicion);
+}
+
+.tarjeta-bento:hover .numero-kpi {
+    color: var(--naranja);
+}
+
+/* ============================================================
+   ESTADOS DE INTERACCIÓN (LOADING / MÓVIL)
+   ============================================================ */
+@keyframes entradaSuave {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: none; }
+}
+
+.mensaje-carga {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px;
+    color: var(--texto-gris);
+    font-style: italic;
+}
+
+.boton-menu-movil {
+    display: none; /* Oculto por defecto en escritorio */
+}
+
+.mensaje-carga .material-symbols-rounded {
+    font-size: 4rem;
+    color: var(--cielo);
+    margin-bottom: 20px;
+    animation: pulso 1.8s infinite ease-in-out;
+}
+
+@keyframes pulso {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.15); opacity: 1; }
+}
+
+/* ============================================================
+   RESPONSIVIDAD TOTAL
+   ============================================================ */
+
+/* Tablets y Laptops */
+@media (max-width: 1024px) {
+    .rejilla-bento {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .tarjeta-presentacion {
+        grid-column: span 2;
+    }
+}
+
+/* Dispositivos Móviles */
+@media (max-width: 768px) {
+    .cabecera-navegacion {
+        top: 10px;
+    }
+    
+    .barra-isla {
+        padding: 8px 15px;
+    }
+
+    .enlaces-principales {
+        display: none; /* Controlado por JS */
+    }
+
+    /* Menú móvil desplegado */
+    .enlaces-principales.visible {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 75px;
+        left: 0;
+        right: 0;
+        background: #FFFFFF;
+        border-radius: 25px;
+        padding: 20px;
+        gap: 12px;
+        box-shadow: var(--sombra-premium);
+        border: 1px solid var(--borde-vidrio);
+    }
+
+    .enlace-nav {
+        width: 100%;
+        text-align: center;
+    }
+
+    .rejilla-bento {
+        grid-template-columns: 1fr;
+        margin-top: 100px;
+    }
+
+    .tarjeta-presentacion {
+        grid-column: span 1;
+    }
+
+    .boton-menu-movil {
+        display: flex;
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        background: var(--naranja);
+        color: var(--blanco-puro);
+        border: none;
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        /* box-shadow removed for minimalism */
+        cursor: pointer;
+        transition: var(--transicion);
+    }
+
+    .boton-menu-movil:active {
+        transform: scale(0.9);
+    }
+}
+
+/* Pantallas Extra Grandes (TV / 4K) */
+@media (min-width: 1920px) {
+    .seccion-dinamica {
+        max-width: 1600px;
+    }
+    .rejilla-bento {
+        gap: 35px;
+    }
+}
+
+/* Utilidades para inyección */
+.contenedor-bento-inyectado {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* ============================================================
+   BUSCADOR PREDICTIVO (GLOBAL)
+   ============================================================ */
+.dropdown-resultados-pred {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  /* box-shadow removed for minimalism */
+  margin-top: 8px;
+  max-height: 350px;
+  overflow-y: auto;
+  z-index: 1000;
+  border: 1px solid var(--borde-suave);
+}
+
+.resultado-pred-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--borde-suave);
+  transition: background-color 0.2s ease;
+}
+
+.resultado-pred-item:last-child {
+  border-bottom: none;
+}
+
+.resultado-pred-item:hover {
+  background-color: #F4F7FE; /* fondo cobalto muy suave */
+}
+
+.resultado-pred-foto {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: var(--cielo);
+  flex-shrink: 0;
+}
+
+.resultado-pred-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.resultado-pred-nombre {
+  font-weight: bold;
+  color: var(--cobalto);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.resultado-pred-detalles {
+  font-size: 0.75rem;
+  color: var(--texto-secundario);
+  margin: 0;
+}
+
+.resultado-pred-tutor {
+  font-size: 0.75rem;
+  color: var(--naranja);
+  font-weight: 500;
+  margin: 0;
+}
+
+.resultado-pred-empty {
+  padding: 16px;
+  text-align: center;
+  color: var(--texto-secundario);
+  font-size: 0.85rem;
+}
+
+/* ============================================================
+   MENÚ DESPLEGABLE 
+   ============================================================ */
+.contenedor-desplegable {
+    position: relative;
+    display: inline-block;
+}
+
+.boton-desplegable {
+    background: transparent;
+    border: none;
+    color: var(--texto-gris);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: var(--radio-isla);
+    transition: var(--transicion);
+    outline: none;
+}
+
+/* Efecto hover igual al de los enlaces normales */
+.boton-desplegable:hover, 
+.contenedor-desplegable.activo .boton-desplegable,
+.contenedor-desplegable:hover .boton-desplegable {
+    background: #F0F4FA;
+    color: var(--cobalto);
+}
+
+.boton-desplegable .icono-flecha {
+    font-size: 1.2rem;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Rotación de la flecha al hacer clic o pasar el ratón */
+.contenedor-desplegable.activo .icono-flecha,
+.contenedor-desplegable:hover .icono-flecha {
+    transform: rotate(180deg);
+}
+
+/* --- Panel Flotante del Submenú (Glassmorphism) --- */
+.submenu-flotante {
+    position: absolute;
+    top: calc(100% + 15px); /* Separación desde la isla */
+    left: 50%;
+    transform: translateX(-50%) translateY(-15px) scale(0.95);
+    background: var(--cobalto); /* Fondo oscuro */
+    border: 1px solid #1A4252;
+    border-radius: 20px;
+    box-shadow: var(--sombra-premium);
+    padding: 12px;
+    min-width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    
+    /* Estado inicial (Oculto) */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: var(--transicion);
+    z-index: 2000;
+}
+
+/* 🚨 EL PUENTE INVISIBLE: La magia que evita que el menú se cierre */
+.submenu-flotante::before {
+    content: '';
+    position: absolute;
+    top: -15px; /* Cubre exactamente los 15px de separación de arriba */
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background: transparent;
+}
+
+/* Estado activo (Visible) por Clic O por Hover */
+.contenedor-desplegable.activo .submenu-flotante,
+.contenedor-desplegable:hover .submenu-flotante {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0) scale(1);
+    pointer-events: all;
+}
+
+/* --- Enlaces dentro del Submenú --- */
+.item-submenu {
+    display: flex !important; /* Sobreescribe el inline que pudiera tener .enlace-nav */
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    color: var(--blanco-puro);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: var(--transicion);
+    background: transparent;
+}
+
+.item-submenu:hover {
+    background: #1A4252;
+    color: var(--blanco-puro);
+    transform: translateX(4px); /* Pequeño empuje estético hacia la derecha */
+    /* box-shadow removed for minimalism */
+}
+
+.item-submenu .material-symbols-rounded {
+    font-size: 1.2rem;
+    color: var(--cielo);
+    transition: var(--transicion);
+}
+
+.item-submenu:hover .material-symbols-rounded {
+    color: var(--blanco-puro);
+}
+
+/* --- Responsive para el Desplegable --- */
+@media (max-width: 768px) {
+    /* En móvil, el desplegable no flota, sino que empuja hacia abajo (Acordeón) */
+    .submenu-flotante {
+        position: relative;
+        top: 0;
+        left: 0;
+        transform: none;
+        width: 100%;
+        min-width: auto;
+        /* box-shadow removed for minimalism */
+        border: none;
+        background: #F8FAFC;
+        border-radius: 15px;
+        padding: 10px;
+        margin-top: 5px;
+        
+        /* Ajuste de animación para móvil */
+        display: none;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* En móvil desactivamos el puente invisible porque no es necesario */
+    .submenu-flotante::before {
+        display: none;
+    }
+
+    .contenedor-desplegable.activo .submenu-flotante {
+        display: flex;
+        transform: none;
+    }
+    
+    .boton-desplegable {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+/* ==========================================
+   SUBMENÚ ESTILO CORPORATIVO (NO TRANSLÚCIDO)
+   ========================================== */
+
+.submenu-flotante {
+    background: #FFFFFF !important;
+
+    border: 1px solid #E4EAF2;
+
+    box-shadow:
+        0 12px 24px #E4EAF2,
+        0 4px 8px rgba(3, 47, 64, 0.04);
+}
+
+.item-submenu:hover {
+    background: #F4F7FE;
+    color: var(--naranja);
+
+    transform: none;
+}
+
+/* ==========================================
+   TRANSICIONES DE MÓDULOS (Optimización Arquitectónica)
+   ========================================== */
+.modulo-saliendo { 
+    opacity: 0; 
+    transform: translateY(8px); 
+    transition: all 0.15s ease; 
+}
+
+.modulo-entrando { 
+    animation: fadeInUp 0.2s ease forwards; 
+}
+
+@keyframes fadeInUp { 
+    from { 
+        opacity: 0; 
+        transform: translateY(8px); 
+    } 
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    } 
+}

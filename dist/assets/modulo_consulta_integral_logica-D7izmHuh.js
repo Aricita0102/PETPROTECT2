@@ -1,4 +1,4 @@
-import{i as e,n as t}from"./conexion-DiH-JvMT.js";import{a as n,n as r}from"./PRINCIPAL-B3-l4exd.js";function i(){return`
+import{i as e,n as t}from"./conexion-DiH-JvMT.js";import{a as n,n as r}from"./PRINCIPAL-y2aQDuZA.js";function i(){return`
   :root{
     --cobalto:#032F40;
     --naranja:#F27405;

@@ -1,0 +1,544 @@
+﻿/* ==========================================================================
+   PET PROTECT - MÓDULO: EXPEDIENTES CLÍNICOS
+   Arquitectura: Bento Grid + Hero Overlap + Glassmorphism Off-Canvas
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+:root {
+    /* Paleta de Colores Quetzalia / Protect Pet */
+    --cobalto: #032F40;
+    --naranja: #F27405;
+    --blanco-puro: #FFFFFF;
+    --cielo: #89C2D9;
+    
+    /* Tonos de Apoyo y Estructura */
+    --fondo-sitio: #F4F7FE;
+    --bg-card: #ffffff;
+    --texto-gris: #64748B;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --border-color: #e5e7eb;
+    --borde-vidrio: rgba(255, 255, 255, 0.8);
+    
+    /* Tipografías del Sistema */
+    --fuente-titulos: 'Inter', sans-serif !important;
+    --fuente-cuerpo: 'Inter', sans-serif !important;
+    --font-family: var(--fuente-cuerpo);
+    
+    /* Variables UI / UX */
+    --sombra-suave: 0 4px 20px rgba(3, 47, 64, 0.05);
+    --sombra-flotante: 0 15px 40px rgba(3, 47, 64, 0.12);
+    --sombra-elevada: 0 -10px 25px rgba(0, 0, 0, 0.05);
+    --radio-bento: 24px;
+    --radio-input: 12px;
+    --transicion: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* ==========================================================================
+   1. GLOBALES Y TIPOGRAFÍA DE ALTO RENDIMIENTO
+   ========================================================================== */
+.modulo-medico-interno,
+.modulo-medico-interno * {
+    font-family: var(--fuente-cuerpo);
+    box-sizing: border-box;
+}
+
+h1, h2, h3, .titulo-emergencia, .boton-primario, .boton-primario-rojo, .bloque-titulos p, .etiqueta-especie {
+    font-family: var(--fuente-titulos);
+}
+
+.oculto {
+    display: none !important;
+}
+
+.modulo-medico-interno {
+    background-color: var(--fondo-sitio);
+    min-height: 100vh;
+    padding: 0 0 clamp(1rem, 3vw, 2.5rem) 0;
+    color: var(--cobalto);
+    animation: fadeAparicion 0.5s ease-out forwards;
+}
+
+@keyframes fadeAparicion {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: none; } 
+}
+
+/* ==========================================================================
+   2. HERO OVERLAP (CONTEXTO CLÍNICO SUPERIOR) - ESCRITORIO
+   ========================================================================== */
+.hero-clinico {
+    /* Degradado corporativo de Cobalto a Cielo */
+    background: linear-gradient(135deg, var(--cobalto) 0%, #064a66 50%, var(--cielo) 100%);
+    padding: 5px 40px 120px 40px; /* Padding inferior amplio para el overlap */
+    border-radius: 0 0 40px 40px; /* Pegado al nav arriba, curvo abajo */
+    color: var(--blanco-puro);
+   
+    margin-top: -50px; /* Eleva el Hero para que la tarjeta pueda superponerse */
+    box-shadow: inset 0 -10px 20px rgba(0,0,0,0.1);
+}
+
+.hero-contenido {
+    max-width: 1600px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.titulo-hero {
+    font-family: var(--fuente-titulos);
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 50px 0 8px 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.subtitulo-hero {
+    font-family: var(--fuente-cuerpo);
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+/* ACTUALIZACIÓN: Alineación perfecta horizontal */
+.hero-acciones {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+   
+}
+
+/* --- 4. SUPERFICIE ELEVADA & BENTO GRID (MÓDULO DE CONSULTA) --- */
+.superficie-clinica-elevada {
+    max-width: 1640px;
+    margin: 0 auto;
+    margin-top: -190px; /* EFECTO OVERLAP: Sube sobre el Hero */
+    position: relative;
+    z-index: 10;
+    padding: 0 90px;
+}
+
+
+
+
+
+.input-con-icono {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    flex: 1; 
+}
+
+.buscador-predictivo { position: relative; }
+
+.input-busqueda, .entrada-texto-hero {
+    width: 300px;
+    padding: 12px 16px 12px 45px;
+    border: 2px solid rgba(3, 47, 64, 0.1);
+    border-radius: 12px; 
+     
+    font-family: var(--fuente-cuerpo);
+    font-size: 0.95rem;
+    font-weight: bold;
+    outline: none;
+    transition: var(--transicion);
+}
+.input-busqueda:focus, .entrada-texto-hero:focus {
+    border-color: var(--cielo);
+    box-shadow: 0 0 0 3px rgba(137, 194, 217, 0.2);
+}
+
+/* --- ESTILOS DE BOTÓN COPIADOS DE CONSULTA --- */
+.boton-primario {
+    background: var(--naranja);
+    color: white;
+    border: none;
+    padding: 14px 24px;
+     /* Igual que la barra de búsqueda para alinearse en el hero */
+    font-size: 1rem;
+    border-radius: 14px;
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transicion);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Para separar el ícono del texto */
+}
+
+.boton-primario:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.1);
+}
+
+/* ==========================================================================
+   3. ÁREA DE RESULTADOS (BENTO GRID SUPERPUESTO)
+   ========================================================================== */
+.bento-overlap {
+    margin-top: -100px; 
+    position: sticky;
+    z-index: 10;
+    padding: 0 clamp(0.3rem, 3vw, 2.5rem);
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.grid-pacientes-bento {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.estado-vacio-bento {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: clamp(3rem, 5vw, 5rem) 2rem;
+    background: var(--blanco-puro);
+    border-radius: var(--radio-bento);
+    box-shadow: var(--sombra-suave);
+}
+
+.estado-vacio-bento .icono-ilustrativo {
+    font-size: 4.5rem;
+    color: var(--cielo);
+    margin-bottom: 1rem;
+    opacity: 0.7;
+}
+
+.estado-vacio-bento h2 {
+    color: var(--cobalto);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+}
+
+.estado-vacio-bento p {
+    color: var(--texto-gris);
+    max-width: 450px;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   6. RESPONSIVE DESIGN (MÓVILES)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Destruimos el contexto de contención para el botón flotante */
+    .modulo-medico-interno,
+    .hero-clinico,
+    .hero-contenido,
+    .hero-acciones {
+        animation: none !important;
+        transform: none !important;
+        filter: none !important;
+        perspective: none !important;
+        contain: none !important;
+        will-change: auto !important;
+    }
+
+    .hero-clinico {
+        padding: 30px 20px 220px 20px; 
+        border-radius: 0 0 25px 25px;
+    }
+
+    .hero-contenido {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .hero-acciones {
+        width: 100%;
+        margin-top: 5px;
+        justify-content: flex-start !important; 
+    }
+
+    .input-con-icono {
+        width: calc(100% - 85px) !important; 
+        max-width: 100% !important; 
+    }
+
+    .entrada-texto-hero {
+        margin-top: 0 !important; 
+        max-width: 80%;
+    }
+
+    /* Botón Flotante Circular (FAB) */
+    #btnNuevoPaciente {
+        position: fixed !important; 
+        top: auto !important;        
+        left: auto !important;       
+        bottom: 90px !important;    
+        right: 15px !important;      
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 50% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        z-index: 999999 !important;  
+        box-shadow: var(--sombra-flotante) !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+    
+    .boton-primario {
+        margin-top: -100%;
+    }
+
+    #btnNuevoPaciente span:last-child {
+        display: none !important; 
+    }
+
+    #btnNuevoPaciente .material-symbols-rounded {
+        font-size: 32px !important;
+        margin: 0 !important;
+    }
+    
+    .identidad-legal-hero {
+        text-align: left; border-left: none; border-top: 2px solid rgba(255, 255, 255, 0.2);
+        padding-left: 0; padding-top: 15px; margin-top: 10px; width: 100%;
+    }
+    .nombre-medico-hero { justify-content: flex-start; }
+    
+    .bento-overlap { position: relative; margin-top: -300px; }
+    
+    /* Responsive Modal Bento */
+    .modal-backdrop-premium.modal-lateral-backdrop .ventana-modal-bento.grande.modal-lateral-panel {
+        max-width: 100% !important;
+        border-radius: 0 !important;
+    }
+    
+    .modal-backdrop-premium.modal-lateral-backdrop .contenido-interno-modal.contenido-scrollable {
+        padding: 24px 16px !important;
+    }
+    
+    .acciones-triage button {
+        padding: 18px !important;
+    }
+}
+
+/* ==========================================================================
+   7. RESPONSIVE DESIGN (TABLETS)
+   ========================================================================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hero-clinico {
+        padding: 30px 30px 160px 30px; 
+        border-radius: 0 0 30px 30px;
+        max-height: 350px;
+    }
+
+    .hero-contenido { gap: 5px; }
+    .bloque-titulos { flex: 1 1 50%; }
+
+    .hero-acciones {
+        flex: 1 1 100%; 
+        display: flex !important;
+        flex-direction: row !important; 
+        justify-content: flex-end; 
+        align-items: center; 
+        margin-top: 15px;
+        gap: 15px; 
+        flex-wrap: nowrap !important; 
+    }
+
+    .input-con-icono {
+        flex: 0 1 450px; 
+        width: 100%; 
+        margin-top: 0; 
+    }
+
+    .entrada-texto-hero { margin-top: 0 !important; }
+
+    .boton-primario {
+        margin-top: 0 !important; 
+        flex: 0 0 auto; 
+        white-space: nowrap; 
+    }
+
+    .identidad-legal-hero {
+        padding-top: 10px;
+        border-left: none;
+        text-align: right;
+    }
+
+    .bento-overlap {
+        margin-top: -20%; 
+        padding: 0 20px;
+    }
+
+    .grid-pacientes-bento {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+}
+
+/* ==========================================================================
+   8. COMPONENTES: TARJETAS DE PACIENTE (ESTILO SOFT UI / E-COMMERCE)
+   ========================================================================== */
+
+/* Las tarjetas se adaptarán a las columnas configuradas en .grid-pacientes-bento */
+
+.tarjeta-soft-paciente {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    cursor: pointer;
+    background: transparent;
+    transition: var(--transicion);
+}
+
+/* El contenedor principal de la imagen (Proporción Cuadrada 1:1) */
+.contenedor-imagen-cuadrada {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radio-bento);
+    background-color: var(--blanco-puro); 
+    overflow: hidden;
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicion);
+}
+
+.img-paciente-fluida {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+/* Efecto Hover sobre la tarjeta completa */
+.tarjeta-soft-paciente:hover .img-paciente-fluida {
+    transform: scale(1.05);
+}
+.tarjeta-soft-paciente:hover .contenedor-imagen-cuadrada {
+    box-shadow: var(--sombra-flotante);
+}
+
+/* Badges de estado (estilo "50% off") */
+.badge-estado {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-family: var(--fuente-titulos);
+    font-weight: 800;
+    color: var(--blanco-puro);
+    z-index: 2;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Variaciones semánticas del Badge */
+.badge-estado.critico { background-color: #EF4444; }
+.badge-estado.estable { background-color: var(--cobalto); }
+
+/* Acciones Flotantes (Botones Hover) */
+.acciones-flotantes-hover {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transform: translateX(10px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 2;
+}
+
+.tarjeta-soft-paciente:hover .acciones-flotantes-hover {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.btn-accion-circular {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--cobalto);
+    box-shadow: 0 4px 12px rgba(3, 47, 64, 0.15);
+    cursor: pointer;
+    transition: var(--transicion);
+}
+
+.btn-accion-circular:hover {
+    background-color: var(--naranja);
+    color: var(--blanco-puro);
+    transform: scale(1.1);
+}
+
+.btn-accion-circular .material-symbols-rounded {
+    font-size: 20px;
+}
+
+/* Área de Información (Textos inferiores) */
+.info-soft-paciente {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 8px;
+}
+
+.meta-superior-soft {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--texto-gris);
+    font-weight: 600;
+}
+
+.edad-paciente {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #F59E0B;
+    font-weight: 800;
+}
+
+.icono-chico {
+    font-size: 14px;
+}
+
+.nombre-paciente-soft {
+    font-family: var(--fuente-titulos);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 4px 0 0 0;
+}
+
+.tutor-paciente-soft {
+    font-size: 0.85rem;
+    color: var(--texto-gris);
+    margin: 0;
+}
+
+.datos-inferiores-soft {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: var(--cobalto);
+}
+
+.color-naranja {
+    color: var(--naranja);
+}

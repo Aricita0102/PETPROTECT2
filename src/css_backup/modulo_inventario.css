@@ -112,7 +112,7 @@
 .info-texto small { color: var(--texto-gris); font-size: 12px; }
 
 /* --- Badges Premium --- */
-.badge-stock {
+.badge-estado {
     padding: 6px 12px;
     border-radius: 8px;
     font-size: 10px;
@@ -120,9 +120,9 @@
     text-transform: uppercase;
     display: inline-block;
 }
-.badge-stock.optimo { background: rgba(5, 150, 105, 0.1); color: #059669; }
-.badge-stock.advertencia { background: rgba(217, 119, 6, 0.1); color: #D97706; }
-.badge-stock.critico { background: rgba(220, 38, 38, 0.1); color: #DC2626; }
+.badge-estado.optimo { background: rgba(5, 150, 105, 0.1); color: #059669; }
+.badge-estado.advertencia { background: rgba(217, 119, 6, 0.1); color: #D97706; }
+.badge-estado.critico { background: rgba(220, 38, 38, 0.1); color: #DC2626; }
 
 /* --- Modal y Formulario Bento --- */
 .modal-superpuesto {

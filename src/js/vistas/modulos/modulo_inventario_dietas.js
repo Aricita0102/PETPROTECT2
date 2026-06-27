@@ -97,9 +97,9 @@ async function cargarProductosDietas() {
                                  : (prod.unidad_medida || 'N/A');
 
             let badgeEstado = '';
-            if (stock > stockMin) badgeEstado = '<span class="badge-estado optimo" style="font-weight:bold; padding:4px 8px; border-radius:4px; background:#D1FAE5; color:#10B981;">Óptimo</span>';
-            else if (stock > 0) badgeEstado = '<span class="badge-estado critico" style="font-weight:bold; padding:4px 8px; border-radius:4px; background:#FEF3C7; color:#F59E0B;">Agotándose</span>';
-            else badgeEstado = '<span class="badge-estado agotado" style="font-weight:bold; padding:4px 8px; border-radius:4px; background:#FEE2E2; color:#EF4444;">Agotado</span>';
+            if (stock > stockMin) badgeEstado = '<span class="badge-stock optimo" style="font-weight:bold; padding:4px 8px; border-radius:4px; background:#D1FAE5; color:#10B981;">Óptimo</span>';
+            else if (stock > 0) badgeEstado = '<span class="badge-stock critico" style="font-weight:bold; padding:4px 8px; border-radius:4px; background:#FEF3C7; color:#F59E0B;">Agotándose</span>';
+            else badgeEstado = '<span class="badge-stock agotado" style="font-weight:bold; padding:4px 8px; border-radius:4px; background:#FEE2E2; color:#EF4444;">Agotado</span>';
 
             tr.innerHTML = `
                 <td>

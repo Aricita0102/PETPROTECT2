@@ -1,0 +1,209 @@
+/* ==========================================
+   RESET FORZADO (Rompe la caja de registro_css)
+   ========================================== */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 100vh;
+    display: block !important; /* Anula cualquier flexbox del body global */
+    background-color: #011620 !important;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Evita scroll horizontal fantasma */
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+/* ==========================================
+   ESTILOS BASE Y FONDO (ESCRITORIO / PC)
+   ========================================== */
+.envoltura-suscripcion {
+    background-color: transparent; /* Hereda del body */
+    /* MAGIA SAAS: Patrón de huellitas en formato SVG (Ultra ligero) */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 60 60'%3E%3Cpath d='M30 40c-4 0-8-3-10-8s2-12 10-12 12 7 10 12-6 8-10 8zm-12-15c-3 0-6-3-6-6s3-6 6-6 6 3 6 6-3 6-6 6zm24 0c-3 0-6-3-6-6s3-6 6-6 6 3 6 6-3 6-6 6zM22 15c-2 0-4-2-4-5s2-5 4-5 4 2 4 5-2 5-4 5zm16 0c-2 0-4-2-4-5s2-5 4-5 4 2 4 5-2 5-4 5z' fill='rgba(255,255,255,0.015)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+/* ==========================================
+   ESTILOS DE LA CABECERA Y LOGO
+   ========================================== */
+.cabecera-onboarding {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 5%;
+    width: 100%;
+    z-index: 20;
+}
+
+.logotipo-enlace {
+    display: inline-block;
+}
+
+.logotipo-imagen {
+    height: 35px; /* Tamaño elegante en PC */
+    width: auto;
+    /* Convierte cualquier logo a BLANCO PURO */
+    filter: brightness(0) invert(1); 
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s;
+    opacity: 0.9;
+}
+
+.logotipo-enlace:hover .logotipo-imagen {
+    transform: scale(1.05);
+    opacity: 1;
+    filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255,255,255,0.3));
+}
+
+/* Indicador de Progreso ("Paso 02") */
+.paso-progreso {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.numero-paso {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-accion, #F27405);
+    opacity: 0.5;
+    line-height: 1;
+}
+
+.meta-paso p { margin: 0; }
+.meta-paso .etiqueta-paso { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: rgba(255, 255, 255, 0.5); }
+.meta-paso .nombre-paso { color: white; font-weight: bold; }
+
+/* ==========================================
+   DISEÑO DE LOS PLANES (CUADRÍCULA Y TEXTOS)
+   ========================================== */
+.cabecera-planes {
+    text-align: center;
+    margin-bottom: 4rem;
+    z-index: 10;
+}
+
+.cabecera-planes h1 { font-size: 2.8rem; font-weight: 300; margin-bottom: 1rem; line-height: 1.2; }
+.cabecera-planes p { color: rgba(255, 255, 255, 0.6); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+.contenedor-planes {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 5% 4rem 5%;
+    z-index: 5;
+}
+
+.cuadricula-precios {
+    display: flex;
+    gap: 2rem;
+    max-width: 1200px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.tarjeta-plan {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 500px;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+}
+
+.tarjeta-plan:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.04); }
+
+.tarjeta-plan.destacado {
+    border: 2px solid var(--color-accion);
+    transform: scale(1.05);
+    background: rgba(3, 47, 64, 0.4);
+    position: relative;
+    box-shadow: 0 20px 50px rgba(242, 116, 5, 0.15);
+    z-index: 2;
+}
+
+.tarjeta-plan.destacado:hover { transform: scale(1.05) translateY(-10px); }
+
+.etiqueta-recomendado {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-accion);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.titulo-plan { font-size: 1.5rem; font-weight: 300; margin-bottom: 1rem; }
+.color-accion { color: var(--color-accion) !important; }
+
+.precio-plan { margin-bottom: 1rem; }
+.precio-plan .simbolo { font-size: 1.5rem; vertical-align: top; color: rgba(255,255,255,0.5); }
+.precio-plan .monto { font-size: 3.5rem; font-weight: bold; }
+.precio-plan .periodo { font-size: 1rem; color: rgba(255,255,255,0.5); }
+
+.descripcion-plan { font-size: 0.9rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 2rem; line-height: 1.5; }
+
+.lista-caracteristicas { list-style: none; margin-bottom: 3rem; flex: 1; }
+.lista-caracteristicas li { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; font-size: 0.95rem; color: rgba(255, 255, 255, 0.8); }
+
+.icono-check { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; color: white; flex-shrink: 0; }
+
+.boton-plan { width: 100%; padding: 1.2rem; border-radius: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; text-align: center; }
+.boton-plan.principal { background: var(--color-accion); border: none; color: white; }
+.boton-plan.principal:hover { filter: brightness(1.1); }
+.boton-plan.contorno { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: white; }
+.boton-plan.contorno:hover { background: rgba(255, 255, 255, 0.05); border-color: white; }
+
+/* ==========================================
+   DISEÑO RESPONSIVO (TABLETS Y MÓVILES)
+   ========================================== */
+@media (max-width: 1024px) {
+    .cuadricula-precios { flex-direction: column; align-items: center; gap: 3.5rem; }
+    .tarjeta-plan { width: 100%; max-width: 500px; min-height: auto; }
+    .tarjeta-plan.destacado { transform: scale(1); }
+    .tarjeta-plan.destacado:hover { transform: translateY(-10px); }
+    .logotipo-imagen { height: 32px; }
+}
+
+@media (max-width: 768px) {
+    .cabecera-onboarding { padding: 1.5rem 5%; }
+    .cabecera-planes { margin-bottom: 2.5rem; }
+    .cabecera-planes h1 { font-size: 2.2rem; }
+    .cabecera-planes p { font-size: 1rem; padding: 0 1rem; }
+    .tarjeta-plan { padding: 2.5rem 2rem; }
+    .precio-plan .monto { font-size: 3rem; }
+    .logotipo-imagen { height: 28px; }
+    .numero-paso { font-size: 2rem; }
+}
+
+@media (max-width: 480px) {
+    .cabecera-planes h1 { font-size: 1.8rem; }
+    .tarjeta-plan { padding: 2rem 1.5rem; }
+    .precio-plan .monto { font-size: 2.5rem; }
+    .titulo-plan { font-size: 1.3rem; }
+    .boton-plan { padding: 1rem; }
+    .logotipo-imagen { height: 24px; }
+    
+    /* En móviles muy pequeños, ocultamos las etiquetas de texto de la cabecera para ahorrar espacio */
+    .meta-paso { display: none; }
+}

@@ -56,6 +56,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     await verificarAccesoMedico();
     inicializarEventosUI();
     if (window.actualizarWidgetHorarioGlobal) window.actualizarWidgetHorarioGlobal();
+    
+    // 🚀 OPTIMIZACIÓN DE RED: Precargar módulos críticos en segundo plano
+    prefetchModulosCriticos();
 
     // Listener global para Notificaciones Interactivas
     window.addEventListener('petprotect:accion_notif', (e) => {
@@ -209,7 +212,7 @@ async function verificarAccesoMedico() {
 
     if (!sesion) {
         console.warn("[SEGURIDAD] Intento de acceso sin token. Redirigiendo al portal de acceso...");
-        // window.location.assign('/LOGIN.html');
+        window.location.assign('/LOGIN.html');
         return;
     }
 
@@ -271,6 +274,24 @@ function gestionarCSSModulo(nombreModulo) {
     }
     
     console.log(`🎨 [UI] CSS inyectado y reciclado para: ${nombreModulo}`);
+}
+
+function prefetchModulosCriticos() {
+    const modulosClave = [
+        'MODULO_VETERINARIO_DASHBOARD.html',
+        'MODULO_AGENDA.html',
+        'MODULO_CAJA_REGISTRADORA.html',
+        'MODULO_VETERINARIO_CONSULTA.html'
+    ];
+    
+    // Solicitamos los archivos en background para que el navegador los guarde en caché (memoria)
+    // Cuando el usuario haga clic, la carga será instantánea (0ms de latencia de red).
+    setTimeout(() => {
+        modulosClave.forEach(archivo => {
+            fetch(`./${archivo}`).catch(e => console.warn('Prefetch falló:', e));
+        });
+        console.log("⚡ [SISTEMA] Prefetch agresivo de módulos completado.");
+    }, 2000); // Esperar 2 segs para no bloquear la carga inicial
 }
 
 // ==========================================================================

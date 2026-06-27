@@ -1,6 +1,12 @@
-// Archivo: ./js/script_index.js
+import { obtenerUsuarioActual } from './infraestructura/conexion.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 0. Redirección si ya hay sesión (Guardián de Sesión)
+    const usuarioActivo = await obtenerUsuarioActual();
+    if (usuarioActivo) {
+        window.location.assign('/PRINCIPAL.html');
+        return;
+    }
     
     /* ==========================================================================
        1. LÓGICA DEL MENÚ MÓVIL
