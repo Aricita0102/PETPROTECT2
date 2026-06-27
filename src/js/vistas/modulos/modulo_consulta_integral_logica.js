@@ -8,6 +8,7 @@ import '../../../css/modulo_consulta_integral.css';
 import { conexionSupabase, obtenerUsuarioActual } from '../../infraestructura/conexion.js';
 import { imprimirRecetaEnNuevaVentana } from './receta_template.js';
 import { confirmacionCustom } from '../../utilidades/ui_alertas.js';
+import { setHayDatosSinGuardar } from '../principal_v2.js';
 
 // ==========================================================================
 // 1. ESTADO GLOBAL DEL MÓDULO (Singleton)
@@ -103,7 +104,6 @@ function iniciarCronometro() {
 // ==========================================================================
 function configurarAutoGuardadoConsulta() {
     const idCitaActiva = sessionStorage.getItem('idCitaActiva');
-    if (!idCitaActiva) return;
 
     const camposAGuardar = [
         'in-peso', 'in-temp', 'in-fc', 'in-fr', 
@@ -112,6 +112,8 @@ function configurarAutoGuardadoConsulta() {
     ];
     
     const guardarBorrador = () => {
+        setHayDatosSinGuardar(true);
+        if (!idCitaActiva) return;
         const borrador = {};
         camposAGuardar.forEach(id => {
             const el = document.getElementById(id);
@@ -128,6 +130,8 @@ function configurarAutoGuardadoConsulta() {
             el.addEventListener('change', guardarBorrador);
         }
     });
+
+    if (!idCitaActiva) return;
 
     // Restaurar si existe borrador guardado en localStorage
     const borradorGuardado = localStorage.getItem('borrador_consulta_' + idCitaActiva);
@@ -275,13 +279,22 @@ async function inyectarPacienteDirecto(idMascota) {
         const uiNombre = document.getElementById('txt-nombre-paciente');
         if(uiNombre) uiNombre.textContent = "Cargando datos...";
 
-        const { data: paciente, error } = await conexionSupabase
-            .from('pacientes')
-            .select(`*, clientes ( nombre_completo, telefono )`)
-            .eq('id', idMascota)
-            .single();
+        let paciente = null;
 
-        if (error) throw error;
+        if (window.pacientePreCargado && window.pacientePreCargado.id === idMascota) {
+            paciente = window.pacientePreCargado;
+            window.pacientePreCargado = null; // Limpiar memoria
+            console.log("[MEMORIA] Paciente cargado desde sesión temporal");
+        } else {
+            const { data, error } = await conexionSupabase
+                .from('pacientes')
+                .select(`*, clientes ( nombre_completo, telefono )`)
+                .eq('id', idMascota)
+                .single();
+
+            if (error) throw error;
+            paciente = data;
+        }
 
         estadoClinico.pacienteActual = paciente;
 
@@ -789,6 +802,7 @@ function configurarGuardadoECOP() {
             }
 
             // 5. Limpieza final
+            setHayDatosSinGuardar(false);
             clearInterval(estadoClinico.intervaloCronometro);
             const contenedorCrono = document.getElementById('contenedor-cronometro');
             if (contenedorCrono) contenedorCrono.hidden = true;

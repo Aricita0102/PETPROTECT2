@@ -8,6 +8,7 @@ import { conexionSupabase } from '../../infraestructura/conexion.js';
 import { obtenerSesionActiva } from '../../infraestructura/sesion_store.js';
 import { cargarModulo } from '../principal_v2.js';
 import StorageService from '../../infraestructura/storage.js';
+import { confirmacionCustom } from '../../utilidades/ui_alertas.js';
 
 // IMPORTACIÓN VITE: Síncrona y robusta
 import modalRegistroHTML from '/MODAL_REGISTRAR_PACIENTES.html?raw';
@@ -115,7 +116,7 @@ function configurarEventosDelModalInyectado() {
         cargarRazasDinamicas(e.target.value);
     });
 
-    refs.btnGuardar?.addEventListener('click', (e) => ejecutarGuardado(e, refs));
+    refs.btnGuardar?.addEventListener('click', (e) => ejecutarGuardado(e, refs, cerrarModal));
 
     refs.btnConsulta?.addEventListener('click', (e) => {
         e.preventDefault();
@@ -233,7 +234,7 @@ async function cargarRazasDinamicas(especie) {
 // ==========================================================================
 // 5. PERSISTENCIA: SUPABASE + LÓGICA DE NEGOCIO
 // ==========================================================================
-async function ejecutarGuardado(e, refs) {
+async function ejecutarGuardado(e, refs, cerrarModal) {
     e.preventDefault();
     
     if (refs.form && !refs.form.checkValidity()) {
@@ -337,12 +338,34 @@ async function ejecutarGuardado(e, refs) {
 
         if (errPaciente) throw errPaciente;
         
-        pacienteRegistradoId = nuevoPaciente.id;
+        const idDelPaciente = nuevoPaciente.id;
+        pacienteRegistradoId = idDelPaciente;
+        
+        // Preparar paciente para transferencia de estado (Precarga)
+        nuevoPaciente.clientes = {
+            nombre_completo: nombreTutor,
+            telefono: telefonoTutor
+        };
+        window.pacientePreCargado = nuevoPaciente;
 
         // Éxito
         refs.btnGuardar.style.display = 'none';
-        if (refs.btnExpediente) refs.btnExpediente.style.display = 'flex';
-        if (refs.btnConsulta) refs.btnConsulta.style.display = 'flex';
+        cerrarModal();
+        
+        const iniciar = await confirmacionCustom(
+            "Paciente creado con éxito", 
+            "¿Deseas Iniciar Consulta de inmediato con este paciente?\n(Confirmar = Iniciar Consulta, Cancelar = Ir a Expedientes)",
+            "check_circle",
+            "#10b981"
+        );
+        
+        if (iniciar) {
+            sessionStorage.setItem('idPacienteActivo', idDelPaciente);
+            sessionStorage.setItem('iniciarConsultaDirecta', 'true');
+            cargarModulo('MODULO_VETERINARIO_CONSULTA');
+        } else {
+            cargarModulo('MODULO_BIBLIOTECA_EXPEDIENTES');
+        }
 
     } catch (error) {
         console.error("Error en registro:", error);

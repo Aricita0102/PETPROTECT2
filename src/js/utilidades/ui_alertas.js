@@ -106,7 +106,7 @@ export function alertaCustom(titulo, mensaje, tipo = 'info') {
  * @param {string} mensaje - Pregunta o advertencia
  * @returns {Promise<boolean>}
  */
-export function confirmacionCustom(titulo, mensaje) {
+export function confirmacionCustom(titulo, mensaje, icono = 'help', color = 'var(--naranja, #F27405)') {
     return new Promise((resolve) => {
         // Fallback nativo emulate
         if (!mensaje) {
@@ -115,7 +115,7 @@ export function confirmacionCustom(titulo, mensaje) {
         }
 
         const html = `
-            <span class="material-symbols-rounded" style="font-size: 48px; color: var(--naranja, #F27405); margin-bottom: 16px; display: inline-block;">help</span>
+            <span class="material-symbols-rounded" style="font-size: 48px; color: ${color}; margin-bottom: 16px; display: inline-block;">${icono}</span>
             <h3 style="margin: 0 0 12px 0; color: var(--cobalto, #032F40); font-size: 20px; font-weight: 700;">${titulo}</h3>
             <p style="margin: 0 0 24px 0; color: #64748b; font-size: 15px; line-height: 1.5; white-space: pre-wrap;">${mensaje}</p>
             <div style="display: flex; gap: 12px;">

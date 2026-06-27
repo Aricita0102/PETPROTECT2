@@ -9,6 +9,7 @@ import { conexionSupabase, cerrarSesionSegura } from '../infraestructura/conexio
 import { obtenerSesionActiva, limpiarSesion } from '../infraestructura/sesion_store.js';
 import { inicializarPanelNotificaciones } from './panel_notificaciones.js';
 import { inicializarModuloCitasGlobal } from './globales/modulo_global_citas.js?v=1782241029008';
+import { confirmacionCustom } from '../utilidades/ui_alertas.js';
 
 // ==========================================
 // 1. REFERENCIAS AL DOM (BENTO UI)
@@ -26,6 +27,7 @@ const uiRol = document.getElementById('ui-rol-usuario');
 // ==========================================
 let moduloActual = null;
 let hayDatosSinGuardar = false;
+export function setHayDatosSinGuardar(estado) { hayDatosSinGuardar = estado; }
 let funcionLimpiezaAnterior = null; // 🛡️ Prevención de Memory Leaks
 
 // 🗺️ Diccionario de Estilos: Mapea el nombre del módulo con su ruta CSS en Vite
@@ -233,7 +235,12 @@ async function cargarModulo(nombreModulo) {
     if (!contenedorPrincipal) return;
 
     if (hayDatosSinGuardar) {
-        const confirmar = confirm("⚠️ Hay cambios médicos sin guardar en el folio actual. ¿Deseas descartarlos y salir?");
+        const confirmar = await confirmacionCustom(
+            "Datos médicos sin guardar",
+            "Hay cambios en el folio actual que se perderán.\n¿Deseas descartarlos y salir de la consulta?",
+            "warning",
+            "var(--naranja, #F27405)"
+        );
         if (!confirmar) return;
     }
 

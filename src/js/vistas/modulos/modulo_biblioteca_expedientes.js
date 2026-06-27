@@ -59,29 +59,33 @@ export async function inicializarModuloPacientes() {
 
             // 2. Lógica del Dropdown Predictivo
             if (termino.length < 2) {
-                dropdown.style.display = 'none';
+                if (dropdown) dropdown.style.display = 'none';
                 return;
             }
 
             timeoutBusqueda = setTimeout(() => {
                 const limitados = filtrados.slice(0, 6); // Top 6 resultados para el dropdown
-                renderizarResultadosPredictivos(limitados, dropdown);
-                dropdown.style.display = 'block';
+                if (dropdown) {
+                    renderizarResultadosPredictivos(limitados, dropdown);
+                    dropdown.style.display = 'block';
+                }
             }, 200); // Debounce corto porque es local
         });
 
         // Cerrar dropdown si se hace clic fuera
         document.addEventListener('click', (e) => {
-            if (!inputBuscar.contains(e.target) && dropdown && !dropdown.contains(e.target)) {
-                dropdown.style.display = 'none';
+            if (inputBuscar && !inputBuscar.contains(e.target) && dropdown && !dropdown.contains(e.target)) {
+                if (dropdown) dropdown.style.display = 'none';
             }
         });
 
-        inputBuscar.addEventListener('focus', () => {
-            if (inputBuscar.value.trim().length >= 2) {
-                dropdown.style.display = 'block';
-            }
-        });
+        if (inputBuscar) {
+            inputBuscar.addEventListener('focus', () => {
+                if (inputBuscar.value.trim().length >= 2) {
+                    if (dropdown) dropdown.style.display = 'block';
+                }
+            });
+        }
     }
 
     await cargarPacientesIniciales(grid);
@@ -115,7 +119,7 @@ function renderizarResultadosPredictivos(resultados, dropdown) {
         `;
 
         item.addEventListener('click', () => {
-            dropdown.style.display = 'none';
+            if (dropdown) dropdown.style.display = 'none';
             sessionStorage.setItem('idPacienteActivo', paciente.id);
             cargarModulo('MODULO_EXPEDIENTES_HISTORIAL');
         });
@@ -279,12 +283,14 @@ function renderizarCatalogo(lista, grid) {
             cargarModulo('MODULO_EXPEDIENTES_HISTORIAL');
         };
 
-        const imgClick = article.querySelector('.img-paciente-fluida');
-        imgClick.style.cursor = 'pointer';
-        imgClick.onclick = () => {
-            sessionStorage.setItem('idPacienteActivo', m.id);
-            cargarModulo('MODULO_EXPEDIENTES_HISTORIAL');
-        };
+        const imgClick = article.querySelector('.img-paciente-fluida') || article.querySelector('.sin-foto-placeholder');
+        if (imgClick) {
+            imgClick.style.cursor = 'pointer';
+            imgClick.onclick = () => {
+                sessionStorage.setItem('idPacienteActivo', m.id);
+                cargarModulo('MODULO_EXPEDIENTES_HISTORIAL');
+            };
+        }
 
         grid.appendChild(article);
     });
