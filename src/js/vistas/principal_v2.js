@@ -56,6 +56,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     await verificarAccesoMedico();
     inicializarEventosUI();
     if (window.actualizarWidgetHorarioGlobal) window.actualizarWidgetHorarioGlobal();
+
+    // Listener global para Notificaciones Interactivas
+    window.addEventListener('petprotect:accion_notif', (e) => {
+        const data = e.detail;
+        // Cerrar el panel
+        document.getElementById('notifBtnCerrar')?.click();
+
+        if (data.accion === 'REABASTECER') {
+            let moduloKey = 'MODULO_INVENTARIO_FARMACIA';
+            if (data.categoria === 'tienda') moduloKey = 'MODULO_INVENTARIO_TIENDA';
+            if (data.categoria === 'dietas') moduloKey = 'MODULO_INVENTARIO_DIETAS';
+            if (data.categoria === 'insumos') moduloKey = 'MODULO_INVENTARIO_INSUMOS';
+            window.cargarModulo(moduloKey);
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('petprotect:abrir_inventario_desde_alerta', { detail: { id: data.id } }));
+            }, 600);
+
+        } else if (data.accion === 'INICIAR_CONSULTA') {
+            window.cargarModulo('MODULO_VETERINARIO_CONSULTA');
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('petprotect:iniciar_consulta_alerta', { detail: { id: data.ref_id } }));
+            }, 600);
+
+        } else if (data.accion === 'GESTIONAR_LOTE') {
+            let moduloKey = 'MODULO_INVENTARIO_FARMACIA';
+            if (data.categoria === 'tienda') moduloKey = 'MODULO_INVENTARIO_TIENDA';
+            if (data.categoria === 'dietas') moduloKey = 'MODULO_INVENTARIO_DIETAS';
+            if (data.categoria === 'insumos') moduloKey = 'MODULO_INVENTARIO_INSUMOS';
+            window.cargarModulo(moduloKey);
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('petprotect:gestionar_lote_alerta', { detail: { id: data.ref_id } }));
+            }, 600);
+
+        } else if (data.accion === 'AGENDAR_CITA') {
+            window.cargarModulo('MODULO_AGENDA');
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('petprotect:agendar_cita_alerta', { detail: { ids: data.ref_id } })); // Formato: pacienteId|clienteId
+            }, 600);
+
+        } else if (data.accion === 'IR_A_CAJA') {
+            window.cargarModulo('MODULO_CAJA_REGISTRADORA');
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('petprotect:cobrar_caja_alerta', { detail: { id: data.ref_id } }));
+            }, 600);
+        }
+    });
 });
 
 // ==========================================

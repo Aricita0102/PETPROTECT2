@@ -895,14 +895,25 @@ function iniciarSistemaAlertas() {
             table: 'inventario_productos', 
             filter: `organizacion_id=eq.${organizacionIdActual}` 
         }, (p) => {
-            // Si el nuevo stock total cruzó el umbral del mínimo
+            // El panel de notificaciones ya maneja esto, pero podemos disparar su recarga si queremos.
+            // Por ahora solo reproducimos el sonido en el dashboard.
             if (parseFloat(p.new.stock_total || 0) <= parseFloat(p.new.stock_minimo || 0)) {
-                cargarNotificacionesDashboard();
                 const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
                 audio.play().catch(e=>console.log(e));
             }
         })
         .subscribe();
+
+    // Sincronizar widget con el panel de notificaciones central
+    window.removeEventListener('petprotect:notifs_actualizadas', cargarNotificacionesDashboard);
+    window.addEventListener('petprotect:notifs_actualizadas', cargarNotificacionesDashboard);
+    
+    const btnVerMas = document.getElementById('btnVerNotificaciones');
+    if (btnVerMas) {
+        btnVerMas.addEventListener('click', () => {
+            document.getElementById('btn-notificaciones')?.click();
+        });
+    }
 
     // 3. Inicializar Firebase Cloud Messaging
     inicializarFirebasePush();
@@ -912,56 +923,43 @@ async function cargarNotificacionesDashboard() {
     const lista = document.getElementById('listaNotificacionesDashboard');
     if (!lista) return;
 
-    let todasNotificaciones = [];
+    // Usar la fuente de verdad centralizada (panel_notificaciones.js)
+    const todasNotificaciones = window._petprotect_notifs || [];
 
-    // Revisar el stock real actual de tienda y dietas
-    const { data: dataInv, error: errorInv } = await conexionSupabase
-        .from('inventario_productos')
-        .select('id, nombre_comercial, stock_total, stock_minimo, categoria, updated_at')
-        .eq('organizacion_id', organizacionIdActual)
-        .in('categoria', ['tienda', 'dietas', 'farmacia']); // Incluimos todo para que no falte
-
-    if (!errorInv && dataInv) {
-        const stockCritico = dataInv.filter(p => parseFloat(p.stock_total || 0) <= parseFloat(p.stock_minimo || 0));
-        
-        // Agregar cada producto crítico como una notificación
-        stockCritico.forEach(p => {
-            todasNotificaciones.push({
-                tipo: 'alerta_stock',
-                titulo: `Inventario Crítico (${p.categoria})`,
-                mensaje: `El producto "${p.nombre_comercial}" está en nivel bajo o agotado (Stock: ${p.stock_total}).`,
-                created_at: p.updated_at || new Date().toISOString()
-            });
-        });
-    } else {
-        console.error("Error al cargar inventario para notificaciones:", errorInv);
-    }
-
-    // Ordenar y limitar a las últimas 6
-    todasNotificaciones.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    const notificacionesMostrar = todasNotificaciones.slice(0, 6);
+    // Ordenar y limitar a las últimas 4
+    const notificacionesMostrar = todasNotificaciones.slice(0, 4);
 
     if (notificacionesMostrar.length === 0) {
-        lista.innerHTML = `<li class="item-notificacion" style="justify-content: center; color: #888; font-size: 0.9rem;">No hay notificaciones recientes.</li>`;
+        lista.innerHTML = `<li class="item-notificacion" style="justify-content: center; color: #888; font-size: 0.9rem;">No hay notificaciones activas. ¡Todo bien!</li>`;
         return;
     }
 
+    const metaMap = {
+        stock:    { icono: 'inventory_2', color: 'var(--naranja, #f97316)' },
+        cita:     { icono: 'calendar_month', color: 'var(--cobalto-suave, #89c2d9)' },
+        lote:     { icono: 'warning', color: '#ef4444' },
+        vacuna:   { icono: 'vaccines', color: '#10b981' },
+        caja:     { icono: 'point_of_sale', color: 'var(--cobalto, #032f40)' }
+    };
+
     let html = '';
     notificacionesMostrar.forEach(n => {
-        let icono = 'inventory_2';
-        let claseAlerta = 'alerta';
+        const meta = metaMap[n.tipo] || { icono: 'notifications', color: '#666' };
 
-        const d = new Date(n.created_at);
-        // Si no hay fecha de update, mostrar Hoy
-        let fechaText = 'Actualizado';
+        // Tiempo relativo simple
+        const diffMinutos = Math.floor((new Date() - new Date(n.created_at)) / 60000);
+        let fechaText = '';
+        if (diffMinutos < 60) fechaText = diffMinutos < 1 ? 'Ahora' : `Hace ${diffMinutos}m`;
+        else if (diffMinutos < 1440) fechaText = `Hace ${Math.floor(diffMinutos/60)}h`;
+        else fechaText = `Hace ${Math.floor(diffMinutos/1440)}d`;
 
         html += `
-        <li class="item-notificacion">
-            <span class="material-symbols-rounded icono-notif ${claseAlerta}">${icono}</span>
+        <li class="item-notificacion" style="cursor:pointer;" onclick="document.getElementById('btn-notificaciones')?.click();">
+            <span class="material-symbols-rounded icono-notif" style="color: ${meta.color}">${meta.icono}</span>
             <div class="texto-notif">
                 <strong>${n.titulo || 'Notificación'}</strong>
-                <span>${n.mensaje || ''}</span>
-                <span class="fecha-notif" style="color:#d9534f; font-weight:bold;">${fechaText}</span>
+                <span style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${n.mensaje || ''}</span>
+                <span class="fecha-notif" style="color:var(--naranja); font-weight:bold;">${fechaText}</span>
             </div>
         </li>`;
     });

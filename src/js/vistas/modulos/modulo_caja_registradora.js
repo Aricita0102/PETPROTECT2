@@ -40,6 +40,7 @@ export async function inicializarCajaRegistradora() {
     configurarFullscreen();
     configurarCobro();
     actualizarNumeroTransaccion();
+    _cargarCarritoLocal(); // Restaurar si había uno pendiente
     renderizarCarrito();
     
     const btnTour = document.getElementById('btn-guia-caja');
@@ -318,6 +319,8 @@ function mostrarAlertaStock(nombre, stock) {
 }
 
 function renderizarCarrito() {
+    _guardarCarritoLocal(); // Persistencia automática
+    
     const lista     = document.getElementById('caja-lista-items');
     const resumenEl = document.getElementById('caja-resumen');
     const btnCobrar = document.getElementById('caja-btn-cobrar');
@@ -442,6 +445,21 @@ export function limpiarCarrito() {
     contadorTransaccion++;
     actualizarNumeroTransaccion();
     renderizarCarrito();
+}
+
+function _guardarCarritoLocal() {
+    localStorage.setItem('petprotect_caja_carrito', JSON.stringify(carrito));
+}
+
+function _cargarCarritoLocal() {
+    const guardado = localStorage.getItem('petprotect_caja_carrito');
+    if (guardado) {
+        try {
+            carrito = JSON.parse(guardado);
+        } catch(e) {
+            carrito = [];
+        }
+    }
 }
 
 // ─── Proceso de Cobro (Backend Supabase) ──────────────────────────────────────

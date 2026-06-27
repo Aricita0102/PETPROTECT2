@@ -43,6 +43,16 @@ export async function inicializarInventarioTienda() {
     
     // Cargar la tabla al iniciar el modulo
     cargarProductosTienda();
+
+    // 🛡️ Listener global para Notificaciones Interactivas (Solo se registra una vez)
+    if (!window._listenerAlertaInventarioTienda) {
+        window.addEventListener('petprotect:abrir_inventario_desde_alerta', (e) => {
+            const id = e.detail.id;
+            console.log("[TIENDA] Abriendo modal desde alerta interactiva:", id);
+            configurarModalEditarProductoBento(id);
+        });
+        window._listenerAlertaInventarioTienda = true;
+    }
 }
 
 // ==========================================

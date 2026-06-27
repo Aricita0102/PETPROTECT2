@@ -36,6 +36,16 @@ export async function inicializarInventarioDietas() {
     
     // Cargar la tabla al iniciar el modulo
     cargarProductosDietas();
+
+    // 🛡️ Listener global para Notificaciones Interactivas (Solo se registra una vez)
+    if (!window._listenerAlertaInventarioDietas) {
+        window.addEventListener('petprotect:abrir_inventario_desde_alerta', (e) => {
+            const id = e.detail.id;
+            console.log("[DIETAS] Abriendo modal desde alerta interactiva:", id);
+            configurarModalEditarDieta(id);
+        });
+        window._listenerAlertaInventarioDietas = true;
+    }
 }
 
 // ==========================================
