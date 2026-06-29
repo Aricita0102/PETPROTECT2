@@ -9,6 +9,7 @@ import { conexionSupabase } from '../../infraestructura/conexion.js';
 import { obtenerSesionActiva } from '../../infraestructura/sesion_store.js';
 import { obtenerPlantillaTicket, obtenerDOMInnerTicket, obtenerCSSPlantillaTicket } from './ticket_template.js';
 import { iniciarTourCajaRegistradora, iniciarTourCajaRegistradoraSiEsPrimeraVez } from '../../tour/modulo_caja_registradora_tour.js';
+import { alertaCustom } from '../../utilidades/ui_alertas.js';
 
 // ─── Estado del módulo ─────────────────────────────────────────────────────────
 let perfilCaja = null;
@@ -68,7 +69,11 @@ function manejarEscanerRemoto(e) {
         const aplicaIva = producto.metadata?.aplica_iva !== false;
         agregarAlCarrito(producto.id, producto.nombre_comercial, producto.precio_venta, aplicaIva);
     } else {
-        alert(`Producto no encontrado con el código: ${codigo}`);
+        if (typeof alertaCustom === 'function') {
+            alertaCustom('Escáner', `Producto no encontrado con el código: ${codigo}`, 'warning');
+        } else {
+            alert(`Producto no encontrado con el código: ${codigo}`);
+        }
     }
 }
 
@@ -355,27 +360,25 @@ function renderizarCarrito() {
             </div>`).join('');
     }
 
-    // Cálculo de totales (Ingeniería Inversa del Precio Final)
-    // El precio de venta guardado es el Precio Final (ticket).
+    // Cálculo de totales (IVA Aditivo)
+    // El precio de la BD se asume como Precio Base. Si aplica IVA, se le suma 16%.
     let subtotalReal = 0;
     let ivaReal = 0;
     let totalGeneral = 0;
     const totalItems = carrito.reduce((a, i) => a + i.cantidad, 0);
 
     carrito.forEach(item => {
-        const precioTotalItem = item.precio * item.cantidad;
-        totalGeneral += precioTotalItem;
+        const precioBaseItem = item.precio * item.cantidad;
+        subtotalReal += precioBaseItem;
 
         if (item.aplicaIva) {
-            // El precio ya incluye IVA, extraemos la base
-            const baseSinIva = precioTotalItem / 1.16;
-            const ivaDelItem = precioTotalItem - baseSinIva;
-            
-            subtotalReal += baseSinIva;
+            // El IVA se SUMA al precio base
+            const ivaDelItem = precioBaseItem * 0.16;
             ivaReal += ivaDelItem;
+            totalGeneral += (precioBaseItem + ivaDelItem);
         } else {
-            // No aplica IVA, el subtotal suma directo
-            subtotalReal += precioTotalItem;
+            // No aplica IVA
+            totalGeneral += precioBaseItem;
         }
     });
 

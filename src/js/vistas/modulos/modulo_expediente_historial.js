@@ -2144,9 +2144,6 @@ async function renderizarTimelineHistorial(consultas, estudios) {
                   <div class="timeline-card">
                     <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                         <h3>Consulta por ${motivo} <span class="tag tag-consulta">Consulta</span></h3>
-                        <button onclick="window.eliminarConsultaHistorial('${c.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:12px; display:flex; align-items:center; gap:4px;" title="Eliminar Registro">
-                            <span class="material-symbols-rounded" style="font-size:16px;">delete</span> Eliminar
-                        </button>
                     </div>
                     <p class="card-meta">Atendido por: <strong>${medico}</strong> | Motivo: <strong>${motivo}</strong></p>
                     <div class="card-notes" style="overflow-wrap: anywhere; word-break: break-word;">

@@ -46,7 +46,7 @@ import{n as e}from"./conexion-DiH-JvMT.js";import{n as t}from"./sesion_store-BSr
                     </div>
                 </div>
                 <div class="precio num">$${(e.precio*e.cantidad).toFixed(2)}</div>
-            </div>`).join(``);let r=0,i=0,a=0,o=d.reduce((e,t)=>e+t.cantidad,0);d.forEach(e=>{let t=e.precio*e.cantidad;if(a+=t,e.aplicaIva){let e=t/1.16,n=t-e;r+=e,i+=n}else r+=t}),t&&(t.innerHTML=`
+            </div>`).join(``);let r=0,i=0,a=0,o=d.reduce((e,t)=>e+t.cantidad,0);d.forEach(e=>{let t=e.precio*e.cantidad;if(r+=t,e.aplicaIva){let e=t*.16;i+=e,a+=t+e}else a+=t}),t&&(t.innerHTML=`
             <span>Subtotal: <b class="num">$${r.toFixed(2)}</b></span>
             <span>IVA 16%: <b class="num">$${i.toFixed(2)}</b></span>
             <span>Total: <b class="num">$${a.toFixed(2)}</b></span>

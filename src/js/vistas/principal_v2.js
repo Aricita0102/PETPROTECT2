@@ -254,27 +254,27 @@ async function verificarAccesoMedico() {
 // ==========================================================================
 // 2.5 INYECTOR DE ESTILOS DINÁMICOS (OPTIMIZADO CERO-PARPADEO)
 // ==========================================================================
-function gestionarCSSModulo(nombreModulo) {
-    const rutaCSS = mapaCSSModulos[nombreModulo];
-    if (!rutaCSS) return;
-
-    // Buscar si ya existe el nodo dinámico
-    let linkCSSDinamico = document.getElementById('css-modulo-dinamico');
-
-    if (linkCSSDinamico) {
-        // Reciclar el nodo: evita Layout Thrashing y bloqueos de render
-        linkCSSDinamico.href = rutaCSS;
-    } else {
-        // Crearlo solo la primera vez
-        linkCSSDinamico = document.createElement('link');
-        linkCSSDinamico.rel  = 'stylesheet';
-        linkCSSDinamico.href = rutaCSS;
-        linkCSSDinamico.id   = 'css-modulo-dinamico';
-        document.head.appendChild(linkCSSDinamico);
-    }
-    
-    console.log(`🎨 [UI] CSS inyectado y reciclado para: ${nombreModulo}`);
-}
+// function gestionarCSSModulo(nombreModulo) {
+//     const rutaCSS = mapaCSSModulos[nombreModulo];
+//     if (!rutaCSS) return;
+// 
+//     // Buscar si ya existe el nodo dinámico
+//     let linkCSSDinamico = document.getElementById('css-modulo-dinamico');
+// 
+//     if (linkCSSDinamico) {
+//         // Reciclar el nodo: evita Layout Thrashing y bloqueos de render
+//         linkCSSDinamico.href = rutaCSS;
+//     } else {
+//         // Crearlo solo la primera vez
+//         linkCSSDinamico = document.createElement('link');
+//         linkCSSDinamico.rel  = 'stylesheet';
+//         linkCSSDinamico.href = rutaCSS;
+//         linkCSSDinamico.id   = 'css-modulo-dinamico';
+//         document.head.appendChild(linkCSSDinamico);
+//     }
+//     
+//     console.log(`🎨 [UI] CSS inyectado y reciclado para: ${nombreModulo}`);
+// }
 
 function prefetchModulosCriticos() {
     const modulosClave = [
@@ -348,8 +348,8 @@ async function cargarModulo(nombreModulo) {
         moduloActual         = moduloSeguro;
         hayDatosSinGuardar   = false;
 
-        // Ejecutar lógica y CSS al instante
-        gestionarCSSModulo(moduloSeguro);
+        // Ejecutar lógica
+        // gestionarCSSModulo(moduloSeguro); // ⛔ DESACTIVADO: Causaba pérdida de variables CSS al navegar (SPA CSS Leak Bug)
         inicializarComponentesModulo(moduloSeguro);
 
     } catch (error) {

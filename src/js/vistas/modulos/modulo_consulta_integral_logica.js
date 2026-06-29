@@ -557,10 +557,11 @@ function configurarSplitViewExpediente() {
             if(panelExpediente) panelExpediente.setAttribute("aria-hidden", "true");
             
             // Mostrar de nuevo el buscador
-            document.getElementById('contenedor-buscador-consulta').style.display = 'block';
+            const buscadorContainer = document.getElementById('contenedor-buscador-consulta');
+            if (buscadorContainer) buscadorContainer.style.display = 'block';
             
             // Limpiar formulario y cronómetro
-            document.getElementById('form-consulta-integral').reset();
+            document.getElementById('form-consulta-medica')?.reset();
             const tbody = document.getElementById('tbody-receta-farmacos');
             if(tbody) tbody.innerHTML = '';
             listaFarmacosManuales = [];
@@ -718,7 +719,7 @@ function configurarGuardadoECOP() {
 
             // 4. PREGUNTAR SI DESEA IMPRIMIR RECETA MÉDICA
             if (listaFarmacosManuales.length > 0 || document.getElementById('in-indicaciones-receta')?.value) {
-                const imprimir = await confirmacionCustom("Consulta Guardada", "Consulta guardada exitosamente.\n\n¿Desea imprimir la receta médica ahora?");
+                const imprimir = await confirmacionCustom("Consulta Guardada", "Consulta guardada exitosamente.\n\n¿Desea imprimir la receta médica ahora?", "check_circle", "#10B981");
                 if (imprimir) {
                     // Construir el objeto de datos para la plantilla
                     const org = estadoClinico.perfilMedico.clinica;

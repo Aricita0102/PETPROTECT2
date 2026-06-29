@@ -372,16 +372,16 @@ const moduloCheckout = {
         let totalGeneral = 0;
 
         this.estado.cargos.forEach(cargo => {
-            const precioTotalItem = cargo.precio;
-            totalGeneral += precioTotalItem;
+            const precioBaseItem = cargo.precio; // Asumimos que el precio traido es el Base
+            subtotalReal += precioBaseItem;
 
             if (cargo.aplicaIva !== false) {
-                const baseSinIva = precioTotalItem / 1.16;
-                const ivaDelItem = precioTotalItem - baseSinIva;
-                subtotalReal += baseSinIva;
+                // IVA Aditivo
+                const ivaDelItem = precioBaseItem * 0.16;
                 ivaReal += ivaDelItem;
+                totalGeneral += (precioBaseItem + ivaDelItem);
             } else {
-                subtotalReal += precioTotalItem;
+                totalGeneral += precioBaseItem;
             }
         });
 

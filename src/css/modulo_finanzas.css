@@ -27,9 +27,11 @@
   gap: 20px;
 }
 .contenedor-bento {
-  margin-top: -450px;
-  position: relative;
-  z-index: 10;
+    position: relative;
+    z-index: 20;
+    max-width: 1180px;
+    margin: -100px auto 0 auto;
+    padding: 0 20px;
 }
 
 
