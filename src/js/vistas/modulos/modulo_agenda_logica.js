@@ -979,6 +979,7 @@ window.cambiarFiltroEstado = function(valor) {
 
 window.toggleFiltroCita = function(el) {
     el.classList.toggle('activo');
+    _cargarCitasEnRango();
 };
 
 // ─── Cargador unificado ───────────────────────────────────────────────────────
@@ -1016,10 +1017,19 @@ async function _cargarCitasEnRango() {
 
         if (_filtroActual && _filtroActual !== 'todos') query = query.eq('estado', _filtroActual);
 
-        const { data: citas, error } = await query;
+        const { data: citasRaw, error } = await query;
         if (error) throw error;
 
-        _actualizarContadoresSuperior(citas || []);
+        // ─ FILTRO DE TIPOS DE CITA (Memoria) ─
+        const tiposNodos = document.querySelectorAll('.cal-item[data-tipo].activo');
+        const tiposActivos = Array.from(tiposNodos).map(n => n.dataset.tipo);
+
+        const citas = (citasRaw || []).filter(c => {
+            const t = c.tipo_cita || 'consulta';
+            return tiposActivos.includes(t);
+        });
+
+        _actualizarContadoresSuperior(citas);
         if (!listaDia) return;
 
         if (!citas || citas.length === 0) {

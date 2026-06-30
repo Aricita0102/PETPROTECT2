@@ -736,7 +736,7 @@ export async function procesarPagoCheckout() {
         if (errItems) throw errItems;
 
         // 3. Generar Datos del Ticket
-        const dataJsonTicket = generarDataTicketJSON(transaccion.id, total, subtotal, iva);
+        const dataJsonTicket = generarDataTicketJSON(transaccion.id, totalTrans, subtotalTrans, ivaTrans);
         const htmlTicket = obtenerPlantillaTicket(dataJsonTicket);
         
         // 4. Si pide WhatsApp, enviar mensaje de texto con el total gastado
@@ -746,7 +746,7 @@ export async function procesarPagoCheckout() {
             const nombreClinica = org.nombre_comercial || org.nombre_legal || "la clínica veterinaria";
             
             // Formatear el total
-            const totalMxn = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(total);
+            const totalMxn = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(totalTrans);
             
             const mensajeWa = `¡Hola! 👋 Gracias por tu visita a *${nombreClinica}*.\n\nEl total de tu compra/servicio fue de *${totalMxn}*.\n\n¡Que tengas un excelente día! 🐾`;
             

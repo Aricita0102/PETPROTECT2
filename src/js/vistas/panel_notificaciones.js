@@ -10,7 +10,8 @@ import { conexionSupabase } from '../infraestructura/conexion.js';
 let _orgId = null;
 let _todasLasNotifs = [];          // Cache de todas las alertas cargadas
 let _filtroActivo = 'todos';       // Chip activo
-let _noLeidas = new Set();         // IDs de alertas no leídas (localStorage)
+let _yaLeidas = new Set();         // IDs de alertas leídas (localStorage)
+let _noLeidas = new Set();         // IDs no leídas, recalculado en cada carga
 let _canalRealtime = null;
 
 // ── HELPERS DE TIEMPO ────────────────────────────────────────────────────────
@@ -62,26 +63,31 @@ function _metaTipo(tipo) {
 // ── PERSISTENCIA DE LEÍDAS ───────────────────────────────────────────────────
 function _cargarNoLeidas() {
     try {
-        const raw = localStorage.getItem('pp_notif_noleidas');
-        _noLeidas = raw ? new Set(JSON.parse(raw)) : new Set();
-    } catch { _noLeidas = new Set(); }
+        const raw = localStorage.getItem('pp_notif_leidas');
+        _yaLeidas = raw ? new Set(JSON.parse(raw)) : new Set();
+    } catch { _yaLeidas = new Set(); }
 }
 
 function _guardarNoLeidas() {
-    localStorage.setItem('pp_notif_noleidas', JSON.stringify([..._noLeidas]));
+    // Limpiar huérfanos para no saturar localStorage
+    const idsActivos = _todasLasNotifs.map(n => n.id);
+    _yaLeidas = new Set([..._yaLeidas].filter(id => idsActivos.includes(id)));
+    localStorage.setItem('pp_notif_leidas', JSON.stringify([..._yaLeidas]));
 }
 
 function _marcarLeida(id) {
+    _yaLeidas.add(id);
     _noLeidas.delete(id);
     _guardarNoLeidas();
     _actualizarContadorBadge();
 }
 
 function _marcarTodasLeidas() {
+    _todasLasNotifs.forEach(n => _yaLeidas.add(n.id));
     _noLeidas.clear();
     _guardarNoLeidas();
     _actualizarContadorBadge();
-    _renderNotifs(_filtroActual());
+    _renderNotifs(_filtroActivo);
 }
 
 function _actualizarContadorBadge() {
@@ -263,6 +269,14 @@ async function _cargarNotificaciones() {
 
     // Ordenar todas las notifs por created_at descendente simulado
     _todasLasNotifs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    // Recalcular _noLeidas real
+    _noLeidas.clear();
+    _todasLasNotifs.forEach(n => {
+        if (!_yaLeidas.has(n.id)) {
+            _noLeidas.add(n.id);
+        }
+    });
 
     // ── EXPONER AL SISTEMA GLOBAL (Dashboard) ──
     window._petprotect_notifs = _todasLasNotifs;

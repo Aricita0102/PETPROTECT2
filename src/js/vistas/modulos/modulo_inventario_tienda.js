@@ -6,6 +6,7 @@
  */
 
 import { conexionSupabase, obtenerUsuarioActual } from '../../infraestructura/conexion.js';
+import { alertaCustom } from '../../utilidades/ui_alertas.js';
 
 // Cache del perfil del usuario autenticado (organizacion, sucursal, id)
 let perfilUsuarioActivo = null;
@@ -1444,7 +1445,7 @@ async function configurarModalEditarProductoBento(productoId) {
                         if (errMov) console.error("Error al registrar movimiento:", errMov);
                     }
 
-                    alert(`Articulo "${nombreInput}" actualizado exitosamente.`);
+                    await alertaCustom('Artículo Actualizado', `El artículo "${nombreInput}" se actualizó exitosamente.`, 'success');
                     cerrarPanel();
                     
                     // Recargar la tabla para mostrar los cambios
@@ -1452,7 +1453,7 @@ async function configurarModalEditarProductoBento(productoId) {
 
                 } catch (error) {
                     console.error("[ERROR] Fallo al registrar en BD unificada:", error);
-                    alert("Ocurrio un error al guardar el producto. Revisa la consola para detalles.");
+                    await alertaCustom('Error al Guardar', 'Ocurrió un error al guardar el producto. Revisa la consola para más detalles.', 'error');
                 } finally {
                     if (btnGuardar) {
                         btnGuardar.disabled = false;

@@ -926,8 +926,8 @@ async function cargarNotificacionesDashboard() {
     // Usar la fuente de verdad centralizada (panel_notificaciones.js)
     const todasNotificaciones = window._petprotect_notifs || [];
 
-    // Ordenar y limitar a las últimas 4
-    const notificacionesMostrar = todasNotificaciones.slice(0, 4);
+    // Ordenar y limitar a las últimas 3
+    const notificacionesMostrar = todasNotificaciones.slice(0, 3);
 
     if (notificacionesMostrar.length === 0) {
         lista.innerHTML = `<li class="item-notificacion" style="justify-content: center; color: #888; font-size: 0.9rem;">No hay notificaciones activas. ¡Todo bien!</li>`;

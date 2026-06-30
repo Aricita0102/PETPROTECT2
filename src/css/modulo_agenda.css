@@ -177,8 +177,8 @@
   cursor:pointer;
 }
 .checkbox svg{width:10px;height:10px;stroke:var(--blanco-puro);stroke-width:3;}
-.checkbox.inactivo{background:var(--borde) !important;}
-.checkbox.inactivo svg{display:none;}
+.cal-item:not(.activo) .checkbox {background:var(--borde) !important;}
+.cal-item:not(.activo) .checkbox svg {display:none;}
 .checkbox.naranja{background:var(--naranja);}
 .checkbox.cobalto{background:var(--cobalto-suave);}
 .checkbox.naranja-suave{background:var(--naranja-suave);}
@@ -525,8 +525,8 @@
     cursor:pointer;
   }
   .checkbox svg{width:10px;height:10px;stroke:var(--blanco-puro);stroke-width:3;}
-  .checkbox.inactivo{background:var(--borde) !important;}
-  .checkbox.inactivo svg{display:none;}
+  .cal-item:not(.activo) .checkbox {background:var(--borde) !important;}
+  .cal-item:not(.activo) .checkbox svg {display:none;}
   .checkbox.naranja{background:var(--naranja);}
   .checkbox.cobalto{background:var(--cobalto-suave);}
   .checkbox.naranja-suave{background:var(--naranja-suave);}
