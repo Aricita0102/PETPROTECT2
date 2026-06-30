@@ -222,3 +222,55 @@ export function promptCustomPeligro(titulo, mensaje, defaultText = "") {
         btnOk.addEventListener('click', () => cerrarModal(backdrop, modal, () => resolve({ confirmado: true, texto: input.value.trim() })));
     });
 }
+
+/**
+ * Pide confirmación y solicita un texto al usuario (Reemplazo Premium de window.prompt)
+ */
+export function promptCustom(titulo, mensaje, defaultText = "", icono = 'chat', color = 'var(--cobalto, #032F40)') {
+    return new Promise((resolve) => {
+        const html = `
+            <span class="material-symbols-rounded" style="font-size: 48px; color: ${color}; margin-bottom: 16px; display: inline-block;">${icono}</span>
+            <h3 style="margin: 0 0 12px 0; color: var(--cobalto, #032F40); font-size: 20px; font-weight: 700;">${titulo}</h3>
+            <p style="margin: 0 0 16px 0; color: #64748b; font-size: 15px; line-height: 1.5; white-space: pre-wrap;">${mensaje}</p>
+            <div style="text-align: left; margin-bottom: 24px;">
+                <input type="text" id="prompt-input" value="${defaultText}" autocomplete="off" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; color: var(--cobalto, #032F40); font-family: inherit; font-size: 15px; outline: none; transition: border-color 0.2s;" />
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button id="btn-prompt-cancel" style="flex: 1; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;">Cancelar</button>
+                <button id="btn-prompt-ok" style="flex: 1; background: var(--naranja, #F27405); color: white; border: none; border-radius: 8px; padding: 12px 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;">Aceptar</button>
+            </div>
+        `;
+
+        const { backdrop, modal } = crearModalBase(html);
+        
+        const input = backdrop.querySelector('#prompt-input');
+        const btnOk = backdrop.querySelector('#btn-prompt-ok');
+        const btnCancel = backdrop.querySelector('#btn-prompt-cancel');
+
+        // Enfocar input y seleccionar texto al abrir
+        setTimeout(() => {
+            input.focus();
+            input.select();
+        }, 300);
+
+        // Estilos hover
+        const effectHover = (b) => {
+            b.onmouseover = () => b.style.filter = 'brightness(1.1)';
+            b.onmouseout = () => b.style.filter = 'brightness(1)';
+        };
+        effectHover(btnOk);
+        effectHover(btnCancel);
+
+        // Eventos de teclado (Enter para submit)
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                cerrarModal(backdrop, modal, () => resolve(input.value.trim()));
+            }
+        });
+
+        // Click en botones
+        btnCancel.addEventListener('click', () => cerrarModal(backdrop, modal, () => resolve(null)));
+        btnOk.addEventListener('click', () => cerrarModal(backdrop, modal, () => resolve(input.value.trim())));
+    });
+}

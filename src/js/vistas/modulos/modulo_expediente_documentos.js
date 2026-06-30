@@ -2,6 +2,7 @@ import { conexionSupabase } from '../../infraestructura/conexion.js';
 import { generarPlantillaAvanzada } from './modulo_generador_pdfs.js';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { confirmacionCustom, promptCustom, alertaCustom } from '../../utilidades/ui_alertas.js';
 
 let _idPacienteActDoc = null;
 let _idOrganizacionActDoc = null;
@@ -284,7 +285,12 @@ function _renderizarListaDocs() {
         btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
             const nombreActual = e.currentTarget.getAttribute('data-nombre');
-            const nuevoNombre = prompt('Ingrese el nuevo nombre para el documento:', nombreActual);
+            const nuevoNombre = await promptCustom(
+                'Renombrar Documento', 
+                'Ingrese el nuevo nombre para el documento:', 
+                nombreActual, 
+                'edit_document'
+            );
             
             if (nuevoNombre && nuevoNombre.trim() !== '' && nuevoNombre !== nombreActual) {
                 await _renombrarDocumento(id, nuevoNombre.trim());
@@ -296,7 +302,13 @@ function _renderizarListaDocs() {
     contenedor.querySelectorAll('.btn-eliminar-doc').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
-            if(confirm('¿Estás seguro de eliminar este documento permanentemente?')) {
+            const confirmado = await confirmacionCustom(
+                'Eliminar Documento',
+                '¿Estás seguro de eliminar este documento permanentemente?',
+                'delete_forever',
+                '#ef4444'
+            );
+            if(confirmado) {
                 await _eliminarDocumento(id);
             }
         });

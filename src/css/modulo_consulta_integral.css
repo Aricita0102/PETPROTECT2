@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    SISTEMA CLÍNICO PROTECT PET - NÚCLEO UX/UI
    Estándar: Hero Overlap + Bento Grid + Glassmorfismo (Zero-Click & Safety First)
    Validación Normativa: NOM-001-ZOO, NOM-064-ZOO, ECOP.
@@ -83,7 +83,7 @@ body {
 }
 
 /* --- 3. HERO OVERLAP (CONTEXTO CLÍNICO SUPERIOR) --- */
-.hero-clinico {
+#vista-consulta-integral .hero-clinico {
     /* Degradado corporativo de Cobalto a Cielo */
     background: linear-gradient(135deg, var(--cobalto) 0%, #064a66 50%, var(--cielo) 100%);
     padding: 5px 40px 120px 40px; /* Padding inferior amplio para el overlap */
@@ -93,7 +93,7 @@ body {
     box-shadow: inset 0 -10px 20px rgba(0,0,0,0.1);
 }
 
-.hero-contenido {
+#vista-consulta-integral .hero-contenido {
     max-width: 1700px;
     margin: 0 auto;
     display: flex;
@@ -120,7 +120,7 @@ body {
 }
 
 /* ACTUALIZACIÓN: Alineación perfecta horizontal */
-.hero-acciones {
+#vista-consulta-integral .hero-acciones {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -130,7 +130,7 @@ body {
 }
 
 /* --- 4. SUPERFICIE ELEVADA & BENTO GRID (MÓDULO DE CONSULTA) --- */
-.superficie-clinica-elevada {
+#vista-consulta-integral .superficie-clinica-elevada {
     max-width: 1640px;
     margin: 0 auto;
     margin-top: -90px; /* EFECTO OVERLAP: Sube sobre el Hero */
@@ -590,13 +590,13 @@ body {
     .rejilla-bento-consulta, .rejilla-bento-consulta.expediente-abierto {
         grid-template-columns: 1fr; 
     }
-    .hero-contenido { 
+    #vista-consulta-integral .hero-contenido { 
         flex-direction: row; justify-content: space-between; align-items: center;
     }
-    .superficie-clinica-elevada { 
+    #vista-consulta-integral .superficie-clinica-elevada { 
         margin-top: -180px; padding: 0 20px; width: 100%;
     }
-    .hero-acciones { 
+    #vista-consulta-integral .hero-acciones { 
         flex-direction: row; justify-content: space-between; align-items: center;
         width: 100%; margin-top: 15px;
     }
@@ -626,11 +626,11 @@ body {
         padding: 0 10px 10px 10px; 
         overflow-x: hidden; 
     }
-    .hero-clinico { 
+    #vista-consulta-integral .hero-clinico { 
         padding: 30px 20px 220px 20px; 
         border-radius: 0 0 25px 25px; 
     }
-    .superficie-clinica-elevada { 
+    #vista-consulta-integral .superficie-clinica-elevada { 
         margin-top:-300px; 
         padding: 0 10px; 
         width: 100%;
@@ -639,9 +639,9 @@ body {
         box-sizing: border-box;
         overflow-x: hidden;
     }
-    .titulo-hero { margin-top: 20%; font-size: 2.3rem; }
+    #vista-consulta-integral .titulo-hero { margin-top: 20%; font-size: 2.3rem; }
     
-    .hero-acciones {
+    #vista-consulta-integral .hero-acciones {
         display: flex !important; flex-direction: row !important;
         align-items: center !important; justify-content: space-between !important;
         gap: 15px; width: 100%; margin-top: 20px; box-sizing: border-box;

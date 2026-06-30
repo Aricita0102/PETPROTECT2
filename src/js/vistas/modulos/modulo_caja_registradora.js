@@ -10,6 +10,7 @@ import { obtenerSesionActiva } from '../../infraestructura/sesion_store.js';
 import { obtenerPlantillaTicket, obtenerDOMInnerTicket, obtenerCSSPlantillaTicket } from './ticket_template.js';
 import { iniciarTourCajaRegistradora, iniciarTourCajaRegistradoraSiEsPrimeraVez } from '../../tour/modulo_caja_registradora_tour.js';
 import { alertaCustom } from '../../utilidades/ui_alertas.js';
+import { setHayDatosSinGuardar } from '../principal_v2.js';
 
 // ─── Estado del módulo ─────────────────────────────────────────────────────────
 let perfilCaja = null;
@@ -263,6 +264,7 @@ function configurarCategorias() {
 
 // ─── Carrito / Ticket ─────────────────────────────────────────────────────────
 export function agregarAlCarrito(id, nombre, precio, aplicaIva = true) {
+    setHayDatosSinGuardar(true);
     // Buscar el stock disponible del producto en el catálogo cargado
     const productoRef = todosLosProductos.find(p => p.id === id);
     const stockDisponible = productoRef ? (parseFloat(productoRef.stock_total) || 0) : Infinity;
@@ -464,6 +466,7 @@ export function eliminarDelCarrito(idx) {
 }
 
 export function limpiarCarrito() {
+    setHayDatosSinGuardar(false);
     carrito = [];
     contadorTransaccion++;
     actualizarNumeroTransaccion();

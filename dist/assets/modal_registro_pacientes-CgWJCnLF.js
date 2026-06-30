@@ -1,4 +1,4 @@
-import{n as e}from"./conexion-DiH-JvMT.js";import{n as t}from"./sesion_store-BSrAgZd7.js";import{a as n,t as r}from"./PRINCIPAL-De25Fd-p.js";var i=`<aside id="contenedorRegistro" class="modal-backdrop-premium modal-lateral-backdrop" aria-hidden="true">\r
+import{n as e}from"./conexion-DiH-JvMT.js";import{n as t}from"./sesion_store-BSrAgZd7.js";import{a as n,t as r}from"./PRINCIPAL-BhZNJLIj.js";var i=`<aside id="contenedorRegistro" class="modal-backdrop-premium modal-lateral-backdrop" aria-hidden="true">\r
     <style>\r
         /* Ajuste específico para que coincida exactamente con el tamaño del panel de notificaciones (derecho) */\r
         body div#contenedor-modal-dinamico #contenedorRegistro.modal-backdrop-premium .ventana-modal-bento.grande.modal-lateral-panel {\r

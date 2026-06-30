@@ -882,6 +882,7 @@ let _fechaPivote = new Date();
 let _vistaActual = 'dia';
 let _filtroActual = 'todos';
 let _citaSeleccionadaId = null;
+let _pacienteSeleccionadoId = null;
 let _mesActualMini = new Date();
 
 // ─── Mini-Calendario ──────────────────────────────────────────────────────────
@@ -1086,6 +1087,7 @@ window.abrirDetalleCita = async function(citaId, event) {
         if (error || !c) { console.error('[AGENDA] Error al cargar detalle de cita:', error); return; }
 
         const paciente = Array.isArray(c.pacientes) ? c.pacientes[0] : c.pacientes;
+        _pacienteSeleccionadoId = paciente?.id || null;
         let cliente = {};
         
         // Segundo paso: Obtener datos del cliente usando el cliente_id del paciente
@@ -1148,12 +1150,22 @@ window.cambiarEstadoDesdeDetalle = async function(nuevoEstado) {
 
 window.iniciarConsultaDesdeCita = function() {
     window.cerrarDetalleCita();
-    document.querySelector('[data-target="MODULO_VETERINARIO_CONSULTA"]')?.click();
+    if (typeof window.cargarModulo === 'function' && _pacienteSeleccionadoId) {
+        window._agendaDatos = { pacienteId: _pacienteSeleccionadoId, citaId: _citaSeleccionadaId };
+        window.cargarModulo('MODULO_VETERINARIO_CONSULTA');
+    } else {
+        console.error("[AGENDA] Enrutador no encontrado o ID de paciente inválido.");
+    }
 };
 
 window.abrirExpedientePaciente = function() {
     window.cerrarDetalleCita();
-    document.querySelector('[data-target="MODULO_EXPEDIENTES_HISTORIAL"]')?.click();
+    if (typeof window.cargarModulo === 'function' && _pacienteSeleccionadoId) {
+        sessionStorage.setItem('idPacienteActivo', _pacienteSeleccionadoId);
+        window.cargarModulo('MODULO_EXPEDIENTES_HISTORIAL');
+    } else {
+        console.error("[AGENDA] Enrutador no encontrado o ID de paciente inválido.");
+    }
 };
 
 window.cancelarCitaSeleccionada = async function() {

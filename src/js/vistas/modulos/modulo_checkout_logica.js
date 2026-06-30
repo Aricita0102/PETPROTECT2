@@ -6,8 +6,9 @@
 
 import { conexionSupabase } from '../../infraestructura/conexion.js';
 import { obtenerSesionActiva } from '../../infraestructura/sesion_store.js';
-import { alertaCustom, confirmacionCustom } from '../../utilidades/ui_alertas.js';
+import { alertaCustom, confirmacionCustom, promptCustom } from '../../utilidades/ui_alertas.js';
 import { obtenerPlantillaTicket } from './ticket_template.js';
+import { setHayDatosSinGuardar } from '../principal_v2.js';
 import '../../../css/modulo_checkout.css';
 
 const moduloCheckout = {
@@ -28,6 +29,7 @@ const moduloCheckout = {
     // ==========================================================================
     inicializar: async function() {
         console.info("💳 [CHECKOUT] Inicializando terminal de pagos...");
+        setHayDatosSinGuardar(true);
         
         // ✅ OPTIMIZACIÓN: Singleton — cero peticiones de red adicionales
         const sesion = await obtenerSesionActiva();
@@ -625,8 +627,14 @@ const moduloCheckout = {
         }
     },
 
-    enviarWhatsApp: function() { 
-        const numero = prompt("Ingrese el número de celular a 10 dígitos para enviar el ticket:");
+    enviarWhatsApp: async function() { 
+        const numero = await promptCustom(
+            "Enviar Comprobante por WhatsApp", 
+            "Ingrese el número de celular a 10 dígitos al que desea enviar el resumen del cobro:", 
+            "", 
+            "phone_iphone", 
+            "#25D366"
+        );
         if (!numero) return;
         
         const totales = this.obtenerTotales();
@@ -730,6 +738,7 @@ const moduloCheckout = {
         sessionStorage.removeItem('pacienteCheckout');
         
         // 2. Transición SPA hacia la Agenda Principal
+        setHayDatosSinGuardar(false);
         if (window.cargarModulo) {
             window.cargarModulo('MODULO_AGENDA');
         } else {
@@ -757,6 +766,7 @@ const moduloCheckout = {
         sessionStorage.removeItem('pacienteCheckout');
         
         // Cierra el módulo de caja devolviendo a la Agenda o Dashboard
+        setHayDatosSinGuardar(false);
         if (window.cargarModulo) {
             window.cargarModulo('MODULO_AGENDA');
         }

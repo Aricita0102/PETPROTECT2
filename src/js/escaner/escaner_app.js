@@ -1,4 +1,4 @@
-import { BrowserMultiFormatReader } from '@zxing/browser';
+    import { BrowserMultiFormatReader } from '@zxing/browser';
 import { conexionSupabase } from '../infraestructura/conexion.js';
 
 let channel = null;

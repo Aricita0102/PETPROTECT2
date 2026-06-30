@@ -35,6 +35,7 @@ const LIMITES_CLINICOS = {
 // ==========================================================================
 export async function inicializarConsultaIntegral() {
     console.info("[CLÍNICA] Despertando módulo de Consulta Integral...");
+    setHayDatosSinGuardar(true);
     
     await cargarIdentidadMedica();
     
@@ -564,7 +565,6 @@ function configurarSplitViewExpediente() {
             document.getElementById('form-consulta-medica')?.reset();
             const tbody = document.getElementById('tbody-receta-farmacos');
             if(tbody) tbody.innerHTML = '';
-            listaFarmacosManuales = [];
             
             clearInterval(estadoClinico.intervaloCronometro);
             const contenedorCrono = document.getElementById('contenedor-cronometro');
@@ -662,6 +662,10 @@ function configurarGuardadoECOP() {
 
         if (isNaN(pesoParsed) || isNaN(tempParsed) || isNaN(fcParsed) || isNaN(frParsed)) {
             return alert("⚠️ Por favor, rellena todas las constantes vitales con valores numéricos válidos.");
+        }
+
+        if (pesoParsed <= 0 || tempParsed <= 0 || fcParsed <= 0 || frParsed <= 0) {
+            return alert("⚠️ Todas las constantes vitales (Peso, Temp, FC, FR) deben ser mayores a 0.");
         }
 
         const btnFinalizar = document.getElementById('btn-finalizar-consulta');

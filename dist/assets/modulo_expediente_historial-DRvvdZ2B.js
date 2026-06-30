@@ -1,4 +1,4 @@
-import{i as e,r as t,t as n}from"./chunk-aKtaBQYM.js";import{n as r}from"./conexion-DiH-JvMT.js";import{n as i}from"./sesion_store-BSrAgZd7.js";import{a,i as o,t as s}from"./PRINCIPAL-De25Fd-p.js";import{t as c}from"./storage-DxBef2iG.js";import{t as l}from"./driver-C0V4B3Pe.js";var u=`
+import{i as e,r as t,t as n}from"./chunk-aKtaBQYM.js";import{n as r}from"./conexion-DiH-JvMT.js";import{n as i}from"./sesion_store-BSrAgZd7.js";import{a,i as o,t as s}from"./PRINCIPAL-BhZNJLIj.js";import{t as c}from"./storage-DxBef2iG.js";import{t as l}from"./driver-C0V4B3Pe.js";var u=`
 <style>
   :root{
     --cobalto:#032F40;
@@ -421,9 +421,6 @@ import{i as e,r as t,t as n}from"./chunk-aKtaBQYM.js";import{n as r}from"./conex
                   <div class="timeline-card">
                     <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                         <h3>Consulta por ${s} <span class="tag tag-consulta">Consulta</span></h3>
-                        <button onclick="window.eliminarConsultaHistorial('${t.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:12px; display:flex; align-items:center; gap:4px;" title="Eliminar Registro">
-                            <span class="material-symbols-rounded" style="font-size:16px;">delete</span> Eliminar
-                        </button>
                     </div>
                     <p class="card-meta">Atendido por: <strong>${n}</strong> | Motivo: <strong>${s}</strong></p>
                     <div class="card-notes" style="overflow-wrap: anywhere; word-break: break-word;">
